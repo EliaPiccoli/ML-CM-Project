@@ -16,5 +16,9 @@ The models that implemented are the following:
 
 ### Project 14
 *(Model)* is a SVR-type approach of your choice (in particular, with one or more kernels of your choice).
-*(Algorithm)* is a dual approach [references: constrained minimization slides] with appropriate choices of the constraints to be dualized, where the Lagrangian Dual is solved by an algorithm of the class of deflected subgradient methods
-[reference: http://pages.di.unipi.it/frangio/abstracts.html#MPC16, http://www.jmlr.org/papers/volume12/duchi11a/duchi11a.pdf].
+*(Algorithm)* is a dual approach with appropriate choices of the constraints to be dualized, where the Lagrangian Dual is solved by an algorithm of the class of deflected subgradient methods.
+*Reference*: [1][1] - [2][2]
+
+<!-- References -->
+[1]: http://pages.di.unipi.it/frangio/abstracts.html#MPC16
+[2]: http://www.jmlr.org/papers/volume12/duchi11a/duchi11a.pdf
