@@ -16,6 +16,7 @@ The models that implemented are the following:
 
 ### Project 14
 *(Model)* is a SVR-type approach of your choice (in particular, with one or more kernels of your choice).
+
 *(Algorithm)* is a dual approach with appropriate choices of the constraints to be dualized, where the Lagrangian Dual is solved by an algorithm of the class of deflected subgradient methods.
 *Reference*: [1][1] - [2][2]
 
