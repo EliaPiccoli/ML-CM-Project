@@ -25,7 +25,9 @@ class Layer:
         self.bias_range = bias_range
         self.input = _input
 
-    def _init_layer(self):
+    def _init_layer(self, inp=None):
+        if inp is not None:
+            self.input = inp
         self.weights = np.random.uniform(self.weights_range[0], self.weights_range[1], (self.nodes, self.input[0]))
         self.bias = np.random.uniform(self.bias_range[0], self.bias_range[1], self.nodes)
         self.activation_function = AF[self.activation_function_type]
@@ -35,3 +37,6 @@ class Layer:
         for node, bias in zip(self.weights, self.bias):
             self.output.append(self.activation_function._compute(np.dot(node, inputs) + bias))
         return self.output
+
+    def __str__(self):
+        

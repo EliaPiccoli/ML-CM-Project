@@ -1,0 +1,10 @@
+NN:
+    1. model class
+    2. build model
+    3. loss function
+    4. gradients
+    5. backprop
+    6. batch/mini-batch
+    7. regularization, momentum
+
+SVM:
