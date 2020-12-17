@@ -7,3 +7,6 @@ class Softmax:
 
     def _gradient(self):
         pass
+
+    def __str__(self):
+        return "SoftMax"

@@ -6,3 +6,6 @@ class Sigmoid:
 
     def _gradient(self):
         pass
+
+    def __str__(self):
+        return "Sigmoid"

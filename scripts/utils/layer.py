@@ -39,4 +39,4 @@ class Layer:
         return self.output
 
     def __str__(self):
-        
+        return f'Layer (nodes: {self.nodes}, af: {self.activation_function}, input: {self.input[0]})'
