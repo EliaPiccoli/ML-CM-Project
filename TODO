@@ -1,7 +1,8 @@
 NN:
-    1. model class
-    2. build model
-    3. loss function
+    0. Layer, activation - DONE
+    1. model class - DONE
+    2. build model - DONE
+    3. loss function - DONE 
     4. gradients
     5. backprop
     6. batch/mini-batch
