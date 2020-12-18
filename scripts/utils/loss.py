@@ -1,10 +1,10 @@
 import numpy as np
 from math import log
 
-class Loss:
+class Mse:
     #-----------------------------------------------------   FOR REGRESSION   -----------------------------------------------------#
 
-    def _mse(self, actual, expected):
+    def _compute_loss(self, actual, expected):
         """
         Computation of Mean Squared Error loss function
 
@@ -15,14 +15,15 @@ class Loss:
         
         """
         assert(len(actual) == len(expected))
-        return 0.5 * np.sum((np.array(expected) - np.array(actual))**2) / len(actual) # avg(1/2(expected - actual)**2), 1/2 for better derivation
+        return 0.5 * np.sum((np.array(expected) - np.array(actual))**2) #TODO/ len(actual) # avg(1/2(expected - actual)**2), 1/2 for better derivation
 
-    def _msePrime(self, actual, expected, index):
-        return expected[index] - actual[index]
+    def _compute_loss_prime(self, actual, expected):
+        return expected - actual
     
+class CrossEntropy:
     #----------------------------------------------------- FOR CLASSIFICATION -----------------------------------------------------#
 
-    def _cross_entropy(self, actual, expected):
+    def _compute_loss(self, actual, expected):
         """
         Computation of Cross Entropy Loss function
 
@@ -39,14 +40,15 @@ class Loss:
         else:
             return -log(1 - actual)
 
-    def _cross_entropy_prime(self, actual, expected, index):
+    def _compute_loss_prime(self, actual, expected):
         if expected == 1:
             return -1 / actual
         else:
-            return -1 / (1 - actual)
+            return 1 / (1 - actual)
 
 
-    def _hinge(self, actual, expected): # SVM <3
+class Hinge:
+    def _compute_loss(self, actual, expected): # SVM <3
         """
         Computation of Hinge Loss function
 
@@ -58,12 +60,12 @@ class Loss:
         """
         return np.max(0, 1 - actual * expected)
 
-    def _get_loss(self, name):
-        if name == "mse":
-            return self._mse
-        elif name == "cross_entropy":
-            return self._cross_entropy
-        elif name == "hinge":
-            return self._hinge
-        else:
-            raise Exception("Unknown loss function " + name)
+def get_loss(name):
+    if name == "mse":
+        return Mse()
+    elif name == "cross_entropy":
+        return CrossEntropy()
+    elif name == "hinge":
+        return Hinge()
+    else:
+        raise Exception("Unknown loss function " + name)
