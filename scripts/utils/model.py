@@ -31,17 +31,16 @@ class Model:
         layer_output = input
         for i in range(len(self.layers)):
             layer_output = self.layers[i]._feed_forward(layer_output)
-            print(f"Output layer{i}: {layer_output}")
+            #print(f"Output layer {i}: {layer_output}")
         return layer_output
 
     def _back_propagation(self, expected, inp):
         self.deltas = []
         for i in range(len(self.layers)-1, -1, -1):
-            print("Layer: ", i)
             if i == len(self.layers)-1: # output layer
                 loss_prime = []
-                for i in range(len(expected)):
-                    loss_prime.append(self.loss_function._compute_loss_prime(self.layer_outputs[-1][i], expected[i]))
+                for j in range(len(expected)):
+                    loss_prime.append(self.loss_function._compute_loss_prime(self.layer_outputs[-1][j], expected[j]))
                 self.deltas.append(self.layers[i]._back_propagation(self.layers[i-1].output, is_output_layer=True, loss_prime_values=loss_prime))
             elif i == 0: # input layer
                 self.deltas.append(self.layers[i]._back_propagation(inp, deltas_next_layer=self.deltas[-1], weights_next_layer=self.layers[i+1].weights))
@@ -50,8 +49,10 @@ class Model:
 
     def _update_weights(self):
         for i in range(len(self.layers)):
-            self.layers[i].weights = np.matrix(self.layers[i].weights) - self.eta*np.matrix(self.layers[i].weight_delta)
-            print(f"Layer {i}: {self.layers[i].weights}")
+            for j in range(len(self.layers[i].weights)):
+                for k in range(len(self.layers[i].weights[j])):
+                    self.layers[i].weights[j][k] = self.layers[i].weights[j][k] - self.eta * self.layers[i].weight_delta[j][k] 
+            #print(f"Layer {i}: {self.layers[i].weights}")
 
     def _train(self, inputs, expected):
         assert(len(inputs) == len(expected))
@@ -60,9 +61,8 @@ class Model:
             self.layer_outputs.append(self._feed_forward(inputs[i])) # compute prediction
             self.loss = self.loss_function._compute_loss(self.layer_outputs[i], expected[i]) # calculate loss
             self._back_propagation(expected[i], inputs[i]) # compute back-propagation
-            self._update_weights()
-            return self.loss
-        #calc loss
+            self._update_weights() # update weights
+            print(f"{i} - Loss: {self.loss}")
         #get smart
 
     def __str__(self):

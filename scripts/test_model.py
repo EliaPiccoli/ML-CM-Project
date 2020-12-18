@@ -9,12 +9,12 @@ model._add_layer(Layer(2, "sigmoid", _input=(2,)))
 model._add_layer(Layer(2, "sigmoid"))
 weights = [
     [
-        [0.15, 0.25],
-        [0.20, 0.30]
+        [0.15, 0.20],
+        [0.25, 0.30]
     ],
     [
-        [0.40, 0.50],
-        [0.45, 0.55]
+        [0.40, 0.45],
+        [0.50, 0.55]
     ]
 ]
 bias = [
@@ -22,14 +22,15 @@ bias = [
     [0.60, 0.60]
 ]
 model._compile(0.5, "mse", weight_matrix=weights, bias_matrix=bias)
-print(model)
+# print(model)
 
-for layer in model.layers:
-    print("Weights\n", layer.weights)
-    print("Bias\n",layer.bias)
+# for layer in model.layers:
+#     print("Weights\n", layer.weights)
+#     print("Bias\n",layer.bias)
 
 inp = [[0.05, 0.10]]
 exp = [[0.01, 0.99]]
-print("Input: ", inp)
-print("Exp: ", exp)
-print("Loss: ", model._train(inp, exp))
+# print("Input: ", inp)
+# print("Exp: ", exp)
+model._train(inp, exp)
+# https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
