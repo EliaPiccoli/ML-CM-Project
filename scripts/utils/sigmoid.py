@@ -4,8 +4,9 @@ class Sigmoid:
     def _compute(self, input):
           return 1/(1 + np.exp(-input))
 
-    def _gradient(self):
-        pass
+    def _gradient(self, input):
+        sig_inp = _compute(input)
+        return sig_inp*(1-sig_inp)
 
     def __str__(self):
         return "Sigmoid"

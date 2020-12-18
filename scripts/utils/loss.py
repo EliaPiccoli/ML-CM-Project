@@ -9,9 +9,9 @@ class Loss:
         Computation of Mean Squared Error loss function
 
         Parameters:
-        actual (float list) : ground truth
+        expected (float list) : ground truth
 
-        expected (float list) : output from model
+        actual (float list) : output from model
         
         """
         assert(len(actual) == len(expected))
@@ -51,9 +51,9 @@ class Loss:
         Computation of Hinge Loss function
 
         Parameters:
-        actual (int) : ground truth
+        expected (int) : ground truth
 
-        expected (float) : output from model
+        actual (float) : output from model
         
         """
         return np.max(0, 1 - actual * expected)

@@ -6,6 +6,7 @@ class Softmax:
         return np.exp(inputs[index])/_sum
 
     def _gradient(self):
+        # ?
         pass
 
     def __str__(self):
