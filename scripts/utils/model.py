@@ -35,8 +35,9 @@ class Model:
         return layer_output
 
     def _back_propagation(self, expected, inp):
-        self.deltas = []
+        self.deltas = [] # order = from output layer to input layer
         for i in range(len(self.layers)-1, -1, -1):
+            #print("\nLayer", i)
             if i == len(self.layers)-1: # output layer
                 loss_prime = []
                 for j in range(len(expected)):
@@ -47,12 +48,15 @@ class Model:
             else: #hidden layer (where magic happens)
                 self.deltas.append(self.layers[i]._back_propagation(self.layers[i-1].output, deltas_next_layer=self.deltas[-1], weights_next_layer=self.layers[i+1].weights))
 
-    def _update_weights(self):
+    def _update_weights_bias(self):
         for i in range(len(self.layers)):
             for j in range(len(self.layers[i].weights)):
                 for k in range(len(self.layers[i].weights[j])):
+                    # weight_n = weight_o - eta*delta(W)
                     self.layers[i].weights[j][k] = self.layers[i].weights[j][k] - self.eta * self.layers[i].weight_delta[j][k] 
-            #print(f"Layer {i}: {self.layers[i].weights}")
+                # bias_n = bias_o - eta*delta(W)
+                self.layers[i].bias[j] = self.layers[i].bias[j] - self.eta * self.deltas[-(i+1)][j]
+            #print(f"\nLayer {i}: weights = {self.layers[i].weights}, bias = {self.layers[i].bias}")
 
     def _train(self, inputs, expected):
         assert(len(inputs) == len(expected))
@@ -61,7 +65,7 @@ class Model:
             self.layer_outputs.append(self._feed_forward(inputs[i])) # compute prediction
             self.loss = self.loss_function._compute_loss(self.layer_outputs[i], expected[i]) # calculate loss
             self._back_propagation(expected[i], inputs[i]) # compute back-propagation
-            self._update_weights() # update weights
+            self._update_weights_bias() # update weights & bias
             print(f"{i} - Loss: {self.loss}")
         #get smart
 

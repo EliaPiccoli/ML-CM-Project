@@ -57,6 +57,7 @@ class Layer:
                 delta.append(np.dot(weights_next_layer_j, deltas_next_layer)*self.activation_function._gradient(self.net[i]))
                 for j in range(len(self.weights[i])):
                     self.weight_delta[i].append(output_prev_layer[j] * delta[-1])
+        #print(f"delta: {delta}\nweight_delta: {self.weight_delta}")
         return delta
 
     def __str__(self):

@@ -25,8 +25,8 @@ model._compile(0.5, "mse", weight_matrix=weights, bias_matrix=bias)
 # print(model)
 
 # for layer in model.layers:
-#     print("Weights\n", layer.weights)
-#     print("Bias\n",layer.bias)
+#     print("Weights: ", layer.weights)
+#     print("Bias: ",layer.bias)
 
 inp = [[0.05, 0.10]]
 exp = [[0.01, 0.99]]

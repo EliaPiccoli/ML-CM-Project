@@ -3,9 +3,9 @@ NN:
     1. model class - DONE
     2. build model - DONE
     3. loss function - DONE 
-    4. gradients
-    5. backprop
-    6. batch/mini-batch
-    7. regularization, momentum
+    4. gradients - DONE
+    5. backprop - DONE
+    6. regularization, momentum 
+    7. batch/mini-batch
 
 SVM:
