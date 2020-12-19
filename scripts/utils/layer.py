@@ -29,7 +29,9 @@ class Layer:
         if inp is not None:
             self.input = inp
         self.weights = np.random.uniform(self.weights_range[0], self.weights_range[1], (self.nodes, self.input[0])) if weigths is None else weigths
+        self.weight_delta_prev = np.zeros((self.nodes, self.input[0])) # for momentum
         self.bias = np.random.uniform(self.bias_range[0], self.bias_range[1], self.nodes) if bias is None else bias
+        self.bias_delta_prev = np.zeros(self.nodes) # for momentum
         self.activation_function = AF[self.activation_function_type]
     
     def _feed_forward(self, inputs):

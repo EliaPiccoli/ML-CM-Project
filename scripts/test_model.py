@@ -21,15 +21,15 @@ bias = [
     [0.35, 0.35],
     [0.60, 0.60]
 ]
-model._compile(0.5, "mse", weight_matrix=weights, bias_matrix=bias)
+model._compile(0.5, "mse", weight_matrix=weights, bias_matrix=bias, _lambda=0.001, alpha=0.9)
 # print(model)
 
-# for layer in model.layers:
-#     print("Weights: ", layer.weights)
-#     print("Bias: ",layer.bias)
+for layer in model.layers:
+    print("Weights: ", layer.weights)
+    print("Bias: ",layer.bias)
 
-inp = [[0.05, 0.10]]
-exp = [[0.01, 0.99]]
+inp = [[0.05, 0.10] for i in range(1000)]
+exp = [[0.01, 0.99] for i in range(1000)]
 # print("Input: ", inp)
 # print("Exp: ", exp)
 model._train(inp, exp)

@@ -4,7 +4,7 @@ from math import log
 class Mse:
     #-----------------------------------------------------   FOR REGRESSION   -----------------------------------------------------#
 
-    def _compute_loss(self, actual, expected):
+    def _compute_loss(self, actual, expected, regression):
         """
         Computation of Mean Squared Error loss function
 
@@ -15,7 +15,7 @@ class Mse:
         
         """
         assert(len(actual) == len(expected))
-        return 0.5 * np.sum((np.array(expected) - np.array(actual))**2) #TODO/ len(actual) # avg(1/2(expected - actual)**2), 1/2 for better derivation
+        return 0.5 * np.sum((np.array(expected) - np.array(actual))**2) + regression #TODO/ len(actual) # avg(1/2(expected - actual)**2), 1/2 for better derivation
 
     def _compute_loss_prime(self, actual, expected):
         return expected - actual
@@ -23,7 +23,7 @@ class Mse:
 class CrossEntropy:
     #----------------------------------------------------- FOR CLASSIFICATION -----------------------------------------------------#
 
-    def _compute_loss(self, actual, expected):
+    def _compute_loss(self, actual, expected, regression):
         """
         Computation of Cross Entropy Loss function
 
@@ -36,9 +36,9 @@ class CrossEntropy:
         actual = actual[0] # list of only one element
         if expected == 1:
             # WHAT ABOUT ADDING 1e-15 to make sure we don't get log(0)  ???
-            return -log(actual) #ln
+            return -log(actual) + regression #ln
         else:
-            return -log(1 - actual)
+            return -log(1 - actual) + regression
 
     def _compute_loss_prime(self, actual, expected):
         if expected == 1:

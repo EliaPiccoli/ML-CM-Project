@@ -15,7 +15,7 @@ class Model:
     def _add_layer(self, layer):
         self.layers.append(layer)
 
-    def _compile(self, eta, loss_function, _lambda=0, alpha=1, weight_matrix=None, bias_matrix=None):
+    def _compile(self, eta, loss_function, _lambda=0, alpha=0, weight_matrix=None, bias_matrix=None):
         for i in range(len(self.layers)):
             if weight_matrix is None and bias_matrix is None:
                 self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,))
@@ -52,18 +52,29 @@ class Model:
         for i in range(len(self.layers)):
             for j in range(len(self.layers[i].weights)):
                 for k in range(len(self.layers[i].weights[j])):
-                    # weight_n = weight_o - eta*delta(W)
-                    self.layers[i].weights[j][k] = self.layers[i].weights[j][k] - self.eta * self.layers[i].weight_delta[j][k] 
-                # bias_n = bias_o - eta*delta(W)
-                self.layers[i].bias[j] = self.layers[i].bias[j] - self.eta * self.deltas[-(i+1)][j]
+                    # weight_n = weight_o - eta*delta(W) + alpha*delta_prev(W) - 2*lambda*weight_o
+                    self.layers[i].weight_delta_prev[j][k] = - self.eta * self.layers[i].weight_delta[j][k] + self.alpha * self.layers[i].weight_delta_prev[j][k]
+                    self.layers[i].weights[j][k] = self.layers[i].weights[j][k] + self.layers[i].weight_delta_prev[j][k] - 2 * self._lambda * self.layers[i].weights[j][k]
+                # bias_n = bias_o - eta*delta(W) + alpha*delta_prev(W)
+                self.layers[i].bias_delta_prev[j] = - self.eta * self.deltas[-(i+1)][j] + self.alpha * self.layers[i].bias_delta_prev[j]
+                self.layers[i].bias[j] = self.layers[i].bias[j] + self.layers[i].bias_delta_prev[j]
             #print(f"\nLayer {i}: weights = {self.layers[i].weights}, bias = {self.layers[i].bias}")
+
+    def _ridge_regression(self):
+        sum_squares = 0
+        for layer in self.layers:
+            for i in range(len(layer.weights)):
+                for j in range(len(layer.weights[i])):
+                    sum_squares += layer.weights[i][j]**2
+        #print("RIDGE_REGR:",self._lambda*sum_squares)
+        return self._lambda*sum_squares
 
     def _train(self, inputs, expected):
         assert(len(inputs) == len(expected))
         self.layer_outputs = []
         for i in range(len(inputs)): # for all inputs
             self.layer_outputs.append(self._feed_forward(inputs[i])) # compute prediction
-            self.loss = self.loss_function._compute_loss(self.layer_outputs[i], expected[i]) # calculate loss
+            self.loss = self.loss_function._compute_loss(self.layer_outputs[i], expected[i], self._ridge_regression()) # calculate loss
             self._back_propagation(expected[i], inputs[i]) # compute back-propagation
             self._update_weights_bias() # update weights & bias
             print(f"{i} - Loss: {self.loss}")

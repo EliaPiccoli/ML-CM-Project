@@ -5,7 +5,9 @@ NN:
     3. loss function - DONE 
     4. gradients - DONE
     5. backprop - DONE
-    6. regularization, momentum 
+    6. regularization, momentum - DONE, hopefully
     7. batch/mini-batch
+    8. one hot encoding
+    9. training MONKAS
 
 SVM:
