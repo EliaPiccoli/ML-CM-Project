@@ -33,6 +33,8 @@ class Layer:
         self.bias = np.random.uniform(self.bias_range[0], self.bias_range[1], self.nodes) if bias is None else bias
         self.bias_delta_prev = np.zeros(self.nodes) # for momentum
         self.activation_function = AF[self.activation_function_type]
+        self.bias_delta = None
+        self.weight_delta = None
     
     def _feed_forward(self, inputs):
         self.output = []
@@ -43,24 +45,24 @@ class Layer:
         return self.output
 
     def _back_propagation(self, output_prev_layer, is_output_layer=False, loss_prime_values=[], deltas_next_layer=None, weights_next_layer=None):
-        self.weight_delta = []
+        weight_delta = []
         delta = []
         if is_output_layer:
             for i in range(self.nodes):
-                self.weight_delta.append([])
+                weight_delta.append([])
                 # take [-] Gradient !!
                 delta.append(-loss_prime_values[i]*self.activation_function._gradient(self.net[i]))
                 for j in range(len(self.weights[i])):
-                    self.weight_delta[i].append(output_prev_layer[j] * delta[-1])
+                    weight_delta[i].append(output_prev_layer[j] * delta[-1])
         else:
             for i in range(len(self.weights)):
-                self.weight_delta.append([])
+                weight_delta.append([])
                 weights_next_layer_j = [weight_next_layer[i] for weight_next_layer in weights_next_layer]
                 delta.append(np.dot(weights_next_layer_j, deltas_next_layer)*self.activation_function._gradient(self.net[i]))
                 for j in range(len(self.weights[i])):
-                    self.weight_delta[i].append(output_prev_layer[j] * delta[-1])
-        #print(f"delta: {delta}\nweight_delta: {self.weight_delta}")
-        return delta
+                    weight_delta[i].append(output_prev_layer[j] * delta[-1])
+        #print(f"delta: {delta}\nweight_delta: {weight_delta}")
+        return delta, weight_delta
 
     def __str__(self):
         return f'Layer (input: {self.input[0]}, nodes: {self.nodes}, activation_function: {self.activation_function})'

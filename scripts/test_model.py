@@ -21,16 +21,16 @@ bias = [
     [0.35, 0.35],
     [0.60, 0.60]
 ]
-model._compile(0.5, "mse", weight_matrix=weights, bias_matrix=bias, _lambda=0.001, alpha=0.9)
+model._compile(0.5, "mse", weight_matrix=weights, bias_matrix=bias)
 # print(model)
 
-for layer in model.layers:
-    print("Weights: ", layer.weights)
-    print("Bias: ",layer.bias)
+# for layer in model.layers:
+#     print("Weights: ", layer.weights)
+#     print("Bias: ",layer.bias)
 
-inp = [[0.05, 0.10] for i in range(1000)]
-exp = [[0.01, 0.99] for i in range(1000)]
+inp = [[0.05, 0.10] for _ in range(1000)]
+exp = [[0.01, 0.99] for _ in range(1000)]
 # print("Input: ", inp)
 # print("Exp: ", exp)
-model._train(inp, exp)
+model._train(inp, exp, batch_size = 16)
 # https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/

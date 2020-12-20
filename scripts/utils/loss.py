@@ -15,7 +15,8 @@ class Mse:
         
         """
         assert(len(actual) == len(expected))
-        return 0.5 * np.sum((np.array(expected) - np.array(actual))**2) + regression #TODO/ len(actual) # avg(1/2(expected - actual)**2), 1/2 for better derivation
+        #TODO add: / len(actual)
+        return (0.5 * np.sum((np.array(expected) - np.array(actual))**2)) + regression # avg(1/2(expected - actual)**2), 1/2 for better derivation
 
     def _compute_loss_prime(self, actual, expected):
         return expected - actual

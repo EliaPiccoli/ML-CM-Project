@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 from .layer import Layer
 from .loss import get_loss
@@ -27,6 +28,23 @@ class Model:
         self.loss_function_name = loss_function
         self.loss_function = get_loss(loss_function)
 
+    def _init_batch(self):
+        self.batch_loss = 0
+        self.batch_deltas = []
+        self.batch_weights_delta = []
+        for layer in self.layers:
+            self.batch_deltas.append(np.zeros(layer.nodes))
+            self.batch_weights_delta.append(np.zeros((layer.nodes, layer.input[0])))
+
+    def _accumulate_batch_back_prop(self, layer_bp, layer_index):
+        # accumulate deltas of single pattern for batch learning
+        for i in range(len(self.batch_deltas[layer_index])):
+            self.batch_deltas[layer_index][i] += layer_bp[0][i]
+
+        for i in range(len(self.batch_weights_delta[layer_index])):
+            for j in range(len(self.batch_weights_delta[layer_index][i])):
+                self.batch_weights_delta[layer_index][i][j] += layer_bp[1][i][j]
+
     def _feed_forward(self,input):
         layer_output = input
         for i in range(len(self.layers)):
@@ -35,18 +53,27 @@ class Model:
         return layer_output
 
     def _back_propagation(self, expected, inp):
-        self.deltas = [] # order = from output layer to input layer
+        # order = from output layer to input layer
+        delta_last_layer = None # will be used from second iteration and on
         for i in range(len(self.layers)-1, -1, -1):
             #print("\nLayer", i)
             if i == len(self.layers)-1: # output layer
                 loss_prime = []
                 for j in range(len(expected)):
-                    loss_prime.append(self.loss_function._compute_loss_prime(self.layer_outputs[-1][j], expected[j]))
-                self.deltas.append(self.layers[i]._back_propagation(self.layers[i-1].output, is_output_layer=True, loss_prime_values=loss_prime))
+                    loss_prime.append(self.loss_function._compute_loss_prime(self.model_output[j], expected[j]))
+                result = self.layers[i]._back_propagation(self.layers[i-1].output, is_output_layer=True, loss_prime_values=loss_prime)
             elif i == 0: # input layer
-                self.deltas.append(self.layers[i]._back_propagation(inp, deltas_next_layer=self.deltas[-1], weights_next_layer=self.layers[i+1].weights))
+                result = self.layers[i]._back_propagation(inp, deltas_next_layer=delta_last_layer, weights_next_layer=self.layers[i+1].weights)
             else: #hidden layer (where magic happens)
-                self.deltas.append(self.layers[i]._back_propagation(self.layers[i-1].output, deltas_next_layer=self.deltas[-1], weights_next_layer=self.layers[i+1].weights))
+                result = self.layers[i]._back_propagation(self.layers[i-1].output, deltas_next_layer=delta_last_layer, weights_next_layer=self.layers[i+1].weights)
+            self._accumulate_batch_back_prop(result,i)
+            delta_last_layer = result[0]
+
+    def _update_layers_deltas(self, batch_size):
+        # copy deltas value into each layer for easier later weight and bias update
+        for i in range(len(self.layers)):
+            self.layers[i].bias_delta = self.batch_deltas[i]
+            self.layers[i].weight_delta = self.batch_weights_delta[i]
 
     def _update_weights_bias(self):
         for i in range(len(self.layers)):
@@ -56,9 +83,9 @@ class Model:
                     self.layers[i].weight_delta_prev[j][k] = - self.eta * self.layers[i].weight_delta[j][k] + self.alpha * self.layers[i].weight_delta_prev[j][k]
                     self.layers[i].weights[j][k] = self.layers[i].weights[j][k] + self.layers[i].weight_delta_prev[j][k] - 2 * self._lambda * self.layers[i].weights[j][k]
                 # bias_n = bias_o - eta*delta(W) + alpha*delta_prev(W)
-                self.layers[i].bias_delta_prev[j] = - self.eta * self.deltas[-(i+1)][j] + self.alpha * self.layers[i].bias_delta_prev[j]
+                self.layers[i].bias_delta_prev[j] = - self.eta * self.layers[i].bias_delta[j] + self.alpha * self.layers[i].bias_delta_prev[j]
                 self.layers[i].bias[j] = self.layers[i].bias[j] + self.layers[i].bias_delta_prev[j]
-            #print(f"\nLayer {i}: weights = {self.layers[i].weights}, bias = {self.layers[i].bias}")
+            # print(f"\nLayer {i}: weights = {self.layers[i].weights}, bias = {self.layers[i].bias}")
 
     def _ridge_regression(self):
         sum_squares = 0
@@ -69,15 +96,20 @@ class Model:
         #print("RIDGE_REGR:",self._lambda*sum_squares)
         return self._lambda*sum_squares
 
-    def _train(self, inputs, expected):
+    def _train(self, inputs, expected, batch_size=1):
         assert(len(inputs) == len(expected))
-        self.layer_outputs = []
-        for i in range(len(inputs)): # for all inputs
-            self.layer_outputs.append(self._feed_forward(inputs[i])) # compute prediction
-            self.loss = self.loss_function._compute_loss(self.layer_outputs[i], expected[i], self._ridge_regression()) # calculate loss
-            self._back_propagation(expected[i], inputs[i]) # compute back-propagation
+        for i in range(0, len(inputs), batch_size): # for all inputs
+            j = i
+            self._init_batch()
+            while j < len(inputs) and j-i < batch_size: # iterate over batch
+                self.model_output = self._feed_forward(inputs[j]) # compute prediction
+                self.batch_loss += self.loss_function._compute_loss(self.model_output, expected[j], self._ridge_regression()) # calculate loss
+                self._back_propagation(expected[j], inputs[j]) # compute back-propagation
+                j += 1
+            self.batch_loss =  self.batch_loss / (j - i) # to avoid a bigger division on a smaller than batch size last subset of inputs
+            self._update_layers_deltas(j - i) # 20/12/2020 19:01
             self._update_weights_bias() # update weights & bias
-            print(f"{i} - Loss: {self.loss}")
+            print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
         #get smart
 
     def __str__(self):
