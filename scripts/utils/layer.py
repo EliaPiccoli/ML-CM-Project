@@ -3,7 +3,7 @@ from .activation_function import AF
 
 class Layer:
 
-    def __init__(self, nodes, activation_function_type, bias_range=(-0.3, 0.3), weights_range=(-0.3,0.3), _input=None):
+    def __init__(self, nodes, activation_function_type, bias_range=(0, 0), weights_range=(-0.69,0.69), _input=None):
         """
         Contructor of Layer class
 
@@ -61,7 +61,7 @@ class Layer:
                 delta.append(np.dot(weights_next_layer_j, deltas_next_layer)*self.activation_function._gradient(self.net[i]))
                 for j in range(len(self.weights[i])):
                     weight_delta[i].append(output_prev_layer[j] * delta[-1])
-        #print(f"delta: {delta}\nweight_delta: {weight_delta}")
+        # print(f"delta: {delta}\nweight_delta: {weight_delta}")
         return delta, weight_delta
 
     def __str__(self):

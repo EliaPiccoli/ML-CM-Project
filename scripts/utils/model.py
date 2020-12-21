@@ -39,12 +39,15 @@ class Model:
             self.batch_deltas.append(np.zeros(layer.nodes))
             self.batch_weights_delta.append(np.zeros((layer.nodes, layer.input[0])))
     
-    def _init_epoch(self, lr_decay):
+    def _init_epoch(self, lr_decay, inp, exp):
         self.accuracy = 0
         for layer in self.layers:
             layer.weight_delta_prev = np.zeros((layer.nodes, layer.input[0])) # for momentum
             layer.bias_delta_prev = np.zeros(layer.nodes) # for momentum
         self.eta = self.eta / (1 + lr_decay)
+        seed = np.random.randint(0,1000)
+        random.Random(seed).shuffle(inp)
+        random.Random(seed).shuffle(exp)
 
     def _accumulate_batch_back_prop(self, layer_bp, layer_index):
         # accumulate deltas of single pattern for batch learning
@@ -59,14 +62,14 @@ class Model:
         layer_output = input
         for i in range(len(self.layers)):
             layer_output = self.layers[i]._feed_forward(layer_output)
-            #print(f"Output layer {i}: {layer_output}")
+            # print(f"Output layer {i}: {layer_output}")
         return layer_output
 
     def _back_propagation(self, expected, inp):
         # order = from output layer to input layer
         delta_last_layer = None # will be used from second iteration and on
         for i in range(len(self.layers)-1, -1, -1):
-            #print("\nLayer", i)
+            # print("\nLayer", i)
             if i == len(self.layers)-1: # output layer
                 loss_prime = []
                 for j in range(len(expected)):
@@ -74,7 +77,7 @@ class Model:
                 result = self.layers[i]._back_propagation(self.layers[i-1].output, is_output_layer=True, loss_prime_values=loss_prime)
             elif i == 0: # input layer
                 result = self.layers[i]._back_propagation(inp, deltas_next_layer=delta_last_layer, weights_next_layer=self.layers[i+1].weights)
-            else: #hidden layer (where magic happens)
+            else: # hidden layer (where magic happens)
                 result = self.layers[i]._back_propagation(self.layers[i-1].output, deltas_next_layer=delta_last_layer, weights_next_layer=self.layers[i+1].weights)
             self._accumulate_batch_back_prop(result,i)
             delta_last_layer = result[0]
@@ -95,7 +98,7 @@ class Model:
                 # bias_n = bias_o - eta*delta(W) + alpha*delta_prev(W)
                 self.layers[i].bias_delta_prev[j] = - self.eta * self.layers[i].bias_delta[j] + self.alpha * self.layers[i].bias_delta_prev[j]
                 self.layers[i].bias[j] = self.layers[i].bias[j] + self.layers[i].bias_delta_prev[j]
-            #print(f"\nLayer {i}:\nweights = {self.layers[i].weights}\nbias = {self.layers[i].bias}")
+            # print(f"\nLayer {i}:\nweights = {self.layers[i].weights}\nbias = {self.layers[i].bias}")
 
     def _ridge_regression(self):
         sum_squares = 0
@@ -103,7 +106,7 @@ class Model:
             for i in range(len(layer.weights)):
                 for j in range(len(layer.weights[i])):
                     sum_squares += layer.weights[i][j]**2
-        #print("RIDGE_REGR:",self._lambda*sum_squares)
+        # print("Regularization: ",self._lambda*sum_squares)
         return self._lambda*sum_squares
 
     def _compute_accuracy(self, expected):
@@ -113,11 +116,8 @@ class Model:
 
     def _train(self, inputs, expected, batch_size=1, epoch=100, decay=1e-5):
         assert(len(inputs) == len(expected))
-        for e in range(epoch):        
-            seed = np.random.randint(0,1000)
-            self._init_epoch(decay*epoch)
-            random.Random(seed).shuffle(inputs)
-            random.Random(seed).shuffle(expected)
+        for e in range(epoch):
+            self._init_epoch(decay*epoch, inputs, expected)
             for i in range(0, len(inputs), batch_size): # for all inputs
                 j = i
                 self._init_batch()
@@ -130,9 +130,9 @@ class Model:
                 self.batch_loss =  self.batch_loss / (j - i) # to avoid a bigger division on a smaller than batch size last subset of inputs
                 self._update_layers_deltas(j - i) # 20/12/2020 19:01
                 self._update_weights_bias() # update weights & bias
-                #print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
+                # print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
             self.accuracy /= len(inputs)
-            print(f"Epoch {e} - Accuracy: {self.accuracy} - ETA: {self.eta}")
+            print("Epoch {:3d} - Accuracy: {:.6f} - ETA: {:.6f} - Loss: {:.6f}".format(e, self.accuracy, self.eta, self.batch_loss))
             if self.accuracy == 1.0:
                 break
         #get smart
