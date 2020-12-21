@@ -13,6 +13,6 @@ exp = [[elem] for elem in exp]
 # create model
 model = Model()
 model._add_layer(Layer(4, "relu", _input=(17,)))
-model._add_layer(Layer(1, "sigmoid"))
-model._compile(0.05, "cross_entropy", alpha=0.7)
-model._train(ohe_inp, exp, batch_size=8, epoch=20)
+model._add_layer(Layer(1, "tanh"))
+model._compile(0.05, "mse", alpha=0.7,)
+model._train(ohe_inp, exp, batch_size=8, epoch=200)

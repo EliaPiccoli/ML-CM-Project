@@ -10,5 +10,6 @@ NN:
     8. one hot encoding - DONE
     9. training MONKAS
     10. VALIDATION VALIDATION VALIDATION
+    11. epochs: reshuffle
 
 SVM:

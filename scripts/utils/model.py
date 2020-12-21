@@ -124,7 +124,7 @@ class Model:
                 self.batch_loss =  self.batch_loss / (j - i) # to avoid a bigger division on a smaller than batch size last subset of inputs
                 self._update_layers_deltas(j - i) # 20/12/2020 19:01
                 self._update_weights_bias() # update weights & bias
-                print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
+                #print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
             self.accuracy /= len(inputs)
             print(f"Epoch {e} - Accuracy: {self.accuracy}")
             if self.accuracy == 1.0:
