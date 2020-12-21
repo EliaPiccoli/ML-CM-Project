@@ -5,6 +5,8 @@ from tqdm import trange
 from .layer import Layer
 from .loss import get_loss
 
+import random
+
 class Model:
 
     def __init__(self):
@@ -37,11 +39,12 @@ class Model:
             self.batch_deltas.append(np.zeros(layer.nodes))
             self.batch_weights_delta.append(np.zeros((layer.nodes, layer.input[0])))
     
-    def _init_epoch(self):
+    def _init_epoch(self, lr_decay):
         self.accuracy = 0
         for layer in self.layers:
             layer.weight_delta_prev = np.zeros((layer.nodes, layer.input[0])) # for momentum
             layer.bias_delta_prev = np.zeros(layer.nodes) # for momentum
+        self.eta = self.eta / (1 + lr_decay)
 
     def _accumulate_batch_back_prop(self, layer_bp, layer_index):
         # accumulate deltas of single pattern for batch learning
@@ -108,10 +111,13 @@ class Model:
             if abs(self.model_output[i] - expected[i]) < 0.5:
                 self.accuracy += 1/len(expected)
 
-    def _train(self, inputs, expected, batch_size=1, epoch=100):
+    def _train(self, inputs, expected, batch_size=1, epoch=100, decay=1e-5):
         assert(len(inputs) == len(expected))
-        for e in range(epoch):
-            self._init_epoch()
+        for e in range(epoch):        
+            seed = np.random.randint(0,1000)
+            self._init_epoch(decay*epoch)
+            random.Random(seed).shuffle(inputs)
+            random.Random(seed).shuffle(expected)
             for i in range(0, len(inputs), batch_size): # for all inputs
                 j = i
                 self._init_batch()
@@ -126,7 +132,7 @@ class Model:
                 self._update_weights_bias() # update weights & bias
                 #print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
             self.accuracy /= len(inputs)
-            print(f"Epoch {e} - Accuracy: {self.accuracy}")
+            print(f"Epoch {e} - Accuracy: {self.accuracy} - ETA: {self.eta}")
             if self.accuracy == 1.0:
                 break
         #get smart
