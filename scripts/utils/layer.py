@@ -24,17 +24,17 @@ class Layer:
         self.weights_range = weights_range
         self.bias_range = bias_range
         self.input = _input
+        self.weight_delta_prev = None
+        self.bias_delta_prev = None
+        self.bias_delta = None
+        self.weight_delta = None
 
     def _init_layer(self, inp=None, weigths=None, bias=None):
         if inp is not None:
             self.input = inp
         self.weights = np.random.uniform(self.weights_range[0], self.weights_range[1], (self.nodes, self.input[0])) if weigths is None else weigths
-        self.weight_delta_prev = np.zeros((self.nodes, self.input[0])) # for momentum
         self.bias = np.random.uniform(self.bias_range[0], self.bias_range[1], self.nodes) if bias is None else bias
-        self.bias_delta_prev = np.zeros(self.nodes) # for momentum
         self.activation_function = AF[self.activation_function_type]
-        self.bias_delta = None
-        self.weight_delta = None
     
     def _feed_forward(self, inputs):
         self.output = []
@@ -58,6 +58,9 @@ class Layer:
             for i in range(len(self.weights)):
                 weight_delta.append([])
                 weights_next_layer_j = [weight_next_layer[i] for weight_next_layer in weights_next_layer]
+                print("dnl: ", deltas_next_layer)
+                print("wnl: ", weights_next_layer_j)
+                print("dot: ", np.dot(weights_next_layer_j, deltas_next_layer))
                 delta.append(np.dot(weights_next_layer_j, deltas_next_layer)*self.activation_function._gradient(self.net[i]))
                 for j in range(len(self.weights[i])):
                     weight_delta[i].append(output_prev_layer[j] * delta[-1])

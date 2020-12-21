@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from tqdm import trange
 
 from .layer import Layer
 from .loss import get_loss
@@ -35,6 +36,12 @@ class Model:
         for layer in self.layers:
             self.batch_deltas.append(np.zeros(layer.nodes))
             self.batch_weights_delta.append(np.zeros((layer.nodes, layer.input[0])))
+    
+    def _init_epoch(self):
+        self.accuracy = 0
+        for layer in self.layers:
+            layer.weight_delta_prev = np.zeros((layer.nodes, layer.input[0])) # for momentum
+            layer.bias_delta_prev = np.zeros(layer.nodes) # for momentum
 
     def _accumulate_batch_back_prop(self, layer_bp, layer_index):
         # accumulate deltas of single pattern for batch learning
@@ -85,7 +92,7 @@ class Model:
                 # bias_n = bias_o - eta*delta(W) + alpha*delta_prev(W)
                 self.layers[i].bias_delta_prev[j] = - self.eta * self.layers[i].bias_delta[j] + self.alpha * self.layers[i].bias_delta_prev[j]
                 self.layers[i].bias[j] = self.layers[i].bias[j] + self.layers[i].bias_delta_prev[j]
-            # print(f"\nLayer {i}: weights = {self.layers[i].weights}, bias = {self.layers[i].bias}")
+            #print(f"\nLayer {i}:\nweights = {self.layers[i].weights}\nbias = {self.layers[i].bias}")
 
     def _ridge_regression(self):
         sum_squares = 0
@@ -96,20 +103,32 @@ class Model:
         #print("RIDGE_REGR:",self._lambda*sum_squares)
         return self._lambda*sum_squares
 
-    def _train(self, inputs, expected, batch_size=1):
+    def _compute_accuracy(self, expected):
+        for i in range(len(expected)):
+            if abs(self.model_output[i] - expected[i]) < 0.5:
+                self.accuracy += 1/len(expected)
+
+    def _train(self, inputs, expected, batch_size=1, epoch=100):
         assert(len(inputs) == len(expected))
-        for i in range(0, len(inputs), batch_size): # for all inputs
-            j = i
-            self._init_batch()
-            while j < len(inputs) and j-i < batch_size: # iterate over batch
-                self.model_output = self._feed_forward(inputs[j]) # compute prediction
-                self.batch_loss += self.loss_function._compute_loss(self.model_output, expected[j], self._ridge_regression()) # calculate loss
-                self._back_propagation(expected[j], inputs[j]) # compute back-propagation
-                j += 1
-            self.batch_loss =  self.batch_loss / (j - i) # to avoid a bigger division on a smaller than batch size last subset of inputs
-            self._update_layers_deltas(j - i) # 20/12/2020 19:01
-            self._update_weights_bias() # update weights & bias
-            print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
+        for e in range(epoch):
+            self._init_epoch()
+            for i in range(0, len(inputs), batch_size): # for all inputs
+                j = i
+                self._init_batch()
+                while j < len(inputs) and j-i < batch_size: # iterate over batch
+                    self.model_output = self._feed_forward(inputs[j]) # compute prediction
+                    self.batch_loss += self.loss_function._compute_loss(self.model_output, expected[j], self._ridge_regression()) # calculate loss
+                    self._back_propagation(expected[j], inputs[j]) # compute back-propagation
+                    self._compute_accuracy(expected[j])
+                    j += 1
+                self.batch_loss =  self.batch_loss / (j - i) # to avoid a bigger division on a smaller than batch size last subset of inputs
+                self._update_layers_deltas(j - i) # 20/12/2020 19:01
+                self._update_weights_bias() # update weights & bias
+                print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
+            self.accuracy /= len(inputs)
+            print(f"Epoch {e} - Accuracy: {self.accuracy}")
+            if self.accuracy == 1.0:
+                break
         #get smart
 
     def __str__(self):

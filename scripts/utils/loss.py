@@ -24,7 +24,7 @@ class Mse:
 class CrossEntropy:
     #----------------------------------------------------- FOR CLASSIFICATION -----------------------------------------------------#
 
-    def _compute_loss(self, actual, expected, regression):
+    def _compute_loss(self, actual, expected, regression, threshold=1e-10):
         """
         Computation of Cross Entropy Loss function
 
@@ -34,14 +34,15 @@ class CrossEntropy:
         actual (float) : output from model
         
         """
-        actual = actual[0] # list of only one element
+        actual = np.clip(actual[0], threshold, 1-threshold)
         if expected == 1:
             # WHAT ABOUT ADDING 1e-15 to make sure we don't get log(0)  ???
             return -log(actual) + regression #ln
         else:
             return -log(1 - actual) + regression
 
-    def _compute_loss_prime(self, actual, expected):
+    def _compute_loss_prime(self, actual, expected, threshold=1e-10):
+        actual = np.clip(actual, threshold, 1-threshold)
         if expected == 1:
             return -1 / actual
         else:
