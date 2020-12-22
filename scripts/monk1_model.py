@@ -1,8 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import utils.get_dataset as dt
 from utils.model import Model
 from utils.layer import Layer
+from utils.plot import Plot
 
 # ----------------------------------------- MAIN ----------------------------------------- #
 print("One day I will be a very smart Artificial Intelligence!")
@@ -27,17 +27,4 @@ stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, batch_size=4, 
 # TODO for now it is executed on last epoch outcome, in future a best of models evaluation would be better
 print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)))
 
-# TODO moce to plot.py
-plt.xlabel("Epoch")
-plt.ylabel("Accuracy")
-plt.plot(range(200), [stat[0] for stat in stats], label="Train")
-plt.plot(range(200), [stat[1] for stat in stats], label="Validation")
-plt.legend()
-plt.show()
-
-plt.xlabel("Epoch")
-plt.ylabel("Loss")
-plt.plot(range(200), [stat[2] for stat in stats], label="Train")
-plt.plot(range(200), [stat[3] for stat in stats], label="Validation")
-plt.legend()
-plt.show()
+Plot._plot_train_stats(stats)
