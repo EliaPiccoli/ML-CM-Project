@@ -1,14 +1,21 @@
 import csv
 import os
 import numpy as np
+import random
 
 """remember, input is read like: [null, class, val1, val2, val3, val4, val5, val6, label]"""
 
 dataset_path = os.path.dirname(os.path.abspath(__file__))[:-13] + 'monk_dataset/monks-'
 monk_max = [3,3,2,3,4,2]
 
-def _get_train_data(dataset_num):
-    return _get_dataset(dataset_num,'train')
+def _get_train_validation_data(dataset_num, split=0.25):
+    inputs, labels = _get_dataset(dataset_num,'train')
+    seed = np.random.randint(0,42069)
+    random.Random(seed).shuffle(inputs)
+    random.Random(seed).shuffle(labels)
+    l = int(len(inputs)*split)
+    # train, validation, train_labels, validation_labels
+    return inputs[l:], inputs[:l], labels[l:], labels[:l]
 
 def _get_test_data(dataset_num):
     return _get_dataset(dataset_num,'test')

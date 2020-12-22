@@ -8,8 +8,10 @@ NN:
     6. regularization, momentum - DONE, hopefully
     7. batch/mini-batch - DONE
     8. one hot encoding - DONE
-    9. training MONKAS
-    10. VALIDATION VALIDATION VALIDATION
+    9. training MONKAS - 2/3
+    10. VALIDATION VALIDATION VALIDATION - DONE
     11. reshuffle - DONE
+    12. inference
+    13. best model save
 
 SVM:

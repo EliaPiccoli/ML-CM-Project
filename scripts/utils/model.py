@@ -109,32 +109,42 @@ class Model:
         # print("Regularization: ",self._lambda*sum_squares)
         return self._lambda*sum_squares
 
-    def _compute_accuracy(self, expected):
+    def _compute_accuracy(self, output, expected, current_accuracy): 
         for i in range(len(expected)):
-            if abs(self.model_output[i] - expected[i]) < 0.5:
-                self.accuracy += 1/len(expected)
+            if abs(output[i] - expected[i]) < 0.5:
+                current_accuracy += 1/len(expected)
+        return current_accuracy
 
-    def _train(self, inputs, expected, batch_size=1, epoch=100, decay=1e-5):
-        assert(len(inputs) == len(expected))
+    def _validation_validation_validation(self, inputs, expected):
+        validation_accuracy = 0
+        validation_loss = 0
+        for i in range(len(inputs)):
+            output = self._feed_forward(inputs[i])
+            validation_accuracy = self._compute_accuracy(output, expected[i], validation_accuracy)
+            validation_loss += self.loss_function._compute_loss(output, expected[i], self._ridge_regression())/len(inputs)
+        return validation_accuracy/len(inputs), validation_loss
+
+    def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5):
+        assert(len(train_inputs) == len(train_expected) and len(val_inputs) == len(val_expected))
         for e in range(epoch):
-            self._init_epoch(decay*epoch, inputs, expected)
-            for i in range(0, len(inputs), batch_size): # for all inputs
+            self._init_epoch(decay*epoch, train_inputs, train_expected)
+            for i in range(0, len(train_inputs), batch_size): # for all inputs
                 j = i
                 self._init_batch()
-                while j < len(inputs) and j-i < batch_size: # iterate over batch
-                    self.model_output = self._feed_forward(inputs[j]) # compute prediction
-                    self.batch_loss += self.loss_function._compute_loss(self.model_output, expected[j], self._ridge_regression()) # calculate loss
-                    self._back_propagation(expected[j], inputs[j]) # compute back-propagation
-                    self._compute_accuracy(expected[j])
+                while j < len(train_inputs) and j-i < batch_size: # iterate over batch
+                    self.model_output = self._feed_forward(train_inputs[j]) # compute prediction
+                    self.batch_loss += self.loss_function._compute_loss(self.model_output, train_expected[j], self._ridge_regression()) # calculate loss
+                    self._back_propagation(train_expected[j], train_inputs[j]) # compute back-propagation
+                    self.accuracy = self._compute_accuracy(self.model_output, train_expected[j], self.accuracy)
                     j += 1
                 self.batch_loss =  self.batch_loss / (j - i) # to avoid a bigger division on a smaller than batch size last subset of inputs
                 self._update_layers_deltas(j - i) # 20/12/2020 19:01
                 self._update_weights_bias() # update weights & bias
                 # print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
-            self.accuracy /= len(inputs)
-            print("Epoch {:3d} - Accuracy: {:.6f} - ETA: {:.6f} - Loss: {:.6f}".format(e, self.accuracy, self.eta, self.batch_loss))
-            if self.accuracy == 1.0:
-                break
+            self.accuracy /= len(train_inputs)
+            val_acc,val_loss = self._validation_validation_validation(val_inputs, val_expected)
+            print("Epoch {:4d} - LR: {:.6f} - Train_Accuracy: {:.6f} - Train_Loss: {:.6f} - Validation_Accuracy: {:.6f} - Validation_Loss: {:.6f}"
+                    .format(e, self.eta, self.accuracy, self.batch_loss, val_acc, val_loss))
         #get smart
 
     def __str__(self):
