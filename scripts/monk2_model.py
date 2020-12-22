@@ -12,8 +12,8 @@ exp = [[elem] for elem in exp]
 
 # create model
 model = Model()
-model._add_layer(Layer(4, "relu", _input=(17,)))
-model._add_layer(Layer(2, "relu"))
+model._add_layer(Layer(4, "tanh", _input=(17,)))
+model._add_layer(Layer(4, "tanh"))
 model._add_layer(Layer(1, "tanh"))
-model._compile(0.5, "mse", alpha=0.7, _lambda=1e-4)
+model._compile(0.05, "mse", alpha=0.7)
 model._train(ohe_inp, exp, batch_size=16, epoch=300)
