@@ -115,6 +115,13 @@ class Model:
                 current_accuracy += 1/len(expected)
         return current_accuracy
 
+    def _infer(self, inputs, expected):
+        test_accuracy = 0
+        for i in range(len(inputs)):
+            output = self._feed_forward(inputs[i])
+            test_accuracy = self._compute_accuracy(output, expected[i], test_accuracy)
+        return test_accuracy/len(inputs)
+
     def _validation_validation_validation(self, inputs, expected):
         validation_accuracy = 0
         validation_loss = 0
@@ -125,6 +132,7 @@ class Model:
         return validation_accuracy/len(inputs), validation_loss
 
     def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5):
+        train_stats = []
         assert(len(train_inputs) == len(train_expected) and len(val_inputs) == len(val_expected))
         for e in range(epoch):
             self._init_epoch(decay*epoch, train_inputs, train_expected)
@@ -145,7 +153,10 @@ class Model:
             val_acc,val_loss = self._validation_validation_validation(val_inputs, val_expected)
             print("Epoch {:4d} - LR: {:.6f} - Train_Accuracy: {:.6f} - Train_Loss: {:.6f} - Validation_Accuracy: {:.6f} - Validation_Loss: {:.6f}"
                     .format(e, self.eta, self.accuracy, self.batch_loss, val_acc, val_loss))
+            # 
+            train_stats.append((self.accuracy, val_acc, self.batch_loss, val_loss))
         #get smart
+        return train_stats
 
     def __str__(self):
         result = "Model (layers: [\n\t\t"
