@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import copy
 from tqdm import trange
 
 from .layer import Layer
@@ -15,14 +16,17 @@ class Model:
 
         """
         self.layers = []
+        self.best_model = None
 
     def _add_layer(self, layer):
         self.layers.append(layer)
 
-    def _compile(self, eta, loss_function, _lambda=0, alpha=0, weight_matrix=None, bias_matrix=None):
+    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, weight_matrix=None, bias_matrix=None):
         for i in range(len(self.layers)):
             if weight_matrix is None and bias_matrix is None:
                 self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,))
+            elif weight_matrix is not None:
+                self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), weigths=weight_matrix[i])
             else:
                 self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), weigths=weight_matrix[i], bias=bias_matrix[i])
         self.eta = eta
@@ -123,13 +127,18 @@ class Model:
         return test_accuracy/len(inputs)
 
     def _validation_validation_validation(self, inputs, expected):
-        validation_accuracy = 0
-        validation_loss = 0
+        self.validation_accuracy = 0
+        self.validation_loss = 0
         for i in range(len(inputs)):
             output = self._feed_forward(inputs[i])
-            validation_accuracy = self._compute_accuracy(output, expected[i], validation_accuracy)
-            validation_loss += self.loss_function._compute_loss(output, expected[i], self._ridge_regression())/len(inputs)
-        return validation_accuracy/len(inputs), validation_loss
+            self.validation_accuracy = self._compute_accuracy(output, expected[i], self.validation_accuracy)
+            self.validation_loss += self.loss_function._compute_loss(output, expected[i], self._ridge_regression())/len(inputs)
+        self.validation_accuracy /= len(inputs)
+    
+        if self.best_model is None:
+            self.best_model = copy.deepcopy(self)
+        elif self.validation_accuracy >= self.best_model.validation_accuracy and self.validation_loss < self.best_model.validation_loss:
+            self.best_model = copy.deepcopy(self)
 
     def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5):
         train_stats = []
@@ -150,11 +159,10 @@ class Model:
                 self._update_weights_bias() # update weights & bias
                 # print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
             self.accuracy /= len(train_inputs)
-            val_acc,val_loss = self._validation_validation_validation(val_inputs, val_expected)
-            print("Epoch {:4d} - LR: {:.6f} - Train_Accuracy: {:.6f} - Train_Loss: {:.6f} - Validation_Accuracy: {:.6f} - Validation_Loss: {:.6f}"
-                    .format(e, self.eta, self.accuracy, self.batch_loss, val_acc, val_loss))
-            # 
-            train_stats.append((self.accuracy, val_acc, self.batch_loss, val_loss))
+            self._validation_validation_validation(val_inputs, val_expected)
+            # print("Epoch {:4d} - LR: {:.6f} - Train_Accuracy: {:.6f} - Train_Loss: {:.6f} - Validation_Accuracy: {:.6f} - Validation_Loss: {:.6f}"
+            #         .format(e, self.eta, self.accuracy, self.batch_loss, self.validation_accuracy, self.validation_loss)) 
+            train_stats.append((self.accuracy, self.validation_accuracy, self.batch_loss, self.validation_loss))
         #get smart
         return train_stats
 
@@ -164,5 +172,3 @@ class Model:
             result += str(layer) + "\n\t\t"
         result += "]\n\t"
         return result + f"eta: {self.eta}\n\tloss_function: {self.loss_function_name}\n\t_lambda: {self._lambda}\n\talpha: {self.alpha}\n\t)"
-
-

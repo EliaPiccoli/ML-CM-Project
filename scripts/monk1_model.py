@@ -20,7 +20,7 @@ test_exp = [[elem] for elem in test_labels]
 model = Model()
 model._add_layer(Layer(4, "tanh", _input=(17,)))
 model._add_layer(Layer(1, "tanh"))
-model._compile(0.03, "mse", alpha=0.9)
+model._compile(eta=0.03, loss_function="mse", alpha=0.9)
 stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, batch_size=4, epoch=200)
 
 # testing the model

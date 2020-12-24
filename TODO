@@ -12,7 +12,9 @@ NN:
     10. VALIDATION VALIDATION VALIDATION - DONE
     11. reshuffle - DONE
     12. inference - DONE
-    13. best model save
+    13. best model save - DONE
     14. plot.py
+    15. grid search
+    16. parallel grid search
 
 SVM:
