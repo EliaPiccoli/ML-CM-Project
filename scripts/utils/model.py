@@ -120,10 +120,11 @@ class Model:
         return current_accuracy
 
     def _infer(self, inputs, expected):
+        # executed on the best version of myself
         test_accuracy = 0
         for i in range(len(inputs)):
-            output = self._feed_forward(inputs[i])
-            test_accuracy = self._compute_accuracy(output, expected[i], test_accuracy)
+            output = self.best_model._feed_forward(inputs[i])
+            test_accuracy = self.best_model._compute_accuracy(output, expected[i], test_accuracy)
         return test_accuracy/len(inputs)
 
     def _validation_validation_validation(self, inputs, expected):
@@ -138,6 +139,7 @@ class Model:
         if self.best_model is None:
             self.best_model = copy.deepcopy(self)
         elif self.validation_accuracy >= self.best_model.validation_accuracy and self.validation_loss < self.best_model.validation_loss:
+            del self.best_model # ????????? deepcopy error 
             self.best_model = copy.deepcopy(self)
 
     def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5):
@@ -163,6 +165,9 @@ class Model:
             # print("Epoch {:4d} - LR: {:.6f} - Train_Accuracy: {:.6f} - Train_Loss: {:.6f} - Validation_Accuracy: {:.6f} - Validation_Loss: {:.6f}"
             #         .format(e, self.eta, self.accuracy, self.batch_loss, self.validation_accuracy, self.validation_loss)) 
             train_stats.append((self.accuracy, self.validation_accuracy, self.batch_loss, self.validation_loss))
+            
+            # How do i become the best version of myself ?
+            # self = self.best_model
         #get smart
         return train_stats
 

@@ -1,5 +1,6 @@
 import numpy as np # more important than "#include <stdio.h>"
 import utils.get_dataset as dt
+import copy
 
 from utils.layer import Layer
 from utils.model import Model
@@ -118,42 +119,74 @@ class GridSearch:
         # list of tuple (epoch, batch, decay, compiled_model)
         print("Generating models")
         models_configurations = []
-        for epoch_index in range(max(len(self.epoch), 1)):
-            for batch_size_index in range(max(len(self.batch_size), 1)):
-                for decay_index in range(max(len(self.lr_decay), 1)):
-                    for eta_index in range(max(len(self.eta), 1)):
-                        for alpha_index in range(max(len(self.alpha), 1)):
-                            for lambda_index in range(max(len(self._lambda), 1)):
-                                # print("eta: {} - aplha: {} - lambda: {}".format(self.eta[eta_index], self.alpha[alpha_index], self._lambda[lambda_index]))
-                                # print("epoch: {} - batch: {} - decay: {}".format(self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index]))
-                                # initialize models
-                                counter = 0
-                                for i in range(len(weights_per_configuration)):
-                                    for j in range(len(weights_per_configuration[i])):
-                                        model = Model()
-                                        weights_matrix = []
-                                        for k in range(len(weights_per_configuration[i][j])):
-                                            model._add_layer(self.models_layers[counter//(len(self.weight_range)*familyofmodelsperconfiguration)][k])
-                                            weights_matrix.append(weights_per_configuration[i][j][k])
-                                        model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
-                                        # print("Model #", counter)
+        counter = 0
+        for i in range(len(weights_per_configuration)):
+            for j in range(len(weights_per_configuration[i])):
+                model = Model()
+                weights_matrix = []
+                for k in range(len(weights_per_configuration[i][j])):
+                    model._add_layer(self.models_layers[counter//(len(self.weight_range)*familyofmodelsperconfiguration)][k])
+                    weights_matrix.append(weights_per_configuration[i][j][k])
+                for epoch_index in range(max(len(self.epoch), 1)):
+                    for batch_size_index in range(max(len(self.batch_size), 1)):
+                        for decay_index in range(max(len(self.lr_decay), 1)):
+                            for eta_index in range(max(len(self.eta), 1)):
+                                for alpha_index in range(max(len(self.alpha), 1)):
+                                    for lambda_index in range(max(len(self._lambda), 1)):
+                                        # print("eta: {} - aplha: {} - lambda: {}".format(self.eta[eta_index], self.alpha[alpha_index], self._lambda[lambda_index]))
+                                        # print("epoch: {} - batch: {} - decay: {}".format(self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index]))
+                                        # initialize models
+
+                                        # BUG : always refers to the same object -> same address -> train will cause a conflict becuase it happens over the same object
+                                        # model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
+                                        
+                                        tmp_model = copy.deepcopy(model)
+                                        tmp_model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
                                         # print(model)
-                                        models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], model))
-                                        counter += 1
+                                        models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], tmp_model))
+                counter += 1
+        # print(len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)*len(self.weight_range)*familyofmodelsperconfiguration)
         print(f"Generated {len(models_configurations)} diffent models.")
         print("Starting Training")
         # TODO: parallelize
-        for i in trange(len(models_configurations)):
-            epoch, batch, decay, model = models_configurations[i]
-            model._train(train, train_label, validation, validation_label, batch_size=batch, epoch=epoch, decay=decay)
-            
-            
-                            
-                            
+        models_per_structure = len(models_configurations) // len(self.models_layers)
+        configurations_per_model = len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)
+
+        structures_best_configurations = []
+        for i in range(len(self.models_layers)):
+            print("Model ", i)
+            configuration_test = [0]*configurations_per_model
+            configuration_best_model = [None]*configurations_per_model
+            for j in range(models_per_structure):
+                epoch, batch, decay, model = models_configurations[i*models_per_structure + j]
+                print("Start training ", j)
+                training_stats = model._train(train, train_label, validation, validation_label, batch_size=batch, epoch=epoch, decay=decay)
+                print("Start test ", j)
+                test_accuracy = model._infer(ohe_test, test_exp)
+                configuration_test[j%configurations_per_model] += test_accuracy/(len(self.weight_range)*familyofmodelsperconfiguration)
+                if configuration_best_model[j%configurations_per_model] is None:
+                    configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy)
+                else:
+                    if configuration_best_model[j%configurations_per_model][1] < test_accuracy:
+                        configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy)
+                    elif configuration_best_model[j%configurations_per_model][1] == test_accuracy:
+                        if configuration_best_model[j%configurations_per_model][0].validation_accuracy < model.best_model.validation_accuracy or (configuration_best_model[j%configurations_per_model][0].validation_accuracy == model.best_model.validation_accuracy and configuration_best_model[j%configurations_per_model][0].validation_loss > model.best_model.validation_loss):
+                            configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy)
+            configurations_results = []
+            for k in range(configurations_per_model):
+                configurations_results.append((configuration_test[k], configuration_best_model[k]))
+            structures_best_configurations.append(configurations_results)
+        
+        for i in range(len(structures_best_configurations)):
+            print("Structure", i)
+            for j in range(len(structures_best_configurations[i])):
+                print("Configuration", j)
+                print(structures_best_configurations[i][j])
+                                
 if __name__ == "__main__":
     gs = GridSearch()
     models = [[Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")], [Layer(4, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")]]
-    gs._set_parameters(layers=models, weight_range=[(-0.5,0.5)], eta=[0.01, 0.008], alpha=[0.6, 0.85], batch_size=[1,2])
+    gs._set_parameters(layers=models, weight_range=[(-0.5,0.5), (-0.69, 0.69)], eta=[0.01, 0.008], alpha=[0.6, 0.85], batch_size=[1,2])
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(1, split=0.25)
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
