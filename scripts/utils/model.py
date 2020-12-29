@@ -122,10 +122,11 @@ class Model:
 
     def _infer(self, inputs, expected):
         # executed on the best version of myself
+        # TODO: readd best model
         test_accuracy = 0
         for i in range(len(inputs)):
-            output = self.best_model._feed_forward(inputs[i])
-            test_accuracy = self.best_model._compute_accuracy(output, expected[i], test_accuracy)
+            output = self._feed_forward(inputs[i])
+            test_accuracy = self._compute_accuracy(output, expected[i], test_accuracy)
         return test_accuracy/len(inputs)
 
     def _validation_validation_validation(self, inputs, expected):
@@ -137,11 +138,12 @@ class Model:
             self.validation_loss += self.loss_function._compute_loss(output, expected[i], regression=0)/len(inputs)
         self.validation_accuracy /= len(inputs)
     
-        if self.best_model is None:
-            self.best_model = copy.deepcopy(self)
-        elif self.validation_accuracy >= self.best_model.validation_accuracy and self.validation_loss < self.best_model.validation_loss:
-            del self.best_model # ????????? deepcopy error 
-            self.best_model = copy.deepcopy(self)
+        # TODO: readd best model
+        # if self.best_model is None:
+        #     self.best_model = copy.deepcopy(self)
+        # elif self.validation_accuracy >= self.best_model.validation_accuracy and self.validation_loss < self.best_model.validation_loss:
+        #     del self.best_model # ????????? deepcopy error 
+        #     self.best_model = copy.deepcopy(self)
 
     def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5):
         train_stats = []

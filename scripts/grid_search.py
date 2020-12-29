@@ -141,11 +141,6 @@ class GridSearch:
         counter = 0
         for i in range(len(weights_per_configuration)):
             for j in range(len(weights_per_configuration[i])):
-                model = Model()
-                weights_matrix = []
-                for k in range(len(weights_per_configuration[i][j])):
-                    model._add_layer(copy.deepcopy(self.models_layers[counter//(len(self.weight_range)*familyofmodelsperconfiguration)][k]))
-                    weights_matrix.append(weights_per_configuration[i][j][k])
                 for epoch_index in range(max(len(self.epoch), 1)):
                     for batch_size_index in range(max(len(self.batch_size), 1)):
                         for decay_index in range(max(len(self.lr_decay), 1)):
@@ -154,16 +149,25 @@ class GridSearch:
                                     for lambda_index in range(max(len(self._lambda), 1)):
                                         # print("eta: {} - aplha: {} - lambda: {}".format(self.eta[eta_index], self.alpha[alpha_index], self._lambda[lambda_index]))
                                         # print("epoch: {} - batch: {} - decay: {}".format(self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index]))
-                                        # initialize models
-
-                                        # BUG : always refers to the same object -> same address -> train will cause a conflict becuase it happens over the same object
-                                        # model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
-                                        
-                                        tmp_model = copy.deepcopy(model)
-                                        tmp_model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
+                                        # initialize model
+                                        model = Model()
+                                        weights_matrix = []
+                                        # print("model ", hex(id(model)))
+                                        for k in range(len(weights_per_configuration[i][j])):
+                                            model_layer = self.models_layers[counter//(len(self.weight_range)*familyofmodelsperconfiguration)][k]
+                                            layer = Layer(model_layer.nodes, model_layer.activation_function_type, _input=model_layer.input)
+                                            # print("layer ", hex(id(layer)))
+                                            model._add_layer(layer)
+                                            weights_copy = []
+                                            for node_weights in weights_per_configuration[i][j][k]:
+                                                weights_copy.append([])
+                                                for weight in node_weights:
+                                                    weights_copy[-1].append(weight)
+                                            weights_matrix.append(weights_copy)
+                                            # weights_matrix.append(weights_per_configuration[i][j][k]) <- fucking pointers, all models shared the same weight matrix
+                                        model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
                                         # print(model)
-                                        models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], tmp_model))
-                                        del tmp_model
+                                        models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], model))
                 counter += 1
         # print(len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)*len(self.weight_range)*familyofmodelsperconfiguration)
         print(f"Generated {len(models_configurations)} diffent models.")
@@ -178,20 +182,24 @@ class GridSearch:
             configuration_test = [0]*configurations_per_model
             configuration_best_model = [None]*configurations_per_model
             for j in range(models_per_structure):
-                epoch, batch, decay, model = models_configurations[i*models_per_structure + j]
-                print("Start training ", j)
-                training_stats = model._train(train, train_label, validation, validation_label, batch_size=batch, epoch=epoch, decay=decay)
-                print("Start test ", j)
-                test_accuracy = model._infer(ohe_test, test_exp)
+                epoch, batch, decay, cur_model = models_configurations[i*models_per_structure + j]
+                print("Start training ", i*models_per_structure + j)
+                training_stats = cur_model._train(train, train_label, validation, validation_label, batch_size=batch, epoch=epoch, decay=decay)
+                print("Start test ", i*models_per_structure + j)
+                test_accuracy = cur_model._infer(ohe_test, test_exp)
                 configuration_test[j%configurations_per_model] += test_accuracy/(len(self.weight_range)*familyofmodelsperconfiguration)
+                # TODO: readd best_model
                 if configuration_best_model[j%configurations_per_model] is None:
-                    configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy, training_stats)
+                    configuration_best_model[j%configurations_per_model] = (cur_model, test_accuracy, training_stats)
                 else:
                     if configuration_best_model[j%configurations_per_model][1] < test_accuracy:
-                        configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy, training_stats)
+                        configuration_best_model[j%configurations_per_model] = (cur_model, test_accuracy, training_stats)
                     elif configuration_best_model[j%configurations_per_model][1] == test_accuracy:
-                        if configuration_best_model[j%configurations_per_model][0].validation_accuracy < model.best_model.validation_accuracy or (configuration_best_model[j%configurations_per_model][0].validation_accuracy == model.best_model.validation_accuracy and configuration_best_model[j%configurations_per_model][0].validation_loss > model.best_model.validation_loss):
-                            configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy, training_stats)
+                        if configuration_best_model[j%configurations_per_model][0].validation_accuracy < cur_model.validation_accuracy:
+                            configuration_best_model[j%configurations_per_model] = (cur_model, test_accuracy, training_stats)
+                        elif configuration_best_model[j%configurations_per_model][0].validation_accuracy == cur_model.validation_accuracy:
+                            if configuration_best_model[j%configurations_per_model][0].validation_loss > cur_model.validation_loss:
+                                configuration_best_model[j%configurations_per_model] = (cur_model, test_accuracy, training_stats)
             configurations_results = []
             for k in range(configurations_per_model):
                 configurations_results.append((configuration_test[k], configuration_best_model[k]))
