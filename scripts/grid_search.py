@@ -4,6 +4,7 @@ import copy
 
 from utils.layer import Layer
 from utils.model import Model
+from utils.plot import Plot
 from tqdm import trange
 
 # IDEA:
@@ -81,8 +82,26 @@ class GridSearch:
         if "weight_range" in parameters:
             self.weight_range = parameters["weight_range"]
     
+    def _compute_model_score(self, model_infos):
+        # model_infos : (avg_test_acc, (best_model, test_acc_bm, training_bm[(a, va, l, vl)]))
+        score = 0
+        # test accuracy
+        score += 1000*model_infos[0]
+        # validation loss smooth
+        val_loss = []
+        for epoch in model_infos[1][2]:
+            val_loss.append(epoch[3])
+        not_decrease_times = 0
+        for i in range(len(val_loss)-1):
+            if val_loss[i+1] - val_loss[i] > 0.005:
+                not_decrease_times += 1
+        score += -not_decrease_times*10
+
+        return score
+
+    
     # TODO: add loss function name for model (not hyperparameter) (atm set it as defualt)
-    def _run(self, train, train_label, validation, validation_label, test, test_label, familyofmodelsperconfiguration=3):
+    def _run(self, train, train_label, validation, validation_label, test, test_label, familyofmodelsperconfiguration=5):
         print("I am not fast, sorry")
         print("Maybe in future i will use all your cores")
         print("Maybe the GPU, who knows")
@@ -125,7 +144,7 @@ class GridSearch:
                 model = Model()
                 weights_matrix = []
                 for k in range(len(weights_per_configuration[i][j])):
-                    model._add_layer(self.models_layers[counter//(len(self.weight_range)*familyofmodelsperconfiguration)][k])
+                    model._add_layer(copy.deepcopy(self.models_layers[counter//(len(self.weight_range)*familyofmodelsperconfiguration)][k]))
                     weights_matrix.append(weights_per_configuration[i][j][k])
                 for epoch_index in range(max(len(self.epoch), 1)):
                     for batch_size_index in range(max(len(self.batch_size), 1)):
@@ -144,6 +163,7 @@ class GridSearch:
                                         tmp_model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
                                         # print(model)
                                         models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], tmp_model))
+                                        del tmp_model
                 counter += 1
         # print(len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)*len(self.weight_range)*familyofmodelsperconfiguration)
         print(f"Generated {len(models_configurations)} diffent models.")
@@ -165,13 +185,13 @@ class GridSearch:
                 test_accuracy = model._infer(ohe_test, test_exp)
                 configuration_test[j%configurations_per_model] += test_accuracy/(len(self.weight_range)*familyofmodelsperconfiguration)
                 if configuration_best_model[j%configurations_per_model] is None:
-                    configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy)
+                    configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy, training_stats)
                 else:
                     if configuration_best_model[j%configurations_per_model][1] < test_accuracy:
-                        configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy)
+                        configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy, training_stats)
                     elif configuration_best_model[j%configurations_per_model][1] == test_accuracy:
                         if configuration_best_model[j%configurations_per_model][0].validation_accuracy < model.best_model.validation_accuracy or (configuration_best_model[j%configurations_per_model][0].validation_accuracy == model.best_model.validation_accuracy and configuration_best_model[j%configurations_per_model][0].validation_loss > model.best_model.validation_loss):
-                            configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy)
+                            configuration_best_model[j%configurations_per_model] = (model.best_model, test_accuracy, training_stats)
             configurations_results = []
             for k in range(configurations_per_model):
                 configurations_results.append((configuration_test[k], configuration_best_model[k]))
@@ -181,12 +201,22 @@ class GridSearch:
             print("Structure", i)
             for j in range(len(structures_best_configurations[i])):
                 print("Configuration", j)
-                print(structures_best_configurations[i][j])
+                print(structures_best_configurations[i][j][0], structures_best_configurations[i][j][1][:-1])
+
+        # evaluate models to find best
+        for i in range(len(structures_best_configurations)):
+            # i-th model structure
+            scores = []
+            for j in range(len(structures_best_configurations[i])):
+                scores.append(self._compute_model_score(structures_best_configurations[i][j]))
+                print(f"Configuration {j}, score : {scores[j]}")
+                Plot._plot_train_stats(structures_best_configurations[i][j][1][-1])
+
                                 
 if __name__ == "__main__":
     gs = GridSearch()
-    models = [[Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")], [Layer(4, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")]]
-    gs._set_parameters(layers=models, weight_range=[(-0.5,0.5), (-0.69, 0.69)], eta=[0.01, 0.008], alpha=[0.6, 0.85], batch_size=[1,2])
+    models = [[Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")]]
+    gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01, 0.008], alpha=[0.6, 0.85])
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(1, split=0.25)
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]

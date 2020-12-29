@@ -104,6 +104,7 @@ class Model:
                 self.layers[i].bias[j] = self.layers[i].bias[j] + self.layers[i].bias_delta_prev[j]
             # print(f"\nLayer {i}:\nweights = {self.layers[i].weights}\nbias = {self.layers[i].bias}")
 
+    # TODO: why are you here? We dont need you (should delete?)
     def _ridge_regression(self):
         sum_squares = 0
         for layer in self.layers:
@@ -133,7 +134,7 @@ class Model:
         for i in range(len(inputs)):
             output = self._feed_forward(inputs[i])
             self.validation_accuracy = self._compute_accuracy(output, expected[i], self.validation_accuracy)
-            self.validation_loss += self.loss_function._compute_loss(output, expected[i], self._ridge_regression())/len(inputs)
+            self.validation_loss += self.loss_function._compute_loss(output, expected[i], regression=0)/len(inputs)
         self.validation_accuracy /= len(inputs)
     
         if self.best_model is None:
