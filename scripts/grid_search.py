@@ -87,15 +87,24 @@ class GridSearch:
         score = 0
         # test accuracy
         score += 1000*model_infos[0]
-        # validation loss smooth
+        # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []
+        train_loss = []
+        threashold = 5e-3
         for epoch in model_infos[1][2]:
             val_loss.append(epoch[3])
+            train_loss.append(epoch[2])
         not_decrease_times = 0
         for i in range(len(val_loss)-1):
-            if val_loss[i+1] - val_loss[i] > 0.005:
+            if val_loss[i+1] - val_loss[i] > threashold:
                 not_decrease_times += 1
         score += -not_decrease_times*10
+
+        not_decrease_times = 0
+        for i in range(len(train_loss)-1):
+            if train_loss[i+1] - train_loss[i] > threashold:
+                not_decrease_times += 1
+        score += -not_decrease_times*2
 
         return score
 
@@ -188,18 +197,17 @@ class GridSearch:
                 print("Start test ", i*models_per_structure + j)
                 test_accuracy = cur_model._infer(ohe_test, test_exp)
                 configuration_test[j%configurations_per_model] += test_accuracy/(len(self.weight_range)*familyofmodelsperconfiguration)
-                # TODO: readd best_model
                 if configuration_best_model[j%configurations_per_model] is None:
-                    configuration_best_model[j%configurations_per_model] = (cur_model, test_accuracy, training_stats)
+                    configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
                 else:
                     if configuration_best_model[j%configurations_per_model][1] < test_accuracy:
-                        configuration_best_model[j%configurations_per_model] = (cur_model, test_accuracy, training_stats)
+                        configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
                     elif configuration_best_model[j%configurations_per_model][1] == test_accuracy:
-                        if configuration_best_model[j%configurations_per_model][0].validation_accuracy < cur_model.validation_accuracy:
-                            configuration_best_model[j%configurations_per_model] = (cur_model, test_accuracy, training_stats)
-                        elif configuration_best_model[j%configurations_per_model][0].validation_accuracy == cur_model.validation_accuracy:
-                            if configuration_best_model[j%configurations_per_model][0].validation_loss > cur_model.validation_loss:
-                                configuration_best_model[j%configurations_per_model] = (cur_model, test_accuracy, training_stats)
+                        if configuration_best_model[j%configurations_per_model][0].validation_accuracy < cur_model.best_model.validation_accuracy:
+                            configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
+                        elif configuration_best_model[j%configurations_per_model][0].validation_accuracy == cur_model.best_model.validation_accuracy:
+                            if configuration_best_model[j%configurations_per_model][0].validation_loss > cur_model.best_model.validation_loss:
+                                configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
             configurations_results = []
             for k in range(configurations_per_model):
                 configurations_results.append((configuration_test[k], configuration_best_model[k]))
@@ -215,10 +223,12 @@ class GridSearch:
         for i in range(len(structures_best_configurations)):
             # i-th model structure
             scores = []
+            stats = []
             for j in range(len(structures_best_configurations[i])):
                 scores.append(self._compute_model_score(structures_best_configurations[i][j]))
                 print(f"Configuration {j}, score : {scores[j]}")
-                Plot._plot_train_stats(structures_best_configurations[i][j][1][-1])
+                stats.append(structures_best_configurations[i][j][1][-1])
+            Plot._plot_train_stats(stats)
 
                                 
 if __name__ == "__main__":

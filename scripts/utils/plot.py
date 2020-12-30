@@ -1,19 +1,32 @@
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 
 class Plot:
     # utilities method for plotting train/test results
     @staticmethod
-    def _plot_train_stats(stats, title = 'Training Statistics', epochs = 200, subp_len = 2):
+    def _plot_train_stats(stats, title = 'Training Statistics', epochs = 200, max_graphs_per_row = 4):
         # stats semantics as follows: 0 - TrainAcc | 1 - ValAcc | 2 - TrainLoss | 3 - ValLoss | more can be added..
-        fig, axs = plt.subplots(subp_len)
-        fig.canvas.set_window_title(title)
+        if len(stats) <= max_graphs_per_row:
+            subplot_size = (1,len(stats))
+        else:
+            subplot_size = (int(len(stats) / max_graphs_per_row), max_graphs_per_row)
+            
+        fig = plt.figure()
+        outer = gridspec.GridSpec(subplot_size[0], subplot_size[1], wspace=0.2, hspace=0.2)
+        fig.tight_layout()
+        for i in range(subplot_size[0]*subplot_size[1]):
+            inner = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer[i], wspace=0.1, hspace=0.1)
 
-        for i in range(subp_len):
-            axs[i].set_xlabel("Epoch")
-            axs[i].set_ylabel("Accuracy" if i == 0 else "Loss")
-            axs[i].plot(range(epochs), [stat[2*i] for stat in stats], label="Train")
-            axs[i].plot(range(epochs), [stat[2*i+1] for stat in stats], label="Validation")
-            axs[i].legend()
-
-        plt.tight_layout()
+            
+            for j in range(2):
+                ax = plt.Subplot(fig, inner[j])
+                ax.set_xlabel("Epoch" if j == 1 else "")
+                ax.set_ylabel("Accuracy" if j == 0 else "Loss")
+                if j == 0:
+                    ax.set_xticks([])
+                ax.plot(range(epochs), [stat[2*j] for stat in stats[i]], label="Train")
+                ax.plot(range(epochs), [stat[2*j+1] for stat in stats[i]], label="Validation")
+                ax.legend()
+                fig.add_subplot(ax)
+            
         plt.show()
