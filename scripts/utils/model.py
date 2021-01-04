@@ -139,6 +139,7 @@ class Model:
         if self.best_model is None:
             self.best_model = copy.deepcopy(self)
         elif self.validation_accuracy >= self.best_model.validation_accuracy and self.validation_loss < self.best_model.validation_loss:
+            del self.best_model
             self.best_model = copy.deepcopy(self)
 
     def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5):

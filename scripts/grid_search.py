@@ -50,7 +50,7 @@ class GridSearch:
         self.batch_size = [1]
         self.models_layers = [] # [[Layers#1], [Layers#2], ...]
         self.lr_decay = [1e-5]
-        self.epoch = [200]
+        self.epoch = [300]
         self.weight_range = [(-0.69, 0.69)]
 
     def _set_parameters(self, **parameters):
@@ -224,18 +224,59 @@ class GridSearch:
             # i-th model structure
             scores = []
             stats = []
+            params = []
             for j in range(len(structures_best_configurations[i])):
                 scores.append(self._compute_model_score(structures_best_configurations[i][j]))
-                print(f"Configuration {j}, score : {scores[j]}")
                 stats.append(structures_best_configurations[i][j][1][-1])
-            Plot._plot_train_stats(stats)
+                params.append(self._get_model_parameters(j,len(structures_best_configurations[i])))
 
-                                
+            zipped_triples = sorted(zip(stats, scores, params), key = lambda x : x[1], reverse = True) # sort everything by decreasing score
+            max_len = min(len(zipped_triples), 8) # to only get top best results for visualization sake
+            stats  = [x for x,_,_ in zipped_triples[:max_len]]
+            scores = [x for _,x,_ in zipped_triples[:max_len]]
+            params = [x for _,_,x in zipped_triples[:max_len]]
+
+            for j in range(max_len):
+                print(f"Configuration {j}, score : {scores[j]}, params:{params[j]}")
+
+            Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1))
+
+    def _get_model_parameters(self, index, configurations_per_model):
+        # ALL THIS IS FOR COMPREHENSION ONLY, TUTTO RIDUCIBILE AD UN CICLO VOLENDO, 5-6 RIGHE MAX TRANQUI EP NO RABIA
+        # len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)
+        epoch_len = max(configurations_per_model // len(self.epoch), 1)
+        epoch = self.epoch[index // epoch_len]
+
+        index = index % epoch_len # shift inside single epoch
+        batch_size_len = max(epoch_len // len(self.batch_size), 1)
+        batch_size = self.batch_size[index // batch_size_len]
+
+        index = index % batch_size_len # shift inside single batch_size
+        lr_decay_len = max(batch_size_len // len(self.lr_decay), 1)
+        lr_decay = self.lr_decay[index // lr_decay_len]
+
+        index = index % lr_decay_len # shift inside single lr_decay
+        eta_len = max(lr_decay_len // len(self.eta), 1)
+        eta = self.eta[index // eta_len]
+
+        index = index % eta_len # shift inside single eta
+        alpha_len = max(eta_len // len(self.alpha), 1)
+        alpha = self.alpha[index // alpha_len]
+
+        index = index % alpha_len # shift inside single alpha
+        alpha_len = max(alpha_len // len(self.alpha), 1)
+        _lambda = self._lambda[index // alpha_len]
+
+        return {'epoch':epoch, 'batch_size':batch_size, 'lr_decay':lr_decay, 'eta':eta, 'alpha':alpha, '_lambda':_lambda}
+
+
+                                 
 if __name__ == "__main__":
     gs = GridSearch()
-    models = [[Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")]]
-    gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01, 0.008], alpha=[0.6, 0.85])
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(1, split=0.25)
+    models = [[Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],[Layer(4, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")]]
+    gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.1, 0.01, 0.001, 0.0001], alpha=[0.6,0.85, 0.98], batch_size=[1,16,32,len(train_labels)], epoch=[300,500])
+    #gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01,0.0001], alpha=[0.85,0.98], batch_size=[16,len(train_labels)], epoch=[300,500])
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
     train_exp = [[elem] for elem in train_labels]
@@ -243,7 +284,7 @@ if __name__ == "__main__":
     test, test_labels = dt._get_test_data(1)
     ohe_test = [dt._get_one_hot_encoding(i) for i in test]
     test_exp = [[elem] for elem in test_labels]
-    gs._run(ohe_inp, train_exp, ohe_val, validation_exp, ohe_test, test_exp)
+    gs._run(ohe_inp, train_exp, ohe_val, validation_exp, ohe_test, test_exp, familyofmodelsperconfiguration=5)
 
 
 

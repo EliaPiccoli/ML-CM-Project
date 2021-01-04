@@ -4,7 +4,7 @@ import matplotlib.gridspec as gridspec
 class Plot:
     # utilities method for plotting train/test results
     @staticmethod
-    def _plot_train_stats(stats, title = 'Training Statistics', epochs = 200, max_graphs_per_row = 4):
+    def _plot_train_stats(stats, title = 'Training Statistics', epochs = 200, max_graphs_per_row = 4, block=True):
         # stats semantics as follows: 0 - TrainAcc | 1 - ValAcc | 2 - TrainLoss | 3 - ValLoss | more can be added..
         if len(stats) <= max_graphs_per_row:
             subplot_size = (1,len(stats))
@@ -12,6 +12,7 @@ class Plot:
             subplot_size = (int(len(stats) / max_graphs_per_row), max_graphs_per_row)
             
         fig = plt.figure()
+        fig.canvas.set_window_title(title)
         outer = gridspec.GridSpec(subplot_size[0], subplot_size[1], wspace=0.2, hspace=0.2)
         fig.tight_layout()
         for i in range(subplot_size[0]*subplot_size[1]):
@@ -24,9 +25,9 @@ class Plot:
                 ax.set_ylabel("Accuracy" if j == 0 else "Loss")
                 if j == 0:
                     ax.set_xticks([])
-                ax.plot(range(epochs), [stat[2*j] for stat in stats[i]], label="Train")
-                ax.plot(range(epochs), [stat[2*j+1] for stat in stats[i]], label="Validation")
+                ax.plot(range(epochs[i]), [stat[2*j] for stat in stats[i]], label="Train")
+                ax.plot(range(epochs[i]), [stat[2*j+1] for stat in stats[i]], label="Validation")
                 ax.legend()
                 fig.add_subplot(ax)
             
-        plt.show()
+        plt.show(block=block)
