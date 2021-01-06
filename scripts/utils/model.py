@@ -126,7 +126,7 @@ class Model:
         for i in range(len(inputs)):
             output = self.best_model._feed_forward(inputs[i])
             test_accuracy = self._compute_accuracy(output, expected[i], test_accuracy)
-        return test_accuracy/len(inputs)
+        return (test_accuracy/len(inputs), self.best_model.validation_accuracy, self.best_model.validation_loss)
 
     def _validation_validation_validation(self, inputs, expected):
         self.validation_accuracy = 0

@@ -24,7 +24,6 @@ model._compile(eta=0.03, loss_function="mse", alpha=0.9)
 stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, batch_size=4, epoch=200)
 
 # testing the model
-# TODO for now it is executed on last epoch outcome, in future a best of models evaluation would be better
 print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)))
 
 Plot._plot_train_stats([stats])

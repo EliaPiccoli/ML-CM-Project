@@ -85,7 +85,7 @@ class GridSearch:
             self.weight_range = parameters["weight_range"]
     
     def _compute_model_score(self, model_infos):
-        # model_infos : (avg_test_acc, (best_model, test_acc_bm, training_bm[(a, va, l, vl)]))
+        # model_infos : (avg_test_acc, (test_acc_bm, vacc_bm, vlossbm, training_bm[(a, va, l, vl)]))
         score = 0
         # test accuracy
         score += 1000*model_infos[0]
@@ -93,14 +93,14 @@ class GridSearch:
         val_loss = []
         train_loss = []
         threashold = 5e-3
-        for epoch in model_infos[1][2]:
+        for epoch in model_infos[1][-1]:
             val_loss.append(epoch[3])
             train_loss.append(epoch[2])
         not_decrease_times = 0
         for i in range(len(val_loss)-1):
             if val_loss[i+1] - val_loss[i] > threashold:
                 not_decrease_times += 1
-        score += -not_decrease_times*10
+        score += -not_decrease_times*8
 
         not_decrease_times = 0
         for i in range(len(train_loss)-1):
@@ -110,19 +110,17 @@ class GridSearch:
 
         return score
 
-    def _train_model(self, model, train, train_label, validation, validation_label, batch_size, epoch, decay):
-        print(hex(id(model)))
-        return model._train(train, train_label, validation, validation_label, batch_size=batch_size, epoch=epoch, decay=decay)
-
-    def _test_model(self, model, ohe_test, test_exp):
-        print(hex(id(model)))
-        return model._infer(ohe_test, test_exp)
+    def _train_test_model(self, model, train, train_label, validation, validation_label, batch_size, epoch, decay, ohe_test, test_exp):
+        train_result = model._train(train, train_label, validation, validation_label, batch_size=batch_size, epoch=epoch, decay=decay)
+        test_result = model._infer(ohe_test, test_exp)
+        return train_result, test_result
 
     # TODO: add loss function name for model (not hyperparameter) (atm set it as defualt)
     def _run(self, train, train_label, validation, validation_label, test, test_label, familyofmodelsperconfiguration=5):
         print("I am not fast, sorry")
         print("Maybe in future i will use all your cores")
         print("Maybe the GPU, who knows")
+        print()
 
         print("Generating weights")
         weights_per_configuration = []         # confs: [ weight_range_inits:[ weight_inits: [particular weight matrix]]]
@@ -193,6 +191,7 @@ class GridSearch:
         models_per_structure = len(models_configurations) // len(self.models_layers)
         configurations_per_model = len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)
 
+        subprocess_pool_size = min(os.cpu_count(), models_per_structure)
         structures_best_configurations = []
         for i in range(len(self.models_layers)):
             print("Model ", i)
@@ -205,44 +204,60 @@ class GridSearch:
             #     print(hex(id(cur_model)))
             # Se Multiprocess: lavora su copie quindi i nostri modelli non vengono trainati
             # Se Thread: lavora sugli stessi oggetti ma ovviamente ne fa uno alla volta quindi non si guadagna nulla 
-            # with Parallel(n_jobs=-1) as processes:
-            #     print("Training")
-            #     models_training_stats = processes(delayed(self._train_model)(models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2]) for j in trange(models_per_structure))
-            #     print("Test")
-            #     models_test_accuracy = processes(delayed(self._test_model)(models_configurations[i*models_per_structure + j][3], ohe_test, test_exp) for j in trange(models_per_structure))
+            print(f"Starting parallel training and test with {subprocess_pool_size} workers")
+            models_training_stats = []      # [[(acc, vacc, loss, vloss), (acc, vacc, loss, vloss)], ...]
+            models_test_accuracy = []       # [(tacc, vacc, vloss), ...]
+            with Parallel(n_jobs=subprocess_pool_size) as processes:
+                result = processes(delayed(self._train_test_model)(models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2], ohe_test, test_exp) for j in trange(models_per_structure))
+            
+            # print("Result ----------")
+            # print(result)    
+            for res in result:
+                models_training_stats.append(res[0])
+                models_test_accuracy.append(res[1])
+            # print("Train ----------")
+            # for e in models_training_stats: 
+            #     print(len(e), e) 
+            # print("Test ----------")
+            # print(models_test_accuracy) 
+            # exit(1)
 
             for j in range(models_per_structure):
-                epoch, batch, decay, cur_model = models_configurations[i*models_per_structure + j]
-                print("Start training ", i*models_per_structure + j)
-                training_stats = cur_model._train(train, train_label, validation, validation_label, batch_size=batch, epoch=epoch, decay=decay)
-                print("Start test ", i*models_per_structure + j)
-                test_accuracy = cur_model._infer(ohe_test, test_exp)
+                # epoch, batch, decay, cur_model = models_configurations[i*models_per_structure + j]
+                # print("Start training ", i*models_per_structure + j)
+                # training_stats = cur_model._train(train, train_label, validation, validation_label, batch_size=batch, epoch=epoch, decay=decay)
+                # print("Start test ", i*models_per_structure + j)
+                # test_accuracy = cur_model._infer(ohe_test, test_exp)
+                
+                test_accuracy, best_model_vaccuracy, best_model_vloss = models_test_accuracy[j]
+                training_stats = models_training_stats[j]
+                
                 configuration_test[j%configurations_per_model] += test_accuracy/(len(self.weight_range)*familyofmodelsperconfiguration)
                 if configuration_best_model[j%configurations_per_model] is None:
-                    configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
+                    configuration_best_model[j%configurations_per_model] = (test_accuracy, best_model_vaccuracy, best_model_vloss, training_stats)
                 else:
-                    if configuration_best_model[j%configurations_per_model][1] < test_accuracy:
-                        configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
-                    elif configuration_best_model[j%configurations_per_model][1] == test_accuracy:
-                        if configuration_best_model[j%configurations_per_model][0].validation_accuracy < cur_model.best_model.validation_accuracy:
-                            configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
-                        elif configuration_best_model[j%configurations_per_model][0].validation_accuracy == cur_model.best_model.validation_accuracy:
-                            if configuration_best_model[j%configurations_per_model][0].validation_loss > cur_model.best_model.validation_loss:
-                                configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
+                    if configuration_best_model[j%configurations_per_model][0] < test_accuracy:
+                        configuration_best_model[j%configurations_per_model] = (test_accuracy, best_model_vaccuracy, best_model_vloss, training_stats)
+                    elif configuration_best_model[j%configurations_per_model][0] == test_accuracy:
+                        if configuration_best_model[j%configurations_per_model][1] < best_model_vaccuracy:
+                            configuration_best_model[j%configurations_per_model] = (test_accuracy, best_model_vaccuracy, best_model_vloss, training_stats)
+                        elif configuration_best_model[j%configurations_per_model][1] == best_model_vaccuracy:
+                            if configuration_best_model[j%configurations_per_model][2] > best_model_vloss:
+                                configuration_best_model[j%configurations_per_model] = (test_accuracy, best_model_vaccuracy, best_model_vloss, training_stats)
 
-                # Using multiprocess lists
-                # configuration_test[j%configurations_per_model] += models_test_accuracy[i*models_per_structure +j]/(len(self.weight_range)*familyofmodelsperconfiguration)
+                # Old version just to check everything is correct
                 # if configuration_best_model[j%configurations_per_model] is None:
-                #     configuration_best_model[j%configurations_per_model] = (cur_model.best_model, models_test_accuracy[i*models_per_structure + j], models_training_stats[i*models_per_structure + j])
+                #     configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
                 # else:
-                #     if configuration_best_model[j%configurations_per_model][1] < models_test_accuracy[i*models_per_structure + j]:
-                #         configuration_best_model[j%configurations_per_model] = (cur_model.best_model, models_test_accuracy[i*models_per_structure + j], models_training_stats[i*models_per_structure + j])
-                #     elif configuration_best_model[j%configurations_per_model][1] == models_test_accuracy[i*models_per_structure + j]:
+                #     if configuration_best_model[j%configurations_per_model][1] < test_accuracy:
+                #         configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
+                #     elif configuration_best_model[j%configurations_per_model][1] == test_accuracy:
                 #         if configuration_best_model[j%configurations_per_model][0].validation_accuracy < cur_model.best_model.validation_accuracy:
-                #             configuration_best_model[j%configurations_per_model] = (cur_model.best_model, models_test_accuracy[i*models_per_structure + j], models_training_stats[i*models_per_structure + j])
+                #             configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
                 #         elif configuration_best_model[j%configurations_per_model][0].validation_accuracy == cur_model.best_model.validation_accuracy:
                 #             if configuration_best_model[j%configurations_per_model][0].validation_loss > cur_model.best_model.validation_loss:
-                #                 configuration_best_model[j%configurations_per_model] = (cur_model.best_model, models_test_accuracy[i*models_per_structure + j], models_training_stats[i*models_per_structure + j])
+                #                 configuration_best_model[j%configurations_per_model] = (cur_model.best_model, test_accuracy, training_stats)
+
             configurations_results = []
             for k in range(configurations_per_model):
                 configurations_results.append((configuration_test[k], configuration_best_model[k]))
@@ -310,7 +325,7 @@ if __name__ == "__main__":
     gs = GridSearch()
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(1, split=0.25)
     models = [[Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],[Layer(4, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")]]
-    gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.1, 0.01], alpha=[0.85, 0.98])
+    gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01, 1e-4], alpha=[0.85, 0.98], epoch=[200,300])
     # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.1, 0.01, 0.001, 0.0001], alpha=[0.6,0.85, 0.98], batch_size=[1,16,32,len(train_labels)], epoch=[300,500])
     # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01,0.0001], alpha=[0.85,0.98], batch_size=[16,len(train_labels)], epoch=[300,500])
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
