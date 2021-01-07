@@ -24,6 +24,9 @@ model._compile(eta=0.03, loss_function="mse", alpha=0.9)
 stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, batch_size=4, epoch=200)
 
 # testing the model
-print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)))
+print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)[0]))
 
-Plot._plot_train_stats([stats])
+for layer in model.layers:
+    print(layer.weights)
+
+# Plot._plot_train_stats([stats])

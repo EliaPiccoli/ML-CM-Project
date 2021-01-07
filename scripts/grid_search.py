@@ -204,11 +204,11 @@ class GridSearch:
             #     print(hex(id(cur_model)))
             # Se Multiprocess: lavora su copie quindi i nostri modelli non vengono trainati
             # Se Thread: lavora sugli stessi oggetti ma ovviamente ne fa uno alla volta quindi non si guadagna nulla 
-            print(f"Starting parallel training and test with {subprocess_pool_size} workers")
+            # print(f"Starting parallel training and test with {subprocess_pool_size} workers")
             models_training_stats = []      # [[(acc, vacc, loss, vloss), (acc, vacc, loss, vloss)], ...]
             models_test_accuracy = []       # [(tacc, vacc, vloss), ...]
-            with Parallel(n_jobs=subprocess_pool_size) as processes:
-                result = processes(delayed(self._train_test_model)(models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2], ohe_test, test_exp) for j in trange(models_per_structure))
+            with Parallel(n_jobs=subprocess_pool_size, verbose=10) as processes:
+                result = processes(delayed(self._train_test_model)(models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2], ohe_test, test_exp) for j in range(models_per_structure))
             
             # print("Result ----------")
             # print(result)    
@@ -323,10 +323,19 @@ class GridSearch:
                                  
 if __name__ == "__main__":
     gs = GridSearch()
+    # Monk1
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(1, split=0.25)
-    models = [[Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],[Layer(4, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")]]
-    gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01, 1e-4], alpha=[0.85, 0.98], epoch=[200,300])
-    # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.1, 0.01, 0.001, 0.0001], alpha=[0.6,0.85, 0.98], batch_size=[1,16,32,len(train_labels)], epoch=[300,500])
+    models = [
+        [Layer(3, "leaky_relu", _input=(17,)), Layer(1, "tanh")], 
+        [Layer(3, "tanh", _input=(17,)), Layer(1, "tanh")],
+        [Layer(5, "leaky_relu", _input=(17,)), Layer(1, "tanh")], 
+        [Layer(5, "tanh", _input=(17,)), Layer(1, "tanh")],
+        [Layer(7, "leaky_relu", _input=(17,)), Layer(1, "tanh")],
+        [Layer(7, "tanh", _input=(17,)), Layer(1, "tanh")],
+        [Layer(8, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")]
+    ]
+    gs._set_parameters(layers=models, weight_range=[(-0.3, 0.3)], eta=[1e-3, 9e-4, 75e-5, 5e-4], alpha=[0.85, 0.9, 0.98], batch_size=[4, 8, 16, 32, len(train_labels)], epoch=[300, 500, 1000], lr_decay=[1e-5, 5e-6, 1e-6])
+    # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01, 1e-4], alpha=[0.85, 0.98], epoch=[200,300])
     # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01,0.0001], alpha=[0.85,0.98], batch_size=[16,len(train_labels)], epoch=[300,500])
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
