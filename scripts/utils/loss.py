@@ -15,10 +15,11 @@ class Mse:
         
         """
         assert(len(actual) == len(expected))
-        #TODO add: / len(actual)
-        return (0.5 * np.sum((np.array(expected) - np.array(actual))**2)) + regression # avg(1/2(expected - actual)**2), 1/2 for better derivation
+        # / len(expected) for case of multiple outputs e.g. MLCup
+        #print("ACTUAL:",actual,"EXPECTED:",expected)
+        return (0.5 * np.sum((np.array(expected) - np.array(actual))**2)) / len(expected) + regression # avg(1/2(expected - actual)**2), 1/2 for better derivation
 
-    def _compute_loss_prime(self, actual, expected):
+    def _compute_loss_prime(self, actual, expected): # even if multiple output this will receive one comparison at a time (look ad model.py)
         return expected - actual
     
 class CrossEntropy:

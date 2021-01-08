@@ -17,6 +17,7 @@ class Model:
         """
         self.layers = []
         self.best_model = None
+        self.decay_type = "exp"
 
     def _add_layer(self, layer):
         self.layers.append(layer)
@@ -29,11 +30,21 @@ class Model:
                 self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), weigths=weight_matrix[i])
             else:
                 self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), weigths=weight_matrix[i], bias=bias_matrix[i])
+        self.stopping_eta = 0.02*eta # useful for several lr_decay schedulers
         self.eta = eta
         self._lambda = _lambda
         self.alpha = alpha
         self.loss_function_name = loss_function
         self.loss_function = get_loss(loss_function)
+
+    def _apply_decay(self, epoch_decay):
+        # various other learning rate schedulers could be implemented
+        if self.decay_type == "exp":
+            self.eta = max(self.stopping_eta,self.eta / (1 + epoch_decay))
+        elif self.decay_type == "lin":
+            pass
+        elif self.decay_type == "step":
+            pass
 
     def _init_batch(self):
         self.batch_loss = 0
@@ -43,12 +54,12 @@ class Model:
             self.batch_deltas.append(np.zeros(layer.nodes))
             self.batch_weights_delta.append(np.zeros((layer.nodes, layer.input[0])))
     
-    def _init_epoch(self, lr_decay, inp, exp):
+    def _init_epoch(self, epoch_decay, inp, exp):
         self.accuracy = 0
         for layer in self.layers:
             layer.weight_delta_prev = np.zeros((layer.nodes, layer.input[0])) # for momentum
             layer.bias_delta_prev = np.zeros(layer.nodes) # for momentum
-        self.eta = self.eta / (1 + lr_decay)
+        self._apply_decay(epoch_decay) # update learning rate
         seed = np.random.randint(0,1000)
         random.Random(seed).shuffle(inp)
         random.Random(seed).shuffle(exp)
@@ -146,6 +157,7 @@ class Model:
         train_stats = []
         assert(len(train_inputs) == len(train_expected) and len(val_inputs) == len(val_expected))
         for e in range(epoch):
+            print(f"EPOCH:{e+1}")
             self._init_epoch(decay*epoch, train_inputs, train_expected)
             for i in range(0, len(train_inputs), batch_size): # for all inputs
                 j = i
@@ -154,7 +166,7 @@ class Model:
                     self.model_output = self._feed_forward(train_inputs[j]) # compute prediction
                     self.batch_loss += self.loss_function._compute_loss(self.model_output, train_expected[j], self._ridge_regression()) # calculate loss
                     self._back_propagation(train_expected[j], train_inputs[j]) # compute back-propagation
-                    self.accuracy = self._compute_accuracy(self.model_output, train_expected[j], self.accuracy)
+                    self.accuracy = self._compute_accuracy(self.model_output, train_expected[j], self.accuracy) # TODO very stupid for regression
                     j += 1
                 self.batch_loss =  self.batch_loss / (j - i) # to avoid a bigger division on a smaller than batch size last subset of inputs
                 self._update_layers_deltas(j - i) # 20/12/2020 19:01
