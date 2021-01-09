@@ -113,7 +113,7 @@ class Model:
                 # bias_n = bias_o - eta*delta(W) + alpha*delta_prev(W)
                 self.layers[i].bias_delta_prev[j] = - self.eta * self.layers[i].bias_delta[j] + self.alpha * self.layers[i].bias_delta_prev[j]
                 self.layers[i].bias[j] = self.layers[i].bias[j] + self.layers[i].bias_delta_prev[j]
-            # print(f"\nLayer {i}:\nweights = {self.layers[i].weights}\nbias = {self.layers[i].bias}")
+            #print(f"\nLayer {i}:\nweights = {self.layers[i].weights}\nbias = {self.layers[i].bias}")
 
     # TODO: why are you here? We dont need you (should delete?)
     def _ridge_regression(self):
@@ -153,11 +153,14 @@ class Model:
             del self.best_model
             self.best_model = copy.deepcopy(self)
 
-    def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5):
+    def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5, verbose=False):
         train_stats = []
         assert(len(train_inputs) == len(train_expected) and len(val_inputs) == len(val_expected))
         for e in range(epoch):
-            print(f"EPOCH:{e+1}")
+            
+            if verbose: # se vuoi fare lo schifoso verboso
+                print(f"EPOCH:{e+1}")
+
             self._init_epoch(decay*epoch, train_inputs, train_expected)
             for i in range(0, len(train_inputs), batch_size): # for all inputs
                 j = i
