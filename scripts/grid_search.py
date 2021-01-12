@@ -86,9 +86,9 @@ class GridSearch:
     
     def _compute_model_score(self, model_infos):
         # model_infos : (avg_test_acc, (test_acc_bm, vacc_bm, vlossbm, training_bm[(a, va, l, vl)]))
-        score = 0
+        # score = 0
         # test accuracy
-        score += 1000*model_infos[0]
+        score = 2000*model_infos[0] if model_infos[0] > 0.9 else 0
         # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []
         train_loss = []
@@ -323,31 +323,29 @@ class GridSearch:
                                  
 if __name__ == "__main__":
     gs = GridSearch()
-    # Monk1
-    train, validation, train_labels, validation_labels = dt._get_train_validation_data(1, split=0.25)
+    MONK_DATASET = 3
+    train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_DATASET, split=0.25)
     models = [
-        [Layer(3, "leaky_relu", _input=(17,)), Layer(1, "tanh")], 
-        [Layer(3, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(5, "leaky_relu", _input=(17,)), Layer(1, "tanh")], 
-        [Layer(5, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(7, "leaky_relu", _input=(17,)), Layer(1, "tanh")],
-        [Layer(7, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(8, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")]
+        [Layer(4, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")],
+        [Layer(8, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")],
+        [Layer(8, "leaky_relu", _input=(17,)), Layer(4, "leaky_relu"), Layer(1, "tanh")]
     ]
-    gs._set_parameters(layers=models, weight_range=[(-0.3, 0.3)], eta=[1e-3, 9e-4, 75e-5, 5e-4], alpha=[0.85, 0.9, 0.98], batch_size=[4, 8, 16, 32, len(train_labels)], epoch=[300, 500, 1000], lr_decay=[1e-5, 5e-6, 1e-6])
-    # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01, 1e-4], alpha=[0.85, 0.98], epoch=[200,300])
+    gs._set_parameters(layers=models, 
+                    weight_range=[(-0.69, 0.69)],
+                    eta=[1e-2, 9e-3, 5e-3, 1e-3],
+                    alpha=[0.6, 0.85, 0.9, 0.98],
+                    batch_size=[8, 16, 32, len(train_labels)],
+                    epoch=[500, 1000],
+                    lr_decay=[1e-5, 1e-6],
+                    _lambda=[1e-3, 1e-4, 1e-5]
+                )
+    # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[9e-3], alpha=[0.85, 0.9], batch_size=[len(train_labels)], epoch=[500], lr_decay=[1e-5])
     # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01,0.0001], alpha=[0.85,0.98], batch_size=[16,len(train_labels)], epoch=[300,500])
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
     train_exp = [[elem] for elem in train_labels]
     validation_exp = [[elem] for elem in validation_labels]
-    test, test_labels = dt._get_test_data(1)
+    test, test_labels = dt._get_test_data(MONK_DATASET)
     ohe_test = [dt._get_one_hot_encoding(i) for i in test]
     test_exp = [[elem] for elem in test_labels]
     gs._run(ohe_inp, train_exp, ohe_val, validation_exp, ohe_test, test_exp, familyofmodelsperconfiguration=5)
-
-
-
-
-                
-

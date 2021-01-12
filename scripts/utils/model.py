@@ -40,7 +40,7 @@ class Model:
     def _apply_decay(self, epoch_decay):
         # various other learning rate schedulers could be implemented
         if self.decay_type == "exp":
-            self.eta = max(self.stopping_eta,self.eta / (1 + epoch_decay))
+            self.eta = max(self.stopping_eta, self.eta/(1 + epoch_decay))
         elif self.decay_type == "lin":
             pass
         elif self.decay_type == "step":
@@ -159,7 +159,7 @@ class Model:
         for e in range(epoch):
             
             if verbose: # se vuoi fare lo schifoso verboso
-                print(f"EPOCH:{e+1}")
+                print(f"EPOCH: {e+1}")
 
             self._init_epoch(decay*epoch, train_inputs, train_expected)
             for i in range(0, len(train_inputs), batch_size): # for all inputs
