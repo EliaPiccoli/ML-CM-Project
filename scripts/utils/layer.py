@@ -3,7 +3,7 @@ from .activation_function import AF
 
 class Layer:
 
-    def __init__(self, nodes, activation_function_type, bias_range=(0, 0), weights_range=(-0.69,0.69), _input=None):
+    def __init__(self, nodes, activation_function_type, bias_range=(0, 0), weights_range=(-0.3,0.3), _input=None):
         """
         Contructor of Layer class
 

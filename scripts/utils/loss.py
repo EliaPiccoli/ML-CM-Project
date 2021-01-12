@@ -21,7 +21,8 @@ class Mse:
 
     def _compute_loss_prime(self, actual, expected): # even if multiple output this will receive one comparison at a time (look ad model.py)
         return expected - actual
-    
+
+
 class CrossEntropy:
     #----------------------------------------------------- FOR CLASSIFICATION -----------------------------------------------------#
 
