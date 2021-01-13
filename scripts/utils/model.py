@@ -149,6 +149,7 @@ class Model:
         elif not classification and self.validation_eval_metric <= self.best_model.validation_eval_metric and self.validation_loss < self.best_model.validation_loss:
             del self.best_model
             self.best_model = copy.deepcopy(self)
+        print("VALIDATION_EVAL_METRIC:", self.validation_eval_metric)
 
     def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5, verbose=False, classification=True):
         train_stats = []
@@ -173,7 +174,7 @@ class Model:
                 self._update_weights_bias() # update weights & bias
                 # print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
             self.eval_metric /= len(train_inputs)
-            self._validation_validation_validation(val_inputs, val_expected)
+            self._validation_validation_validation(val_inputs, val_expected, classification)
             # print("Epoch {:4d} - LR: {:.6f} - Train_Eval_Metric: {:.6f} - Train_Loss: {:.6f} - Validation_Eval_Metric: {:.6f} - Validation_Loss: {:.6f}"
             #         .format(e, self.eta, self.eval_metric, self.batch_loss, self.validation_eval_metric, self.validation_loss)) 
             train_stats.append((self.eval_metric, self.validation_eval_metric, self.batch_loss, self.validation_loss))
