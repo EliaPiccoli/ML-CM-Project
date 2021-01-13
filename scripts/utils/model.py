@@ -143,7 +143,10 @@ class Model:
         self.validation_eval_metric /= len(inputs)
         if self.best_model is None:
             self.best_model = copy.deepcopy(self)
-        elif self.validation_eval_metric >= self.best_model.validation_eval_metric and self.validation_loss < self.best_model.validation_loss:
+        elif classification and self.validation_eval_metric >= self.best_model.validation_eval_metric and self.validation_loss < self.best_model.validation_loss:
+            del self.best_model
+            self.best_model = copy.deepcopy(self)
+        elif not classification and self.validation_eval_metric <= self.best_model.validation_eval_metric and self.validation_loss < self.best_model.validation_loss:
             del self.best_model
             self.best_model = copy.deepcopy(self)
 
