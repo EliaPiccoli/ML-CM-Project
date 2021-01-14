@@ -75,8 +75,8 @@ class GridSearch:
         return score
 
     def _train_test_model(self, model, train, train_label, validation, validation_label, batch_size, epoch, decay, test, test_exp):
-        train_result = model._train(train, train_label, validation, validation_label, batch_size=batch_size, epoch=epoch, decay=decay, classification=False)
-        test_result = model._infer(test, test_exp, classification=False)
+        train_result = model._train(train, train_label, validation, validation_label, batch_size=batch_size, epoch=epoch, decay=decay)
+        test_result = model._infer(test, test_exp)
         return train_result, test_result
 
     # TODO: add loss function name for model (not hyperparameter) (atm set it as defualt)
@@ -127,7 +127,7 @@ class GridSearch:
                                                 for weight in node_weights:
                                                     weights_copy[-1].append(weight)
                                             weights_matrix.append(weights_copy)
-                                        model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
+                                        model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix, isClassification = False)
                                         models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], model))
                 counter += 1
         print(f"Generated {len(models_configurations)} diffent models.")

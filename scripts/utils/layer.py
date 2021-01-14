@@ -29,9 +29,11 @@ class Layer:
         self.bias_delta = None
         self.weight_delta = None
 
-    def _init_layer(self, inp=None, weigths=None, bias=None):
+    def _init_layer(self, inp=None, weigths=None, bias=None, w_range=None):
         if inp is not None:
             self.input = inp
+        if w_range is not None:
+            self.weights_range = w_range
         self.weights = np.random.uniform(self.weights_range[0], self.weights_range[1], (self.nodes, self.input[0])) if weigths is None else weigths
         self.bias = np.random.uniform(self.bias_range[0], self.bias_range[1], self.nodes) if bias is None else bias
         self.activation_function = AF[self.activation_function_type]

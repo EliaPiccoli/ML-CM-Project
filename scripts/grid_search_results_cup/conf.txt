@@ -1,13 +1,8 @@
-model = Model()
-model._add_layer(Layer(8, "leaky_relu", _input=(10,)))
-model._add_layer(Layer(8, "leaky_relu"))
-model._add_layer(Layer(8, "leaky_relu"))
-model._add_layer(Layer(2, "linear"))
-model._compile(eta=0.000005, loss_function="mse", alpha=0.98, _lambda=1e-1)
-epoch = 50
-classification=False
-stats = model._train(train, train_labels, validation, validation_labels, decay=1e-6,batch_size=len(train), epoch=epoch, classification=classification, verbose=True)
-
+models = [
+        [Layer(8, "tanh", _input=(10,)), Layer(8, "tanh"), Layer(2, "linear")],
+        [Layer(8, "leaky_relu", _input=(10,)), Layer(4, "leaky_relu"),Layer(4, "leaky_relu"), Layer(2, "linear")],
+        [Layer(8, "leaky_relu", _input=(10,)), Layer(8, "leaky_relu"), Layer(2, "linear")]
+    ]
 
 Configuration 0, score : 16957.11546976781, test_mee : 16.94111546976781, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.98, '_lambda': 1e-05}
 Configuration 1, score : 16957.307318331514, test_mee : 16.941307318331514, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.8, '_lambda': 1e-05}

@@ -22,9 +22,9 @@ model = Model()
 model._add_layer(Layer(4, "tanh", _input=(17,)))
 model._add_layer(Layer(4, "tanh"))
 model._add_layer(Layer(1, "tanh"))
-model._compile(eta=0.009, loss_function="mse", alpha=0.85)
+model._compile(eta=0.009, loss_function="mse", alpha=0.8)
 epoch = 500
-stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, decay=5e-6,batch_size=len(ohe_inp), epoch=epoch)
+stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, decay=1e-5, batch_size=len(ohe_inp), epoch=epoch)
 
 # testing the model
 print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)[0]))

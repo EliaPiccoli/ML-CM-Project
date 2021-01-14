@@ -275,19 +275,22 @@ class GridSearch:
             scores = []
             stats = []
             params = []
+            test_eval_metrics = []
             for j in range(len(structures_best_configurations[i])):
                 scores.append(self._compute_model_score(structures_best_configurations[i][j]))
+                test_eval_metrics.append(structures_best_configurations[i][j][0])
                 stats.append(structures_best_configurations[i][j][1][-1])
                 params.append(self._get_model_parameters(j,len(structures_best_configurations[i])))
 
-            zipped_triples = sorted(zip(stats, scores, params), key = lambda x : x[1], reverse = True) # sort everything by decreasing score
+            zipped_triples = sorted(zip(stats, scores, params, test_eval_metrics), key = lambda x : x[1], reverse = True) # sort everything by decreasing score
             max_len = min(len(zipped_triples), 8) # to only get top best results for visualization sake
-            stats  = [x for x,_,_ in zipped_triples[:max_len]]
-            scores = [x for _,x,_ in zipped_triples[:max_len]]
-            params = [x for _,_,x in zipped_triples[:max_len]]
+            stats  =            [x for x,_,_,_ in zipped_triples[:max_len]]
+            scores =            [x for _,x,_,_ in zipped_triples[:max_len]]
+            params =            [x for _,_,x,_ in zipped_triples[:max_len]]
+            test_eval_metrics = [x for _,_,_,x in zipped_triples[:max_len]]
 
             for j in range(max_len):
-                print(f"Configuration {j}, score : {scores[j]}, params:{params[j]}")
+                print(f"Configuration {j}, score : {scores[j]}, test_accuracy : {test_eval_metrics[j]}, params:{params[j]}")
 
             Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1))
 

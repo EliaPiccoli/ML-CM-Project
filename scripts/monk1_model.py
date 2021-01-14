@@ -21,7 +21,7 @@ test_exp = [[elem] for elem in test_labels]
 model = Model()
 model._add_layer(Layer(4, "leaky_relu", _input=(17,)))
 model._add_layer(Layer(1, "tanh"))
-model._compile(eta=0.0099, loss_function="mse", alpha=0.9)
+model._compile(eta=0.0099, loss_function="mse", alpha=0.9, weight_range=(-0.05,0.05), stopping_eta=0.2)
 epoch = 1000
 stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, decay=5e-6, batch_size=len(ohe_inp), epoch=epoch)
 
