@@ -88,7 +88,7 @@ class GridSearch:
         # model_infos : (avg_test_acc, (test_acc_bm, vacc_bm, vlossbm, training_bm[(a, va, l, vl)]))
         # score = 0
         # test accuracy
-        score = 2000*model_infos[0] if model_infos[0] > 0.9 else 0
+        score = 2000*model_infos[0] if model_infos[0] > 0.95 else 0
         # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []
         train_loss = []
@@ -323,21 +323,19 @@ class GridSearch:
                                  
 if __name__ == "__main__":
     gs = GridSearch()
-    MONK_DATASET = 3
+    MONK_DATASET = 1
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_DATASET, split=0.25)
     models = [
-        [Layer(4, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")],
-        [Layer(8, "tanh", _input=(17,)), Layer(4, "tanh"), Layer(1, "tanh")],
-        [Layer(8, "leaky_relu", _input=(17,)), Layer(4, "leaky_relu"), Layer(1, "tanh")]
+        [Layer(4, "leaky_relu", _input=(17,)), Layer(1, "tanh")], 
+        [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],
     ]
     gs._set_parameters(layers=models, 
                     weight_range=[(-0.69, 0.69)],
-                    eta=[1e-2, 9e-3, 5e-3, 1e-3],
-                    alpha=[0.6, 0.85, 0.9, 0.98],
-                    batch_size=[8, 16, 32, len(train_labels)],
-                    epoch=[500, 1000],
-                    lr_decay=[1e-5, 1e-6],
-                    _lambda=[1e-3, 1e-4, 1e-5]
+                    eta=[99e-4, 9e-3, 75e-4, 5e-3, 1e-3],
+                    alpha=[0.85, 0.9, 0.98],
+                    batch_size=[len(train_labels)],
+                    epoch=[1000],
+                    lr_decay=[1e-5, 75e-7, 5e-6, 25e-7, 1e-6]
                 )
     # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[9e-3], alpha=[0.85, 0.9], batch_size=[len(train_labels)], epoch=[500], lr_decay=[1e-5])
     # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01,0.0001], alpha=[0.85,0.98], batch_size=[16,len(train_labels)], epoch=[300,500])

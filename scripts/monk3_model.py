@@ -6,13 +6,14 @@ from utils.plot import Plot
 
 # ----------------------------------------- MAIN ----------------------------------------- #
 print("One day I will be a very smart Artificial Intelligence!")
+MONK_MODEL = 3
 
-train, validation, train_labels, validation_labels = dt._get_train_validation_data(3, split=0.25)
+train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_MODEL, split=0.25)
 ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
 ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
 train_exp = [[elem] for elem in train_labels]
 validation_exp = [[elem] for elem in validation_labels]
-test, test_labels = dt._get_test_data(3)
+test, test_labels = dt._get_test_data(MONK_MODEL)
 ohe_test = [dt._get_one_hot_encoding(i) for i in test]
 test_exp = [[elem] for elem in test_labels]
 
