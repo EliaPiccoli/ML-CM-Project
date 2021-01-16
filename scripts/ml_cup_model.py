@@ -11,15 +11,24 @@ train, validation, test, train_labels, validation_labels, test_labels = dt._get_
 
 # create model
 model = Model()
-model._add_layer(Layer(8, "relu", _input=(10,)))
-model._add_layer(Layer(8, "relu"))
-model._add_layer(Layer(8, "relu"))
-model._add_layer(Layer(8, "relu"))
-model._add_layer(Layer(8, "relu"))
+# model._add_layer(Layer(8, "relu", _input=(10,)))
+# model._add_layer(Layer(8, "relu"))
+# model._add_layer(Layer(8, "relu"))
+# model._add_layer(Layer(8, "relu"))
+# model._add_layer(Layer(8, "relu"))
+# model._add_layer(Layer(2, "linear"))
+# model._compile(eta=1e-5, loss_function="mse", alpha=0.9, _lambda=1e-4, isClassification = False, stopping_eta=0.05)
+# epoch = 100
+# stats = model._train(train, train_labels, validation, validation_labels, decay=1e-3, batch_size=len(train), epoch=epoch,verbose=True)
+model._add_layer(Layer(16, "tanh", _input=(10,)))
+model._add_layer(Layer(8, "tanh"))
+model._add_layer(Layer(16, "tanh"))
+model._add_layer(Layer(8, "tanh"))
+model._add_layer(Layer(16, "tanh"))
 model._add_layer(Layer(2, "linear"))
-model._compile(eta=1e-5, loss_function="mse", alpha=0.9, _lambda=1e-4, isClassification = False, stopping_eta=0.05)
-epoch = 100
-stats = model._train(train, train_labels, validation, validation_labels, decay=1e-3, batch_size=len(train), epoch=epoch,verbose=True)
+model._compile(eta=1e-4, loss_function="mse", alpha=0.9, _lambda=1e-4, isClassification = False, stopping_eta=0.05)
+epoch = 50
+stats = model._train(train, train_labels, validation, validation_labels, decay=1e-6, batch_size=len(train), epoch=epoch,verbose=True)
 
 # testing the model
 print("Test MEE: {:.6f}".format(model._infer(test, test_labels)[0]))
