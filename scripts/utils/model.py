@@ -22,7 +22,7 @@ class Model:
     def _add_layer(self, layer):
         self.layers.append(layer)
 
-    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, stopping_eta=0.02, weight_range=None, weight_matrix=None, bias_matrix=None, isClassification = True):
+    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, stopping_eta=0.1, weight_range=None, weight_matrix=None, bias_matrix=None, isClassification = True):
         for i in range(len(self.layers)):
             if weight_matrix is None and bias_matrix is None:
                 self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), w_range=weight_range)
@@ -38,6 +38,9 @@ class Model:
         self.loss_function = get_loss(loss_function)
         self.task = isClassification # True for Classification, False for Regression
         self.metric_function = self._compute_accuracy if isClassification else self._compute_euclidean_error
+         # TODO togli, serve solo per le prove gradient clipping
+        self.clipped = True
+        self.curr_epoch = 0
 
     def _init_batch(self):
         self.batch_loss = 0
@@ -97,7 +100,22 @@ class Model:
             else: # hidden layer (where magic happens)
                 result = self.layers[i]._back_propagation(self.layers[i-1].output, deltas_next_layer=delta_last_layer, weights_next_layer=self.layers[i+1].weights)
             self._accumulate_batch_back_prop(result,i)
-            delta_last_layer = result[0]
+
+            # TODO FOR GRADIENT CLIPPING; WHAT AM I DOING WRONG????
+            clipping_ts = 100
+            did_it = False
+            resulting_delta = result[0]
+            for j in range(len(result[0])):
+                if abs(result[0][j]) > clipping_ts and self.curr_epoch > 10:
+                    multiplier = (clipping_ts / np.linalg.norm(result[0]))
+                    resulting_delta = [res * multiplier for res in result[0]]
+                    did_it = True
+                    if self.clipped:
+                        print("YOOOOO CLIP THAT! SOMEONE CLIP THAAAAAT!")
+                        self.clipped = False
+                    break
+            delta_last_layer = resulting_delta
+            #print(f"{i} - {[round(num,4) for num in delta_last_layer]} - {did_it}")
 
     def _update_layers_deltas(self, batch_size):
         # copy deltas value into each layer for easier later weight and bias update
@@ -176,9 +194,11 @@ class Model:
                 # print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
             self.eval_metric /= len(train_inputs)
             self._validation_validation_validation(val_inputs, val_expected)
-            # print("Epoch {:4d} - LR: {:.6f} - Train_Eval_Metric: {:.6f} - Train_Loss: {:.6f} - Validation_Eval_Metric: {:.6f} - Validation_Loss: {:.6f}"
+            #print("Epoch {:4d} - LR: {:.6f} - Train_Eval_Metric: {:.6f} - Train_Loss: {:.6f} - Validation_Eval_Metric: {:.6f} - Validation_Loss: {:.6f}"
             #         .format(e, self.eta, self.eval_metric, self.batch_loss, self.validation_eval_metric, self.validation_loss)) 
             train_stats.append((self.eval_metric, self.validation_eval_metric, self.batch_loss, self.validation_loss))
+
+            self.curr_epoch += 1
             
         #get smart
         return train_stats

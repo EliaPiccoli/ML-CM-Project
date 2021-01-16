@@ -65,9 +65,9 @@ def _get_split_cup(test_split = 0.2, val_split = 0.2):
     train_val_labels = labels[test_l:]
 
     scaler = MinMaxScaler()
-    test_inputs = scaler.fit_transform(test_inputs)
+    #test_inputs = scaler.fit_transform(test_inputs)
     #test_labels = scaler.fit_transform(test_labels)
-    train_val_inputs = scaler.fit_transform(train_val_inputs)
+    #train_val_inputs = scaler.fit_transform(train_val_inputs)
     #train_val_labels = scaler.fit_transform(train_val_labels)
 
     val_l = int(len(inputs)*val_split)
