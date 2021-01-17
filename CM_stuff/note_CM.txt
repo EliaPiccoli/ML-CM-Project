@@ -1,3 +1,11 @@
+AGGIORNAMENTO 17/01: 
+Gli slack lineari sembrano i più utilizzati e l'utilizzo dell'uno o dell'altro sembra analogo all'utilizzo di L2 o L1.
+LinkSuperInteressante: https://www.cse.iitb.ac.in/~cs709/notes/enotes/svr-kkt-dual-derivation.pdf
+
+----------------------------------------------------------------------------------------------------------------------
+
+AGGIORNAMENTO 16/01: 
+
 SKETCH OF WHAT WE NEED TO DO (?): https://medium.com/@univprofblog1/support-vector-regression-matlab-r-and-python-codes-all-you-have-to-do-is-preparing-data-set-1d8e4333f831#.f7oxj8jkg
 
 CODE BUT WITH AUTOMATIC OPTIMIZER (?): https://github.com/lbugnon/SVR

@@ -64,13 +64,13 @@ class GridSearch:
         for i in range(len(val_loss)-1):
             if val_loss[i+1] - val_loss[i] > threashold:
                 not_decrease_times += 1
-        score += not_decrease_times*8
+        # score += not_decrease_times*8 # TODO voglio provare senza tener conto delle oscillazioni, solo MEE
 
         not_decrease_times = 0
         for i in range(len(train_loss)-1):
             if train_loss[i+1] - train_loss[i] > threashold:
                 not_decrease_times += 1
-        score += not_decrease_times*2
+        # score += not_decrease_times*2 # TODO voglio provare senza tener conto delle oscillazioni, solo MEE
 
         return score
 
@@ -237,15 +237,33 @@ if __name__ == "__main__":
     gs = GridSearch()
     train, validation, test, train_labels, validation_labels, test_labels = dt._get_split_cup()
     models = [
-        [Layer(8, "tanh", _input=(10,)), Layer(8, "tanh"), Layer(2, "linear")],
-        [Layer(8, "leaky_relu", _input=(10,)), Layer(4, "leaky_relu"),Layer(4, "leaky_relu"), Layer(2, "linear")]
+        [Layer(16, "tanh", _input=(10,)), 
+        Layer(16, "tanh"),
+        Layer(16, "tanh"),
+        Layer(16, "tanh"),
+        Layer(16, "tanh"), 
+        Layer(2, "linear")],
+
+        [Layer(8, "leaky_relu", _input=(10,)), 
+        Layer(8, "leaky_relu"),
+        Layer(8, "leaky_relu"),
+        Layer(8, "leaky_relu"),
+        Layer(8, "leaky_relu"), 
+        Layer(2, "linear")],
+    
+        [Layer(16, "leaky_relu", _input=(10,)), 
+        Layer(16, "leaky_relu"),
+        Layer(16, "leaky_relu"),
+        Layer(16, "leaky_relu"),
+        Layer(16, "leaky_relu"), 
+        Layer(2, "linear")]
     ]
     gs._set_parameters(layers=models, 
                     weight_range=[(-0.69, 0.69)],
-                    eta=[1e-3,1e-4,8e-5,5e-5,1e-5],
-                    alpha=[0.8,0.98],
-                    batch_size=[16,len(train_labels)],
-                    epoch=[500],
+                    eta=[1e-4,5e-5,1e-5,5e-6],
+                    alpha=[0.8,0.9],
+                    batch_size=[len(train_labels)],
+                    epoch=[100],
                     lr_decay=[1e-5,1e-6],
                     _lambda=[1e-3, 1e-4, 1e-5]
                 )
