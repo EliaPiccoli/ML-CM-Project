@@ -186,7 +186,7 @@ class GridSearch:
                                         models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], model))
                 counter += 1
         # print(len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)*len(self.weight_range)*familyofmodelsperconfiguration)
-        print(f"Generated {len(models_configurations)} diffent models.")
+        print(f"Generated {len(models_configurations)} different models.")
         print("Starting Models Analysis")
         models_per_structure = len(models_configurations) // len(self.models_layers)
         configurations_per_model = len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)
@@ -329,16 +329,15 @@ if __name__ == "__main__":
     MONK_DATASET = 1
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_DATASET, split=0.25)
     models = [
-        [Layer(4, "leaky_relu", _input=(17,)), Layer(1, "tanh")], 
-        [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],
+        [Layer(4, "leaky_relu", _input=(17,)), Layer(1, "tanh")]
     ]
     gs._set_parameters(layers=models, 
-                    weight_range=[(-0.69, 0.69)],
-                    eta=[99e-4, 9e-3, 75e-4, 5e-3, 1e-3],
-                    alpha=[0.85, 0.9, 0.98],
+                    weight_range=[(-0.05, 0.05)],
+                    eta=[99e-4],
+                    alpha=[0, 0.6, 0.9],
                     batch_size=[len(train_labels)],
                     epoch=[1000],
-                    lr_decay=[1e-5, 75e-7, 5e-6, 25e-7, 1e-6]
+                    lr_decay=[5e-6]
                 )
     # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[9e-3], alpha=[0.85, 0.9], batch_size=[len(train_labels)], epoch=[500], lr_decay=[1e-5])
     # gs._set_parameters(layers=models, weight_range=[(-0.69, 0.69)], eta=[0.01,0.0001], alpha=[0.85,0.98], batch_size=[16,len(train_labels)], epoch=[300,500])
