@@ -111,6 +111,7 @@ class GridSearch:
                             for eta_index in range(max(len(self.eta), 1)):
                                 for alpha_index in range(max(len(self.alpha), 1)):
                                     for lambda_index in range(max(len(self._lambda), 1)):
+                                        print(self._lambda[lambda_index])
                                         model = Model()
                                         weights_matrix = []
                                         for k in range(len(weights_per_configuration[i][j])):
@@ -206,25 +207,36 @@ class GridSearch:
         epoch_len = max(configurations_per_model // len(self.epoch), 1)
         epoch = self.epoch[index // epoch_len]
 
+        print(f"{index} - prebatch - {epoch_len}")
+
         index = index % epoch_len # shift inside single epoch
         batch_size_len = max(epoch_len // len(self.batch_size), 1)
         batch_size = self.batch_size[index // batch_size_len]
+
+        print(f"{index} - prelr")
 
         index = index % batch_size_len # shift inside single batch_size
         lr_decay_len = max(batch_size_len // len(self.lr_decay), 1)
         lr_decay = self.lr_decay[index // lr_decay_len]
 
+        print(f"{index} - preeta")
+
         index = index % lr_decay_len # shift inside single lr_decay
         eta_len = max(lr_decay_len // len(self.eta), 1)
         eta = self.eta[index // eta_len]
+
+        print(f"{index} - prealpha")
 
         index = index % eta_len # shift inside single eta
         alpha_len = max(eta_len // len(self.alpha), 1)
         alpha = self.alpha[index // alpha_len]
 
+        print(f"{index} - prelambda")
+
         index = index % alpha_len # shift inside single alpha
-        alpha_len = max(alpha_len // len(self.alpha), 1)
-        _lambda = self._lambda[index // alpha_len]
+        _lambda = self._lambda[index]
+
+        print(f"{index} - afterlambda - {_lambda} - {self._lambda} - {index // alpha_len} - {alpha_len}")
 
         return {'epoch':epoch, 'batch_size':batch_size, 'lr_decay':lr_decay, 'eta':eta, 'alpha':alpha, '_lambda':_lambda}
 
@@ -239,12 +251,12 @@ if __name__ == "__main__":
     ]
     gs._set_parameters(layers=models, 
                     weight_range=[(-0.69, 0.69)],
-                    eta=[75e-4],
-                    alpha=[0.5,0.7,0.9,0.99],
-                    batch_size=[len(train_labels)],
+                    eta=[3e-3],
+                    alpha=[0.5,0.7,0.8,0.99],
+                    batch_size=[len(train)],
                     epoch=[500],
-                    #_lambda=[1e-3],
-                    lr_decay=[1e-5]
+                    _lambda=[1e-4],
+                    lr_decay=[0]
                 )
 
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]

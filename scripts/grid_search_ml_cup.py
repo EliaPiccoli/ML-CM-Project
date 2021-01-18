@@ -260,11 +260,11 @@ if __name__ == "__main__":
     ]
     gs._set_parameters(layers=models, 
                     weight_range=[(-0.69, 0.69)],
-                    eta=[1e-4,5e-5,1e-5,5e-6],
-                    alpha=[0.8,0.9],
+                    eta=[5e-4,1e-4,5e-5,1e-5,5e-6],
+                    alpha=[0.8,0.9,0.99],
                     batch_size=[len(train_labels)],
-                    epoch=[100],
-                    lr_decay=[1e-5,1e-6],
+                    epoch=[150],
+                    lr_decay=[1e-5],
                     _lambda=[1e-3, 1e-4, 1e-5]
                 )
     gs._run(train, train_labels, validation, validation_labels, test, test_labels, familyofmodelsperconfiguration=1)

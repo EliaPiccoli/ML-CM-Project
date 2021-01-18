@@ -1,0 +1,59 @@
+models = [
+        [Layer(16, "tanh", _input=(10,)), 
+        Layer(16, "tanh"),
+        Layer(16, "tanh"),
+        Layer(16, "tanh"),
+        Layer(16, "tanh"), 
+        Layer(2, "linear")],
+
+        [Layer(8, "leaky_relu", _input=(10,)), 
+        Layer(8, "leaky_relu"),
+        Layer(8, "leaky_relu"),
+        Layer(8, "leaky_relu"),
+        Layer(8, "leaky_relu"), 
+        Layer(2, "linear")],
+    
+        [Layer(16, "leaky_relu", _input=(10,)), 
+        Layer(16, "leaky_relu"),
+        Layer(16, "leaky_relu"),
+        Layer(16, "leaky_relu"),
+        Layer(16, "leaky_relu"), 
+        Layer(2, "linear")]
+    ]
+    gs._set_parameters(layers=models, 
+                    weight_range=[(-0.69, 0.69)],
+                    eta=[5e-4,1e-4,5e-5,1e-5,5e-6],
+                    alpha=[0.8,0.9,0.99],
+                    batch_size=[len(train_labels)],
+                    epoch=[150],
+                    lr_decay=[1e-5],
+                    _lambda=[1e-3, 1e-4, 1e-5]
+                )
+
+
+Configuration 0, score : 412.97050153523156, test_mee : 4.129705015352315, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.9, '_lambda': 0.0001}
+Configuration 1, score : 412.9705015358616, test_mee : 4.129705015358616, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.99, '_lambda': 0.0001}
+Configuration 2, score : 412.9705015360246, test_mee : 4.129705015360246, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.8, '_lambda': 0.0001}
+Configuration 3, score : 425.451591865816, test_mee : 4.25451591865816, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.9, '_lambda': 1e-05}
+Configuration 4, score : 425.45159187018226, test_mee : 4.254515918701823, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.99, '_lambda': 1e-05}
+Configuration 5, score : 425.4515918709945, test_mee : 4.254515918709945, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.8, '_lambda': 1e-05}
+Configuration 6, score : 570.835525568852, test_mee : 5.708355255688519, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-05, 'alpha': 0.9, '_lambda': 1e-05}
+Configuration 7, score : 570.8355255688522, test_mee : 5.708355255688522, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-05, 'alpha': 0.8, '_lambda': 1e-05}
+
+Configuration 0, score : 617.1929832953194, test_mee : 6.171929832953194, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.99, '_lambda': 0.001}
+Configuration 1, score : 617.1929832953199, test_mee : 6.171929832953198, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.8, '_lambda': 0.001}
+Configuration 2, score : 617.1929832953202, test_mee : 6.171929832953202, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.9, '_lambda': 0.001}
+Configuration 3, score : 626.39496704578, test_mee : 6.263949670457801, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-05, 'alpha': 0.8, '_lambda': 0.001}
+Configuration 4, score : 626.3949670457805, test_mee : 6.263949670457805, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-05, 'alpha': 0.9, '_lambda': 0.001}
+Configuration 5, score : 626.3949670457805, test_mee : 6.263949670457805, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-05, 'alpha': 0.99, '_lambda': 0.001}
+Configuration 6, score : 707.5611993644545, test_mee : 7.075611993644546, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.8, '_lambda': 0.0001}
+Configuration 7, score : 707.5611993644545, test_mee : 7.075611993644546, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 0.0001, 'alpha': 0.99, '_lambda': 0.0001}
+
+Configuration 0, score : 412.3035505730831, test_mee : 4.123035505730831, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-06, 'alpha': 0.8, '_lambda': 1e-05}
+Configuration 1, score : 412.3035505730831, test_mee : 4.123035505730831, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-06, 'alpha': 0.9, '_lambda': 1e-05}
+Configuration 2, score : 412.3035505730832, test_mee : 4.123035505730832, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-06, 'alpha': 0.99, '_lambda': 1e-05}
+Configuration 3, score : 415.63948227616237, test_mee : 4.156394822761624, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-06, 'alpha': 0.9, '_lambda': 0.0001}
+Configuration 4, score : 415.63948227616254, test_mee : 4.156394822761626, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-06, 'alpha': 0.99, '_lambda': 0.0001}
+Configuration 5, score : 415.63948227616265, test_mee : 4.1563948227616265, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 5e-06, 'alpha': 0.8, '_lambda': 0.0001}
+Configuration 6, score : 425.68052523651073, test_mee : 4.256805252365107, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 1e-05, 'alpha': 0.99, '_lambda': 1e-05}
+Configuration 7, score : 425.6805252365109, test_mee : 4.256805252365109, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 1e-05, 'eta': 1e-05, 'alpha': 0.8, '_lambda': 1e-05}

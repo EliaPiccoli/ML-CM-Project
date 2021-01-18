@@ -19,8 +19,8 @@ test_exp = [[elem] for elem in test_labels]
 
 # create model
 model = Model()
-model._add_layer(Layer(8, "tanh", _input=(17,)))
-model._add_layer(Layer(4, "tanh"))
+model._add_layer(Layer(2, "tanh", _input=(17,)))
+model._add_layer(Layer(2, "tanh"))
 model._add_layer(Layer(1, "tanh"))
 model._compile(5e-3, loss_function="mse", alpha=0.9, _lambda=1e-3)
 epoch = 500

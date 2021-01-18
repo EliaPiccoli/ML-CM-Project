@@ -100,22 +100,7 @@ class Model:
             else: # hidden layer (where magic happens)
                 result = self.layers[i]._back_propagation(self.layers[i-1].output, deltas_next_layer=delta_last_layer, weights_next_layer=self.layers[i+1].weights)
             self._accumulate_batch_back_prop(result,i)
-
-            # TODO FOR GRADIENT CLIPPING; WHAT AM I DOING WRONG????
-            clipping_ts = 100
-            did_it = False
-            resulting_delta = result[0]
-            for j in range(len(result[0])):
-                if abs(result[0][j]) > clipping_ts and self.curr_epoch > 10:
-                    multiplier = (clipping_ts / np.linalg.norm(result[0]))
-                    resulting_delta = [res * multiplier for res in result[0]]
-                    did_it = True
-                    if self.clipped:
-                        print("YOOOOO CLIP THAT! SOMEONE CLIP THAAAAAT!")
-                        self.clipped = False
-                    break
-            delta_last_layer = resulting_delta
-            #print(f"{i} - {[round(num,4) for num in delta_last_layer]} - {did_it}")
+            delta_last_layer = result[0]
 
     def _update_layers_deltas(self, batch_size):
         # copy deltas value into each layer for easier later weight and bias update
@@ -126,13 +111,26 @@ class Model:
     def _update_weights_bias(self):
         for i in range(len(self.layers)):
             for j in range(len(self.layers[i].weights)):
+                # TODO FOR GRADIENT CLIPPING; WHAT AM I DOING WRONG????
+                clipping_ts = 1000 # heuristically obtained, look at gradient_norm_print.txt
+                multiplier = 1
+                gradient_norm = np.linalg.norm(self.layers[i].weight_delta[j])
+                #print(f"Layer: {i} - {gradient_norm}")
+                if gradient_norm > clipping_ts:
+                    multiplier = (clipping_ts / gradient_norm)
+                    if self.clipped:
+                                print("YOOOOO CLIP THAT! SOMEONE CLIP THAAAAAT!")
+                                self.clipped = False
+
                 for k in range(len(self.layers[i].weights[j])):
                     # weight_n = weight_o - eta*delta(W) + alpha*delta_prev(W) - 2*lambda*weight_o
+                    self.layers[i].weight_delta[j][k] *= multiplier # gradient clipping
                     self.layers[i].weight_delta_prev[j][k] = - self.eta * self.layers[i].weight_delta[j][k] + self.alpha * self.layers[i].weight_delta_prev[j][k]
                     self.layers[i].weights[j][k] = self.layers[i].weights[j][k] + self.layers[i].weight_delta_prev[j][k] - 2 * self._lambda * self.layers[i].weights[j][k]
                 # bias_n = bias_o - eta*delta(W) + alpha*delta_prev(W)
                 self.layers[i].bias_delta_prev[j] = - self.eta * self.layers[i].bias_delta[j] + self.alpha * self.layers[i].bias_delta_prev[j]
                 self.layers[i].bias[j] = self.layers[i].bias[j] + self.layers[i].bias_delta_prev[j]
+            #print(f"Layer: {i} - {self.layers[i].weight_delta}")
             #print(f"\nLayer {i}:\nweights = {self.layers[i].weights}\nbias = {self.layers[i].bias}")
 
     # TODO: why are you here? We dont need you (should delete?)
