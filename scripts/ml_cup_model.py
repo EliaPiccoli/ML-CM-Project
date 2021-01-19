@@ -33,7 +33,7 @@ model._add_layer(Layer(2, "linear"))
 # model._add_layer(Layer(16, "tanh"))
 # model._add_layer(Layer(2, "linear"))
 model._compile(eta=5e-6, loss_function="mse", alpha=0.8, _lambda=1e-5, isClassification = False, stopping_eta=0.1)
-epoch = 150
+epoch = 400
 stats = model._train(train, train_labels, validation, validation_labels, decay=1e-5, batch_size=len(train), epoch=epoch,verbose=True)
 
 # testing the model
