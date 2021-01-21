@@ -22,7 +22,7 @@ class Model:
     def _add_layer(self, layer):
         self.layers.append(layer)
 
-    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, stopping_eta=0.1, weight_range=None, weight_matrix=None, bias_matrix=None, isClassification = True):
+    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, stopping_eta=0.1, weight_range=None, weight_matrix=None, bias_matrix=None, isClassification=True, gradient_clipping=False):
         for i in range(len(self.layers)):
             if weight_matrix is None and bias_matrix is None:
                 self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), w_range=weight_range)
@@ -38,8 +38,7 @@ class Model:
         self.loss_function = get_loss(loss_function)
         self.task = isClassification # True for Classification, False for Regression
         self.metric_function = self._compute_accuracy if isClassification else self._compute_euclidean_error
-         # TODO togli, serve solo per le prove gradient clipping
-        self.clipped = True
+        self.grad_clip = gradient_clipping
         self.curr_epoch = 0
 
     def _init_batch(self):
@@ -111,16 +110,13 @@ class Model:
     def _update_weights_bias(self):
         for i in range(len(self.layers)):
             for j in range(len(self.layers[i].weights)):
-                # TODO FOR GRADIENT CLIPPING; WHAT AM I DOING WRONG????
-                clipping_ts = 1000 # heuristically obtained, look at gradient_norm_print.txt
                 multiplier = 1
-                gradient_norm = np.linalg.norm(self.layers[i].weight_delta[j])
-                #print(f"Layer: {i} - {gradient_norm}")
-                if gradient_norm > clipping_ts:
-                    multiplier = (clipping_ts / gradient_norm)
-                    if self.clipped:
-                                print("YOOOOO CLIP THAT! SOMEONE CLIP THAAAAAT!")
-                                self.clipped = False
+                if self.grad_clip:
+                    clipping_ts = 1000 # heuristically obtained, look at gradient_norm_print.txt
+                    gradient_norm = np.linalg.norm(self.layers[i].weight_delta[j])
+                    #print(f"Layer: {i} - {gradient_norm}")
+                    if gradient_norm > clipping_ts:
+                        multiplier = (clipping_ts / gradient_norm)
 
                 for k in range(len(self.layers[i].weights[j])):
                     # weight_n = weight_o - eta*delta(W) + alpha*delta_prev(W) - 2*lambda*weight_o
