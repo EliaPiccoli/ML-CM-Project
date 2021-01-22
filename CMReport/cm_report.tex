@@ -2,6 +2,10 @@
 \usepackage{graphicx} % for inserting images
 \usepackage[utf8]{inputenc} % for good practice
 \usepackage{amsmath} % for equations
+\usepackage{hyperref}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
 \title{Support Vector Regression\\using\\Deflected Subgradient Methods}
 \author{FearEP\\Lord Gugger}
 \begin{document}
@@ -35,7 +39,23 @@ Per affrontare questo problema di regressione ci vogliamo affidare ad un modello
 		\label{fig:svr_intro}
 	\end{figure}
 
-La funzione risultante dall’ottimizzazione del modello è descritta genericamente come $f(x) = w  x + b$
+La funzione risultante dall’ottimizzazione del modello è descritta genericamente come $f(x) = w  x + b$\\
+Obiettivo dell’ottimizzazione è dunque fare in modo che la curva sia, di nuovo, \textit{as flat as possible}, ma questo è equivalente ad un problema di ottimizzazione dove vogliamo avere $\norm{w}$ minima. 
+Per comodità di formulazione del problema possiamo minimizzare $\norm{w}^2$ senza cambiare il significato. Questo ci permette di portarci in un problema di ottimizzazione quadratico, grazie al quale potremo approfittare del concetto di \textbf{strong duality} più tardi. 
+Introduciamo a questo punto delle variabili dette \textit{slack} per formulare la \textit{dual objective function}, la quale rappresenta il nostro \textit{primal problem}:
+	\begin{equation}\label{eq:1}
+		\min_{w,b,\xi_i,\xi_i^*} \frac{1}{2}\norm{w}^2+C\sum_{i}(\xi_{i} + \xi_{i}^*)
+	\end{equation}
+	Ciò che viene sommato a $\norm{w}$ è un elemento che ci permette di regolare l’errore, e di conseguenza la penalità, dovuti alla possibile presenza di elementi che non rimangono all’interno dell’ $\varepsilon$-tube. Vediamo dunque come C funga da regolarizzatore in una metodica simile a L1. I vari $\xi$ vengono detti \textit{slack variables} e ci permettono di definire i vincoli del problema per qualsiasi i-esimo dato:
+
+	\begin{align*}\label{eq:2}
+		y_i - w^T\phi(x_i) - b \leq \epsilon + \xi_i,  \\ 
+		b + w^T\phi(x_i) - y_i \leq \epsilon + \xi_i, \\
+		\xi_i,\xi_i^*  \geq 0
+	\end{align*}
+	\begin{center}
+		\footnotesize{x i-esimo input, y i-esimo output}
+	\end{center}
 
 
 \end{document}
