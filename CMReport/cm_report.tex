@@ -39,7 +39,12 @@ Per affrontare questo problema di regressione ci vogliamo affidare ad un modello
 		\label{fig:svr_intro}
 	\end{figure}
 
-La funzione risultante dall’ottimizzazione del modello è descritta genericamente come $f(x) = w  x + b$\\
+La funzione risultante dall’ottimizzazione del modello è descritta genericamente come:
+
+	\begin{equation}\label{eq:0}
+		f(x) = w  x + b
+	\end{equation}
+
 Obiettivo dell’ottimizzazione è dunque fare in modo che la curva sia, di nuovo, \textit{as flat as possible}, ma questo è equivalente ad un problema di ottimizzazione dove vogliamo avere $\norm{w}$ minima. 
 Per comodità di formulazione del problema possiamo minimizzare $\norm{w}^2$ senza cambiare il significato. Questo ci permette di portarci in un problema di ottimizzazione quadratico, grazie al quale potremo approfittare del concetto di \textbf{strong duality} più tardi. 
 Introduciamo a questo punto delle variabili dette \textit{slack} per formulare la \textit{dual objective function}, la quale rappresenta il nostro \textit{primal problem}:
@@ -48,14 +53,57 @@ Introduciamo a questo punto delle variabili dette \textit{slack} per formulare l
 	\end{equation}
 	Ciò che viene sommato a $\norm{w}$ è un elemento che ci permette di regolare l’errore, e di conseguenza la penalità, dovuti alla possibile presenza di elementi che non rimangono all’interno dell’ $\varepsilon$-tube. Vediamo dunque come C funga da regolarizzatore in una metodica simile a L1. I vari $\xi$ vengono detti \textit{slack variables} e ci permettono di definire i vincoli del problema per qualsiasi i-esimo dato:
 
-	\begin{align*}\label{eq:2}
+	\begin{equation}\label{eq:2}
+	\begin{aligned}
 		y_i - w^T\phi(x_i) - b \leq \epsilon + \xi_i,  \\ 
 		b + w^T\phi(x_i) - y_i \leq \epsilon + \xi_i, \\
 		\xi_i,\xi_i^*  \geq 0
-	\end{align*}
+	\end{aligned}
+	\end{equation}
+
 	\begin{center}
 		\footnotesize{x i-esimo input, y i-esimo output}
 	\end{center}
+	
+	Essendo in un problema di ottimizzazione quadratico, la soluzione al \textit{dual problem} risulta equivalente a quella del \textit{primal problem}. In particolare in questa casistica risulta più facile la risoluzione del \textit{dual problem} vista la possibile applicazione del concetto di kernel. Costruiamo dunque il \textit{dual problem} definendo la relativa Lagrangiana (equivalente del \textit{primal problem} al quale aggiungiamo i vincoli sommandoli o sottraendoli):
+	
+
+	\begin{equation}\label{eq:3}
+	\begin{gathered}
+		L(\alpha,\alpha^*,\mu,\mu^*) =  \frac{1}{2}\norm{w}^2+C\sum_{i=1}^{m}(\xi_{i} + \xi_{i}^*) \\
+		+ \sum_{i=1}^{m}(\alpha_i(y_i - w^T\phi(x_i) - b - \epsilon - \xi_i) + \alpha_i^*(w^T\phi(x_i) + b - y_i - \epsilon - \xi_i^*) \\
+		\sum_{i=1}^{m}(\mu_i\xi_i + \mu_i^*\xi_i^*)
+	\end{gathered}
+	\end{equation}
+
+	A causa del concetto di \textbf{\textit{weak duality}} qualsiasi valore del \textit{primal problem} risulta maggiore (o uguale) del \textit{dual problem}. Da questa considerazione deriviamo il fatto che il punto di massima vicinanza tra i 2 problemi è dove il \textit{primal problem} ha minimo e il \textit{dual problem} ha massimo. Nella casistica di \textit{strong duality} questa vicinanza si tramuta uguaglianza.
+Cerchiamo dunque di rielaborare il \textit{dual problem} per lavorare con meno variabili possibili, in particolare eliminiamo dai calcoli la variabile w, b e le 2 \textit{slack} $\xi$ e $\xi^*$. In che modo? Stiamo cercando un valore ottimo che tra l’altro sarà unico data la casistica quadratica, dunque la derivata parziale relativa ad ognuna di queste variabili va posta a 0. Questo ci porta a poter ridefinire w:
+
+	\begin{equation}\label{eq:4}
+		w = \sum_{i=1}^{m}(\alpha_i - \alpha_i^*)\phi(x_i)
+	\end{equation}
+
+	Infine tramite sostituzione nella Lagrangiana definita precedentemente arriviamo ad una funzione dipendente solamente da $\alpha$ e $\alpha^*$:
+
+	\begin{equation}\label{eq:5}
+	\begin{gathered}
+		\max_{\alpha_i,\alpha_i^*} - \frac{1}{2}\sum_i\sum_j(\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)K(x_i,x_j) \\
+		- \epsilon\sum_i(\alpha_i + \alpha_i^*) + \sum_i y_i(\alpha_i - \alpha_i^*)
+	\end{gathered}
+	\end{equation}
+
+	Dove $K(x_i,x_j)$ rappresenta il concetto di \textbf{kernel}, sostituendo ciò che sarebbe un prodotto scalare nello spazio necessitato. Rielaboriamo un attimo la precedente frase: certi problemi di regressione non possono essere adeguatamente descritti da modelli lineari. Risulta dunque comodo cambiare spazio di visualizzazione, per portarci in un nuovo spazio (con ogni probabilità con più dimensioni rispetto allo spazio originale) dove il problema diventa linearmente affrontabile. Il cambio di base risulta essere incredibilmente dispendioso per il training del modello ed è proprio in questo caso che il kernel diventa il fulcro dell’efficienza di SVC/SVR. Ci permette infatti di eseguire il \textit{dot-product} nello spazio attuale ma avere come risultato il \textit{dot-product} nello spazio richiesto. Ci permette di risparmiare molte computazioni e di poterle riutilizzare salvandoci i valori risultanti in una \textit{kernel matrix} (riutilizzabile ad ogni ciclo di ottimizzazione). Ovviamente non c’è la certezza di aver preso in considerazione il kernel corretto per la casistica, bisognerà dunque svilupparne vari, magari certi funzioneranno meglio di altri (\textit{rbf, sigmoid, etc}). 
+
+	Definito il problema possiamo a questo punto cercare il massimo del \textit{dual problem}. La task da noi scelta utilizzerà \textbf{deflected subgradient methods} per raggiungere l’obiettivo. Una volta raggiunto il massimo avremo a nostra disposizione i corretti $\alpha$ e $\alpha^*$ necessari per il calcolo di w. 
+
+	Per completare la funzione risolutrice del problema ci basta trovare il parametro b. Ricavarlo risulta semplice una volta preso in considerazione un qualsiasi elemento del nostro insieme di input tale per cui la relativa predizione (y i-esimo) sia al limite dell’ $\varepsilon$-tube o al di fuori di esso. Proprio quell’insieme di valori sarà infatti l’unico ad avere come vincoli attivi almeno uno tra i vari $\alpha$ e $\alpha^*$, ovvero un $\alpha$ o $\alpha^*$ diversi da 0. Essendo dunque al margine di un vincolo potremo, derivando da \eqref{eq:0} e \eqref{eq:4}:
+
+	\begin{equation}
+		x_j \  with\  \alpha_j \in(0,C): b = y_j - \sum_i(\alpha_i - \alpha_i^*)K(x_i,x_j)
+	\end{equation}
+
+	Una volta trovata la funzione risultante possiamo testare la bontà del modello effettuando \textit{prediction} su un set di test input per poi calcolare la metrica MSE tra output previsto dal modello e output effettivo del set di test input.\\
+Questo fatto è particolarmente importante per il confronto tra modelli e dunque per la ricerca dei parametri migliori possibili (\textit{grid search}).
 
 
 \end{document}
