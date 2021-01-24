@@ -1,7 +1,8 @@
-\documentclass[12pt]{article}
+ \documentclass[12pt]{article}
 \usepackage{graphicx} % for inserting images
 \usepackage[utf8]{inputenc} % for good practice
 \usepackage{amsmath} % for equations
+\usepackage{amsfonts}
 \usepackage{hyperref}
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
@@ -27,7 +28,7 @@
 	
 	\newpage
 	\begin{abstract}
-		 Project aim is developing the implementation of a model which follows an SVR-type approach including 3 different kernels. The implementation uses as optimization algorithm a dual approach with appropriate choices of the constraints to be dualized, where the Lagrangian Dual is solved by an algorithm of the class of deflected subgradient methods.
+		 Project aim is developing the implementation of a model which follows an SVR-type approach including various different kernels. The implementation uses as optimization algorithm a dual approach with appropriate choices of the constraints to be dualized, where the Lagrangian Dual is solved by an algorithm of the class of deflected subgradient methods.
 	\end{abstract}
 	
 	\section{Introduction}
@@ -55,9 +56,9 @@ Introduciamo a questo punto delle variabili dette \textit{slack} per formulare l
 
 	\begin{equation}\label{eq:2}
 	\begin{aligned}
-		y_i - w^T\phi(x_i) - b \leq \epsilon + \xi_i,  \\ 
-		b + w^T\phi(x_i) - y_i \leq \epsilon + \xi_i, \\
-		\xi_i,\xi_i^*  \geq 0
+		&y_i - w^T\phi(x_i) - b \leq \epsilon + \xi_i,  \\ 
+		&b + w^T\phi(x_i) - y_i \leq \epsilon + \xi_i, \\
+		&\xi_i,\xi_i^*  \geq 0
 	\end{aligned}
 	\end{equation}
 
@@ -69,11 +70,13 @@ Introduciamo a questo punto delle variabili dette \textit{slack} per formulare l
 	
 
 	\begin{equation}\label{eq:3}
-	\begin{gathered}
-		L(\alpha,\alpha^*,\mu,\mu^*) =  \frac{1}{2}\norm{w}^2+C\sum_{i=1}^{m}(\xi_{i} + \xi_{i}^*) \\
-		+ \sum_{i=1}^{m}(\alpha_i(y_i - w^T\phi(x_i) - b - \epsilon - \xi_i) + \alpha_i^*(w^T\phi(x_i) + b - y_i - \epsilon - \xi_i^*) \\
+	\begin{aligned}
+		L(\alpha,\alpha^*,\mu,\mu^*) =  \ &\frac{1}{2}\norm{w}^2\\
+		&+C\sum_{i=1}^{m}(\xi_{i} + \xi_{i}^*) \\
+		&+ \sum_{i=1}^{m}(\alpha_i(y_i - w^T\phi(x_i) - b - \epsilon - \xi_i))\\
+		&+ \sum_{i=1}^{m}(\alpha_i^*(w^T\phi(x_i) + b - y_i - \epsilon - \xi_i^*)) \\
 		\sum_{i=1}^{m}(\mu_i\xi_i + \mu_i^*\xi_i^*)
-	\end{gathered}
+	\end{aligned}
 	\end{equation}
 
 	A causa del concetto di \textbf{\textit{weak duality}} qualsiasi valore del \textit{primal problem} risulta maggiore (o uguale) del \textit{dual problem}. Da questa considerazione deriviamo il fatto che il punto di massima vicinanza tra i 2 problemi è dove il \textit{primal problem} ha minimo e il \textit{dual problem} ha massimo. Nella casistica di \textit{strong duality} questa vicinanza si tramuta uguaglianza.
@@ -86,24 +89,55 @@ Cerchiamo dunque di rielaborare il \textit{dual problem} per lavorare con meno v
 	Infine tramite sostituzione nella Lagrangiana definita precedentemente arriviamo ad una funzione dipendente solamente da $\alpha$ e $\alpha^*$:
 
 	\begin{equation}\label{eq:5}
-	\begin{gathered}
-		\max_{\alpha_i,\alpha_i^*} - \frac{1}{2}\sum_i\sum_j(\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)K(x_i,x_j) \\
-		- \epsilon\sum_i(\alpha_i + \alpha_i^*) + \sum_i y_i(\alpha_i - \alpha_i^*)
-	\end{gathered}
+	\begin{aligned}
+		\max_{\alpha_i,\alpha_i^*} &- \frac{1}{2}\sum_i\sum_j(\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)K(x_i,x_j) \\
+		&- \epsilon\sum_i(\alpha_i + \alpha_i^*)\\
+		&+ \sum_i y_i(\alpha_i - \alpha_i^*)
+	\end{aligned}
 	\end{equation}
 
-	Dove $K(x_i,x_j)$ rappresenta il concetto di \textbf{kernel}, sostituendo ciò che sarebbe un prodotto scalare nello spazio necessitato. Rielaboriamo un attimo la precedente frase: certi problemi di regressione non possono essere adeguatamente descritti da modelli lineari. Risulta dunque comodo cambiare spazio di visualizzazione, per portarci in un nuovo spazio (con ogni probabilità con più dimensioni rispetto allo spazio originale) dove il problema diventa linearmente affrontabile. Il cambio di base risulta essere incredibilmente dispendioso per il training del modello ed è proprio in questo caso che il kernel diventa il fulcro dell’efficienza di SVC/SVR. Ci permette infatti di eseguire il \textit{dot-product} nello spazio attuale ma avere come risultato il \textit{dot-product} nello spazio richiesto. Ci permette di risparmiare molte computazioni e di poterle riutilizzare salvandoci i valori risultanti in una \textit{kernel matrix} (riutilizzabile ad ogni ciclo di ottimizzazione). Ovviamente non c’è la certezza di aver preso in considerazione il kernel corretto per la casistica, bisognerà dunque svilupparne vari, magari certi funzioneranno meglio di altri (\textit{rbf, sigmoid, etc}). 
+	Notiamo che le uniche variabili rimaste sono i moltiplicatori lagrangiani $\alpha$ e $\alpha^*$, i quali sono sottoposti ai seguenti vincoli:
+	
+	\begin{equation}\label{eq:6}
+		\begin{aligned}
+		&\forall i \: \alpha_i,\alpha_i^* \geq 0 \qquad\qquad &&(KKT condition) \\
+		&\forall i \: \alpha_i,\alpha_i^* \in [0,C]  \qquad\qquad &&(from \: deriving \: \eqref{eq:5})\\
+		&\forall i \: \sum (\alpha_i - \alpha_i^*) = 0 \qquad\qquad &&(from \: deriving \: \eqref{eq:5})\\
+		&\forall i \: \alpha_i \alpha_i^* = 0 \qquad\qquad &&(from \: model \: construction)
+		\end{aligned}
+	\end{equation}
+			
+%discorsi vari sui kernel
 
+	Restando ancora su \eqref{eq:5}, approfondiamo l'elemento $K(x_i,x_j)$, ovvero ciò rappresenta il concetto di \textbf{kernel}, sostituendo ciò che sarebbe un prodotto scalare nello spazio necessitato. Rielaboriamo dunque la precedente frase: certi problemi di regressione non possono essere adeguatamente descritti da modelli lineari. Risulta dunque comodo cambiare spazio di visualizzazione, per portarci in un nuovo spazio (con ogni probabilità con più dimensioni rispetto allo spazio originale) dove il problema diventa linearmente affrontabile. Il cambio di base risulta essere incredibilmente dispendioso per il training del modello ed è proprio in questo caso che il kernel diventa il fulcro dell’efficienza di SVC/SVR. Ci permette infatti di eseguire il \textit{dot-product} nello spazio attuale ma avere come risultato il \textit{dot-product} nello spazio richiesto. Ci permette di risparmiare molte computazioni e di poterle riutilizzare salvandoci i valori risultanti in una \textit{kernel matrix} (riutilizzabile ad ogni ciclo di ottimizzazione). Ovviamente non c’è la certezza di aver preso in considerazione il kernel corretto per la casistica, bisognerà dunque svilupparne vari, magari certi funzioneranno meglio di altri (\textit{rbf, sigmoid, etc}).\\
+In particolare questa implementazione prevede il possibile utilizzo di diversi kernel:\\
+	\begin{itemize}
+		\item linear: $\langle x,x' \rangle$
+		\item polynomial: $(\gamma\langle x,x' \rangle + r)^d$
+		\item rbf: $\exp(-\frac{\norm{x \  x'}^2}{2\sigma^2})$
+		\item sigmoid: $\tanh(\gamma\langle x,x' \rangle + r)$
+	\end{itemize}
+
+%discorsi parte finale post definizione problema
 	Definito il problema possiamo a questo punto cercare il massimo del \textit{dual problem}. La task da noi scelta utilizzerà \textbf{deflected subgradient methods} per raggiungere l’obiettivo. Una volta raggiunto il massimo avremo a nostra disposizione i corretti $\alpha$ e $\alpha^*$ necessari per il calcolo di w. 
 
 	Per completare la funzione risolutrice del problema ci basta trovare il parametro b. Ricavarlo risulta semplice una volta preso in considerazione un qualsiasi elemento del nostro insieme di input tale per cui la relativa predizione (y i-esimo) sia al limite dell’ $\varepsilon$-tube o al di fuori di esso. Proprio quell’insieme di valori sarà infatti l’unico ad avere come vincoli attivi almeno uno tra i vari $\alpha$ e $\alpha^*$, ovvero un $\alpha$ o $\alpha^*$ diversi da 0. Essendo dunque al margine di un vincolo potremo, derivando da \eqref{eq:0} e \eqref{eq:4}:
 
-	\begin{equation}
+	\begin{equation*}
 		x_j \  with\  \alpha_j \in(0,C): b = y_j - \sum_i(\alpha_i - \alpha_i^*)K(x_i,x_j)
-	\end{equation}
+	\end{equation*}
 
 	Una volta trovata la funzione risultante possiamo testare la bontà del modello effettuando \textit{prediction} su un set di test input per poi calcolare la metrica MSE tra output previsto dal modello e output effettivo del set di test input.\\
 Questo fatto è particolarmente importante per il confronto tra modelli e dunque per la ricerca dei parametri migliori possibili (\textit{grid search}).
+
+
+	\section{Structures for implementation}
+	\begin{itemize}
+		\item kernel matrix: presi $m$ record di input sarà una matrice simmetrica $ K(x,x') \in \mathbb{R}^{m,m}$
+		\item alpha matrix: presi $m$ record di input sarà un vettore $ A \in \mathbb{R}^{m} $ tale per cui $A_i \neq 0$ solo se il relativo input genera un output che contribuisce alla $loss$ 
+		\item alpha* matrix: analogo ad alpha matrix
+	\end{itemize}
+
 
 
 \end{document}
