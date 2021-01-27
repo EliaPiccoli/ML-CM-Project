@@ -4,6 +4,10 @@
 \usepackage{amsmath} % for equations
 \usepackage{amsfonts}
 \usepackage{hyperref}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{setspace}
+\usepackage{siunitx}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 
@@ -134,10 +138,72 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 	\section{Structures for implementation}
 	\begin{itemize}
 		\item kernel matrix: presi $m$ record di input sarà una matrice simmetrica $ K(x,x') \in \mathbb{R}^{m,m}$
-		\item alpha matrix: presi $m$ record di input sarà un vettore $ A \in \mathbb{R}^{m} $ tale per cui $A_i \neq 0$ solo se il relativo input genera un output che contribuisce alla $loss$ 
-		\item alpha* matrix: analogo ad alpha matrix
+		\item alpha matrix: presi $m$ record di input sarà un vettore $ A \in \mathbb{R}^{2m} $ tale per cui $A_i \neq 0$ solo se il relativo input genera un output che contribuisce alla $loss$ . Prima metà di $A$ rappresenterà l'insieme di $\alpha$ mentre la seconda metà rappresenterà l'insieme di $\alpha*$ .
 	\end{itemize}
 
+	\section{Algorithm introduction}
+	Qui parleremo del Deflected, magari spiegando un attimo il Target Level, Polyak e constraint vari tra $\beta$ e $\gamma$.
 
+	\section{Pseudo Code}
+	\begin{algorithm}[H]
+		\DontPrintSemicolon
+		\KwIn{$X$ input matrix of size $m \times d$ \newline
+			$y$  output vector of size $m$\newline
+			$C$ regularization parameter\newline
+			$\varepsilon$  parameter defining sensitiveness of model\newline
+			$kernel\_type$ defining which kernel to use\newline
+			$args$ necessary and different for each kernel}
+		\KwOut{Parameters $w$ e $b$ for resulting function ( $ f(x) = wx + b $ )}
+		\setstretch{1.35}
+		
+		\Begin{
+			$K \longleftarrow kernel(X, kernel\_type, args)$\\
+			\tcp{to assure $Q$ to be Positive Semidefinite}
+			$Q \longleftarrow [K\qquad -K ;\qquad -K \qquad\;  K]$\\
+			$q \longleftarrow [-y\qquad y]$\\
+			$q \longleftarrow q + \varepsilon$\\
+			$upper\_bound \longleftarrow C$\\
+			$alphas \longleftarrow Fit\_SVR(Q,q,upper\_bound)$\\
+			$alpha^+ \longleftarrow alphas_{0:(size(alphas)/2)}$\\
+			$alpha^- \longleftarrow alphas_{(size(alphas)/2):size(alphas)}$\\
+			$w \longleftarrow (alpha^+ - alpha^-)K$\\
+			\tcp{find first $alpha^+$ or $alpha^- \ne 0$ and save index in $alpha\_not\_zero$}
+			$b = y_{alpha\_not\_zero} - \sum_i (alpha^+_i - alpha^-_i)K_{i,alpha\_not\_zero}$\\
+		}
+		 \caption{Get\_SVR}
+	\end{algorithm}
+	
+
+	
+	Discussione su algoritmo, discorso su Q e su b.\\
+
+
+
+	\begin{algorithm}[H]
+		\DontPrintSemicolon
+		\KwIn{$Q$ input matrix of size $2m \times 2m$ \newline
+		$q$  output vector of size $2m$\newline
+		$ub$ upper bound for constrained variables\newline
+		$stopping\_criterion$ $(default = \num{1e-12})$\newline
+		$\gamma$ for Target Level $(default = 0.5)$\newline
+		$\beta$ for Target Level $(default = 0.5)$\newline
+		$eps$ for Target Level $(default = \num{1e-6})$\newline
+		$\delta\_reset$ for Target Level $(default = \num{1e-4})$\newline
+		$\rho$ for Target Level $(default = 0.95)$
+		}
+			
+		\KwOut{Optimal $x$ to minimize constrained $\frac{1}{2}x'Qx + qx$}
+		\setstretch{1.35}
+		
+		\Begin{
+		$x \longleftarrow ([0] \times size(q))'$\\
+		$xref \longleftarrow x$\\
+		$fref \longleftarrow inf$\\
+		$\delta\_prev \longleftarrow 0$\\
+		$iter \longleftarrow 1$\\
+		$\delta \longleftarrow 0$\\
+		}
+		 \caption{Fit\_SVR}
+	\end{algorithm}
 
 \end{document}
