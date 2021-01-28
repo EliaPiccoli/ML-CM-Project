@@ -13,7 +13,7 @@
 \newcommand{\abs}[1]{\lvert#1\rvert}
 
 \title{Support Vector Regression\\using\\Deflected Subgradient Methods}
-\author{FearEP\\Lord Gugger}
+\author{Elia Piccoli\\Nicola Gugole}
 \begin{document}
 	\begin{titlepage}
 		\maketitle
@@ -128,26 +128,46 @@ In particolare questa implementazione prevede il possibile utilizzo di diversi k
 
 	Per completare la funzione risolutrice del problema ci basta trovare il parametro b. Ricavarlo risulta semplice una volta preso in considerazione un qualsiasi elemento del nostro insieme di input tale per cui la relativa predizione (y i-esimo) sia al limite dell’ $\varepsilon$-tube o al di fuori di esso. Proprio quell’insieme di valori sarà infatti l’unico ad avere come vincoli attivi almeno uno tra i vari $\alpha$ e $\alpha^*$, ovvero un $\alpha$ o $\alpha^*$ diversi da 0. Essendo dunque al margine di un vincolo potremo, derivando da \eqref{eq:0} e \eqref{eq:4}:
 
-	\begin{equation*}
+	\begin{equation}\label{eq:7}
 		x_j \  with\  \alpha_j \in(0,C): b = y_j - \sum_i(\alpha_i - \alpha_i^*)K(x_i,x_j)
-	\end{equation*}
+	\end{equation}
 
 	Una volta trovata la funzione risultante possiamo testare la bontà del modello effettuando \textit{prediction} su un set di test input per poi calcolare la metrica MSE tra output previsto dal modello e output effettivo del set di test input.\\
 Questo fatto è particolarmente importante per il confronto tra modelli e dunque per la ricerca dei parametri migliori possibili (\textit{grid search}).
 
-
-	\section{Structures for implementation}
-	\begin{itemize}
-		\item kernel matrix: presi $m$ record di input sarà una matrice simmetrica $ K(x,x') \in \mathbb{R}^{m,m}$
-		\item alpha matrix: presi $m$ record di input sarà un vettore $ A \in \mathbb{R}^{2m} $ tale per cui $A_i \neq 0$ solo se il relativo input genera un output che contribuisce alla $loss$ . Prima metà di $A$ rappresenterà l'insieme di $\alpha$ mentre la seconda metà rappresenterà l'insieme di $\alpha*$ .
-	\end{itemize}
-
+%dscorsi per spiegare brevemente l'algoritmo, subgradient e deflected
 	\section{Algorithm introduction}
 	Qui parleremo del Deflected, magari spiegando un attimo il Target Level, Polyak e constraint vari tra $\beta$ e $\gamma$.
 
+%discorsi su strutture necessarie per implementazione e motivazioni per scelte
+	\section{Structures for implementation}
+	Passando dalla formalizzazione matematica vista nella sezione precedente giungiamo alla sua implementazione. In Algorithm\ref{algo:1}, partendo dai dati di input ed il rispettivo output, vengono calcolati i valori dei moltiplicatori lagrangiani i quali successivamente permettono di trovare il valore di $w$ e $b$.
+L’obiettivo è quindi quello di rappresentare il problema di massimizzazione formalizzato in \eqref{eq:5}. Per comodità il primo passaggio è trasformare la ricerca di un massimo nella ricerca di un minimo, facilmente attuabile tramite il cambio di segno della nostra funzione. Successivamente vanno definite le matrici e i vincoli che ci permettono di rappresentare il \textit{Quadratic Problem}:\\
+	\begin{equation}\label{eq:8}
+		\min \frac{1}{2}x'Qx + qx \longrightarrow \forall_i\; lower\_bound\leq x_i\leq upper\_bound
+	\end{equation}
+
+	Analizziamo quindi la formalizzazione dei singoli componenti di \eqref{eq:8} insieme ad altri componenti necessari all'implementazione:
+	
+	\begin{itemize}
+		\item \textbf{kernel matrix}: presi $m$ record di input sarà una matrice simmetrica $ K(x,x') \in \mathbb{R}^{m,m}$
+		\item \textbf{alpha matrix ($x$)}: presi $m$ record di input sarà un vettore $ x \in \mathbb{R}^{2m} $ tale per cui $x_i \neq 0$ solo se il relativo input genera un output che contribuisce alla $loss$ . Prima metà di $x$ rappresenterà l'insieme di $\alpha$ mentre la seconda metà rappresenterà l'insieme di $\alpha*$ .
+		\item \textbf{Q}: da \eqref{eq:5} si nota che è rappresentato dalla \textit{kernel matrix}, fatto non sufficiente per assicurare la proprietà di essere \textit{positive semi-definite}, abbreviato da qui in poi con \textbf{PSD} (basta pensare al kernel \textit{sigmoid}). La formalizzazione che viene utilizzata all’interno di Algorithm \ref{algo:1} ({[ \ref{bib:1} ]}) ci assicura invece la proprietà di \textbf{PSD},  lo spazio del problema diventa dunque convesso assicurandoci che punti stazionari sono anche di minimo globale, proprietà non ottenuta da altri modelli (per esempio NN). 
+		\item \textbf{q}: costruita in modo da unire i rimanenti elementi di \eqref{eq:5}.
+		\item \textbf{linear constraint}: il vincolo lineare presente sui moltiplicatori lagrangiani ci permette di definire $lb=0$ e $ub=C$.
+	\end{itemize}
+		
+	Data questa formalizzazione tramite Algorithm \ref{algo:2} verrà risolto il problema di minimizzazione ottenendo i valori dei moltiplicatori lagrangiani. A questo punto sarà quindi possibile calcolare il valore di $w$ e $b$ in modo tale da rappresentare la nostra funzione:\\
+	$f(x)=wx+b$
+
+	In particolare, per determinare il valore di $b$ andremo ad applicare quanto già evidenziato precedentemente in \eqref{eq:7}, sarà necessario trovare un elemento che si trovi al di fuori dell’$\varepsilon$-tube e rispetto quest’ultimo calcolare il valore.
+
+
+%pseudocodice e analisi parti importanti
 	\section{Pseudo Code}
 	\begin{algorithm}[H]
 		\DontPrintSemicolon
+		\label{algo:1}
 		\KwIn{$X$ input matrix of size $m \times d$ \newline
 			$y$  output vector of size $m$\newline
 			$C$ regularization parameter\newline
@@ -173,12 +193,11 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 		}
 		 \caption{Get\_SVR}
 	\end{algorithm}
-	
-	Discussione su algoritmo, discorso su Q e su b.\\
-
+	\pagebreak
 	\begin{algorithm}[H]
-		\footnotesize
+		\scriptsize
 		\DontPrintSemicolon
+		\label{algo:2}
 		\KwIn{$Q$ input matrix of size $2m \times 2m$ \newline
 		$q$  output vector of size $2m$\newline
 		$ub$ upper bound for constrained variables\newline
@@ -211,7 +230,7 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 			$g \longleftarrow Qx + q$\\
 			\texttt{// check if in $optimal$ condition}\\
 			\If{$\norm{g} < stopping\_criterion$}{
-				return $xref$\\
+				return $x$\\
 				}
 			
 			\texttt{// reset $\delta$ if $v$ is \textit{good} or decrease it otherwise}\\
@@ -234,7 +253,9 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 		}
 		 \caption{Fit\_SVR}
 	\end{algorithm}
+
 	\newpage
+
 	\begin{algorithm}[H]
 		\DontPrintSemicolon
 		\KwIn{$\gamma \in [0,1]$ needed for Deflection $(default = 0.5)$\newline
@@ -260,4 +281,19 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 		}
 		 \caption{Get\_Direction}
 	\end{algorithm}
+
+	\section{Dubbi}
+	\begin{enumerate}
+		\item Abbiamo letto diversi paper in letteratura e abbiamo trovato diversi modi in cui viene determinato il valore $b$. Alcuni dicono che basta usare un punto che sia fuori o al margine dell’$\varepsilon$-tube {[ \ref{bib:2} ]}, altri invece lo calcolano su tutti i punti per poi fare una media. C’è un metodo più corretto di un altro? 
+		\item Nel calcolo del \textit{Polyak stepsize} utilizziamo un parametro $\beta$ che nel caso di \textit{deflection-first}$ \longrightarrow \beta \leq \gamma$. Nelle slide e appunti però non abbiamo visto nessuna formula rispetto la quale è definito, esiste o è determinato tramite una $grid search$?
+		\item Abbiamo visto studiando dagli appunti presi a lezione e dalle slide che $\gamma$ (parametro necessario al \textit{deflected subgradient}) viene definito:\\ $ \gamma_i \in \min\{\norm{\gamma g_i + (1-\gamma)d_{i-1}}^2 : \gamma \in [0,1]\}$\\
+		Come ha detto Lei non è obbligatorio avere un valore variabile di $\gamma$ che si adatta a quello che è il comportamento della nostra ricerca del minimo, anche se avere un valore adattivo ci permetterebbe di ottenere risultati migliori. Dobbiamo quindi analizzare entrambe le possibilità? Nel caso in cui dovessimo ottenere $\gamma$ tramite minimizzazione dovremo andare a risolvere un problema di minimizzazione ad ogni iterazione del nostro Algorithm\ref{algo:2}? Non diventa \textbf{pesante} dal punto di vista della computazione?
+	\end{enumerate}
+
+%riferimenti a documenti citati
+	\section{References}
+	\begin{enumerate}
+		\item \href{https://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.pdf}{LIBSVM: A Library for Support Vector Machines } \label{bib:1}
+		\item \href{https://www.cse.iitb.ac.in/~cs709/notes/enotes/svr-kkt-dual-derivation.pdf}{SVR KKT Dual Derivation } \label{bib:2}
+	\end{enumerate}
 \end{document}
