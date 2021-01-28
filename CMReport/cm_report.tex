@@ -10,6 +10,7 @@
 \sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\lvert#1\rvert}
 
 \title{Support Vector Regression\\using\\Deflected Subgradient Methods}
 \author{FearEP\\Lord Gugger}
@@ -154,7 +155,7 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 			$kernel\_type$ defining which kernel to use\newline
 			$args$ necessary and different for each kernel}
 		\KwOut{Parameters $w$ e $b$ for resulting function ( $ f(x) = wx + b $ )}
-		\setstretch{1.35}
+		\setstretch{1.1}
 		
 		\Begin{
 			$K \longleftarrow kernel(X, kernel\_type, args)$\\
@@ -167,43 +168,96 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 			$alpha^+ \longleftarrow alphas_{0:(size(alphas)/2)}$\\
 			$alpha^- \longleftarrow alphas_{(size(alphas)/2):size(alphas)}$\\
 			$w \longleftarrow (alpha^+ - alpha^-)K$\\
-			\tcp{find first $alpha^+$ or $alpha^- \ne 0$ and save index in $alpha\_not\_zero$}
+			\tcp{first $i \;|\; alpha_i^+ \ne 0 $ or $alpha_i^- \ne 0$  $\longrightarrow alpha\_not\_zero = i$}
 			$b = y_{alpha\_not\_zero} - \sum_i (alpha^+_i - alpha^-_i)K_{i,alpha\_not\_zero}$\\
 		}
 		 \caption{Get\_SVR}
 	\end{algorithm}
 	
-
-	
 	Discussione su algoritmo, discorso su Q e su b.\\
 
-
-
 	\begin{algorithm}[H]
+		\footnotesize
 		\DontPrintSemicolon
 		\KwIn{$Q$ input matrix of size $2m \times 2m$ \newline
 		$q$  output vector of size $2m$\newline
 		$ub$ upper bound for constrained variables\newline
 		$stopping\_criterion$ $(default = \num{1e-12})$\newline
-		$\gamma$ for Target Level $(default = 0.5)$\newline
+		$\gamma$ for Deflection $(default = 0.5)$\newline
 		$\beta$ for Target Level $(default = 0.5)$\newline
 		$eps$ for Target Level $(default = \num{1e-6})$\newline
 		$\delta\_reset$ for Target Level $(default = \num{1e-4})$\newline
-		$\rho$ for Target Level $(default = 0.95)$
+		$\rho$ for Target Level $(default = 0.95)$\newline
+		$maxiter$ for stopping iteration $(default = 1000)$
 		}
 			
 		\KwOut{Optimal $x$ to minimize constrained $\frac{1}{2}x'Qx + qx$}
-		\setstretch{1.35}
+		\setstretch{1.1}
 		
 		\Begin{
-		$x \longleftarrow ([0] \times size(q))'$\\
+		$x \longleftarrow ([0] \cdot size(q))'$ \hfill \texttt{// init of lagrangian multipliers}\\
 		$xref \longleftarrow x$\\
 		$fref \longleftarrow inf$\\
-		$\delta\_prev \longleftarrow 0$\\
-		$iter \longleftarrow 1$\\
 		$\delta \longleftarrow 0$\\
+		$dprev \longleftarrow 0$\\
+		$iter \longleftarrow 1$\\
+		\While{true}{
+			\texttt{// check if in $stopped$ condition}\\
+			\If{$iter > maxiter$}{
+				return $xref$\\
+				}
+
+			$v \longleftarrow \frac{1}{2}x'Qx + qx$\\
+			$g \longleftarrow Qx + q$\\
+			\texttt{// check if in $optimal$ condition}\\
+			\If{$\norm{g} < stopping\_criterion$}{
+				return $xref$\\
+				}
+			
+			\texttt{// reset $\delta$ if $v$ is \textit{good} or decrease it otherwise}\\
+			\eIf{$v \leq fref - \delta$}{
+				$\delta \longleftarrow \delta\_reset \cdot \max{v,1}$\\
+				}{
+				$\delta \longleftarrow \max(\delta \rho , eps \cdot\max(\abs{ \min(v,fref) } , 1) )$\\
+				}
+			\texttt{// update $fref$ and $xref$ if needed}\\
+			\If{$v < fref$}{
+				$fref \longleftarrow v$\\
+				$xref \longleftarrow x$\\
+				}
+			\texttt{// compute $stepsize$ and new $x$}\\
+			$d,dprev \longleftarrow$ Get\_Direction$(\gamma,g,dprev,ub,x)$\\
+			$stepsize \longleftarrow \frac{\beta(v-fref+\delta)}{\norm{d}^2}$ \hfill \texttt{// deflection-first $\rightarrow \beta \leq \gamma$}\\
+			$x \longleftarrow x - stepsize\cdot d$\\
+			$iter \longleftarrow iter + 1$\\
+			}
 		}
 		 \caption{Fit\_SVR}
 	\end{algorithm}
-
+	\newpage
+	\begin{algorithm}[H]
+		\DontPrintSemicolon
+		\KwIn{$\gamma \in [0,1]$ needed for Deflection $(default = 0.5)$\newline
+				$g$ gradient\newline
+				$dprev$ previous direction for Deflection\newline
+				$ub$ upperbound for ensuring constraints\newline
+				$x$ constrained variable $\longrightarrow x \in [0,ub]$\newline
+		}
+			
+		\KwOut{$d$ direction for next step\newline$dprev$ updated previous direction\newline}
+		\setstretch{1.1}
+		
+		\Begin{
+			\texttt{// compute direction $d$ using deflection}\\
+			$d \longleftarrow \gamma g + (1 - \gamma)dprev$\\
+			\texttt{// ensure constraints $\longrightarrow \forall_i \; x_i \in [0,ub]$}\\
+			\For{$i\gets0$ \KwTo $size(x)$}{
+    				\If{$(ub-x_i < \num{1e-10} $ and $ d_i < 0)$ or $(x_i < \num{1e-10}$ and $d_i >0)$}{
+					$d_i \longleftarrow 0$\\
+					}
+    				}
+			return $d, d$\\
+		}
+		 \caption{Get\_Direction}
+	\end{algorithm}
 \end{document}
