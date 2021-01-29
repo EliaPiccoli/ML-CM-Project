@@ -115,7 +115,7 @@ Cerchiamo dunque di rielaborare il \textit{dual problem} per lavorare con meno v
 %discorsi vari sui kernel
 
 	Restando ancora su \eqref{eq:5}, approfondiamo l'elemento $K(x_i,x_j)$, ovvero ciò rappresenta il concetto di \textbf{kernel}, sostituendo ciò che sarebbe un prodotto scalare nello spazio necessitato. Rielaboriamo dunque la precedente frase: certi problemi di regressione non possono essere adeguatamente descritti da modelli lineari. Risulta dunque comodo cambiare spazio di visualizzazione, per portarci in un nuovo spazio (con ogni probabilità con più dimensioni rispetto allo spazio originale) dove il problema diventa linearmente affrontabile. Il cambio di base risulta essere incredibilmente dispendioso per il training del modello ed è proprio in questo caso che il kernel diventa il fulcro dell’efficienza di SVC/SVR. Ci permette infatti di eseguire il \textit{dot-product} nello spazio attuale ma avere come risultato il \textit{dot-product} nello spazio richiesto. Ci permette di risparmiare molte computazioni e di poterle riutilizzare salvandoci i valori risultanti in una \textit{kernel matrix} (riutilizzabile ad ogni ciclo di ottimizzazione). Ovviamente non c’è la certezza di aver preso in considerazione il kernel corretto per la casistica, bisognerà dunque svilupparne vari, magari certi funzioneranno meglio di altri (\textit{rbf, sigmoid, etc}).\\
-In particolare questa implementazione prevede il possibile utilizzo di diversi kernel:\\
+In particolare questa implementazione prevede il possibile utilizzo di diversi kernel:
 	\begin{itemize}
 		\item linear: $\langle x,x' \rangle$
 		\item polynomial: $(\gamma\langle x,x' \rangle + r)^d$
@@ -137,7 +137,34 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 
 %dscorsi per spiegare brevemente l'algoritmo, subgradient e deflected
 	\section{Algorithm introduction}
-	Qui parleremo del Deflected, magari spiegando un attimo il Target Level, Polyak e constraint vari tra $\beta$ e $\gamma$.
+	Come richiesto dalla task utilizzeremo un \textit{subgradient method}, il quale viene utilizzato per trattare funzioni che possono anche avere punti di \textit{nondifferenziabilità}. E’ dunque uno dei metodi più semplici e meno esigenti nei confronti di proprietà necessarie per f. In particolare si distingue dagli ordinari metodi di gradiente per due aspetti:
+	\begin{itemize}
+		\item Lo \textit{stepsize} non viene scelto tramite \textit{line search} ma tramite altri ragionamenti (il più immediato tra tutti è \textbf{DSS}, dove lo stepsize viene fissato a priori con degli appropriati vincoli di scelta)
+		\item Non è un \textit{descent method}, ovvero il valore della funzione può incrementare nelle iterazioni. Questo avviene per il motivo che non tutti i subgradient portano a direzioni di discesa. Anche se questo è vero abbiamo provato durante il corso che iterazioni successive ci portano ad avvicinarci a $x^*$ monotonicamente scelta una corretta \textit{stepsize}. Con questa certezza sappiamo che convergeremo lentamente ma sicuramente ad $x^*$ e di conseguenza anche ad $f^*$ (anche se probabilmente non monotonicamente).  
+	\end{itemize}
+	Entrando più nel dettaglio per quanto riguarda lo \textit{stepsize}, la scelta di fissarlo a priori (DSS) ci porta ad una convergenza estremamente lenta, dunque preferiremmo utilizzare altre euristiche. In particolare, se avessimo a disposizione f* potremmo seguire la \textit{Polyak stepsize} (\textbf{PSS}), la quale ci permette di determinare lo stepsize ottimo basandosi sulla seguente formula:
+	
+	\begin{equation}\label{eq:polyak}
+		\alpha_i = \beta_i\frac{(f(x_i) - f(x^*)}{\norm{g_i}^2}
+	\end{equation}
+
+	Osserviamo a questo punto l’ulteriore parametro $\beta$, il quale deve rispettare il vincolo $\beta \in [0,2]$ e che per la massima efficienza di convergenza viene posto (utilizzando PSS base, ovvero non il nostro caso) a 1.\\
+	Purtroppo nel nostro caso non siamo a conoscenza di $f^*$ e dobbiamo di conseguenza introdurre la tecnica che verrà utilizzata in Algorithm\ref{algo:2}, ovvero \textit{Target Level Stepsize}. Essa si basa sullo stimare $f^*$ per poter poi attuare la stessa formulazione di  Polyak, rimanendo sempre pronto a rivalutare la stima nel momento in cui una nuova e migliore stima viene ottenuta.\\
+	Più approfonditamente la tecnica Target Value utilizza dei parametri $\rho$ e $\delta$, tramite i quali, dopo aver fissato una stima iniziale $fref$, ci permette di aggiornare la stima secondo i seguenti concetti:
+	\begin{itemize}
+	\item $\delta$ (parametro che segue il vincolo $\delta > 0$) ci permette di definire una stima di $f^*\longrightarrow fref - \delta$ tale per cui la stima $fref$ verrà aggiornata solo se troveremo un valore $f$ che migliori decisamente la stima (ovvero $f < fref - \delta$).
+	\item$\rho$ (parametro che segue il vincolo $\rho \in (0,1)$) ci permette di ottenere un vanishing $\delta$, ovvero dopo aver superato una certa threshold andremo a rimpicciolire $\delta \longrightarrow \delta = \rho \cdot \delta$. Questo viene effettuato perché più ci avvicineremo alla soluzione più il range che ci distanzia da $f^*$ rimpicciolisce, lasciando meno spazio di miglioramento ad $f$.
+	\end{itemize}
+	L’altro elemento richiestoci dalla task è l’utilizzo di un \textit{deflected method}. Questa metodologia ci permette di basare il nuovo punto di valutazione di $f$ (ovvero $x_i$) non solo dando peso al subgradient calcolato ma anche basandosi sulla \textit{precedente direzione intrapresa}, evitando un andamento esageratamente a zig zag. Per pesare le due parti necessitiamo di un parametro $\gamma$ (vincolato tra 0 e 1), arrivando alla formulazione: 
+	\begin{equation}\label{eq:direction}
+		d_i = \gamma_ig_i + (1 - \gamma_i) d_{i-1}
+	\end{equation}
+	In particolare all’interno di Algorithm\ref{algo:2} andremo ad utilizzare l’approccio \textit{deflection-first/stepsize-restricted}, ovvero ad ogni iterazione definiremo innanzitutto la direzione $d$ da intraprendere seguendo \eqref{eq:direction} per poi ottenere lo $stepsize$:
+	\begin{equation}\label{eq:stepsize}
+		stepsize_i = \beta_i\frac{(f(x_i) - fref + \delta}{\norm{d_i}^2}
+	\end{equation}
+	Vincolando $\beta \longrightarrow \beta \leq \gamma$.
+
 
 %discorsi su strutture necessarie per implementazione e motivazioni per scelte
 	\section{Structures for implementation}
@@ -152,7 +179,7 @@ L’obiettivo è quindi quello di rappresentare il problema di massimizzazione f
 	\begin{itemize}
 		\item \textbf{kernel matrix}: presi $m$ record di input sarà una matrice simmetrica $ K(x,x') \in \mathbb{R}^{m,m}$
 		\item \textbf{alpha matrix ($x$)}: presi $m$ record di input sarà un vettore $ x \in \mathbb{R}^{2m} $ tale per cui $x_i \neq 0$ solo se il relativo input genera un output che contribuisce alla $loss$ . Prima metà di $x$ rappresenterà l'insieme di $\alpha$ mentre la seconda metà rappresenterà l'insieme di $\alpha*$ .
-		\item \textbf{Q}: da \eqref{eq:5} si nota che è rappresentato dalla \textit{kernel matrix}, fatto non sufficiente per assicurare la proprietà di essere \textit{positive semi-definite}, abbreviato da qui in poi con \textbf{PSD} (basta pensare al kernel \textit{sigmoid}). La formalizzazione che viene utilizzata all’interno di Algorithm \ref{algo:1} ({[ \ref{bib:1} ]}) ci assicura invece la proprietà di \textbf{PSD},  lo spazio del problema diventa dunque convesso assicurandoci che punti stazionari sono anche di minimo globale, proprietà non ottenuta da altri modelli (per esempio NN). 
+		\item \textbf{Q}: da \eqref{eq:5} si nota che è rappresentato dalla \textit{kernel matrix}, fatto non sufficiente per assicurare la proprietà di essere \textit{positive semi-definite}, abbreviato da qui in poi con \textbf{PSD} (basta pensare al kernel \textit{sigmoid}). La formalizzazione che viene utilizzata all’interno di Algorithm \ref{algo:1} \linebreak({[ \ref{bib:1} ]}) ci assicura invece la proprietà di \textbf{PSD},  lo spazio del problema diventa dunque convesso assicurandoci che punti stazionari sono anche di minimo globale, proprietà non ottenuta da altri modelli (per esempio NN). 
 		\item \textbf{q}: costruita in modo da unire i rimanenti elementi di \eqref{eq:5}.
 		\item \textbf{linear constraint}: il vincolo lineare presente sui moltiplicatori lagrangiani ci permette di definire $lb=0$ e $ub=C$.
 	\end{itemize}
@@ -166,6 +193,7 @@ L’obiettivo è quindi quello di rappresentare il problema di massimizzazione f
 %pseudocodice e analisi parti importanti
 	\section{Pseudo Code}
 	\begin{algorithm}[H]
+		\scriptsize
 		\DontPrintSemicolon
 		\label{algo:1}
 		\KwIn{$X$ input matrix of size $m \times d$ \newline
@@ -258,6 +286,7 @@ L’obiettivo è quindi quello di rappresentare il problema di massimizzazione f
 
 	\begin{algorithm}[H]
 		\DontPrintSemicolon
+		\scriptsize
 		\KwIn{$\gamma \in [0,1]$ needed for Deflection $(default = 0.5)$\newline
 				$g$ gradient\newline
 				$dprev$ previous direction for Deflection\newline
@@ -281,7 +310,7 @@ L’obiettivo è quindi quello di rappresentare il problema di massimizzazione f
 		}
 		 \caption{Get\_Direction}
 	\end{algorithm}
-
+	\pagebreak
 	\section{Dubbi}
 	\begin{enumerate}
 		\item Abbiamo letto diversi paper in letteratura e abbiamo trovato diversi modi in cui viene determinato il valore $b$. Alcuni dicono che basta usare un punto che sia fuori o al margine dell’$\varepsilon$-tube {[ \ref{bib:2} ]}, altri invece lo calcolano su tutti i punti per poi fare una media. C’è un metodo più corretto di un altro? 
