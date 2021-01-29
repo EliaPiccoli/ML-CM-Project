@@ -230,8 +230,8 @@ L’obiettivo è quindi quello di rappresentare il problema di massimizzazione f
 		\scriptsize
 		\DontPrintSemicolon
 		\label{algo:2}
-		\KwIn{$Q$ input matrix of size $2m \times 2m$ \newline
-		$q$  output vector of size $2m$\newline
+		\KwIn{$Q$ matrix of size $2m \times 2m$ for qp \newline
+		$q$  vector of size $2m$ for qp\newline
 		$ub$ upper bound for constrained variables\newline
 		$stopping\_criterion$ $(default = \num{1e-12})$\newline
 		$\gamma$ for Deflection $(default = 0.5)$\newline
@@ -295,7 +295,7 @@ L’obiettivo è quindi quello di rappresentare il problema di massimizzazione f
 				$g$ gradient\newline
 				$dprev$ previous direction for Deflection\newline
 				$ub$ upperbound for ensuring constraints\newline
-				$x$ constrained variable $\longrightarrow x \in [0,ub]$\newline
+				$x$ constrained variable $\longrightarrow x_i \in [0,ub]$\newline
 		}
 			
 		\KwOut{$d$ direction for next step\newline$dprev$ updated previous direction\newline}
