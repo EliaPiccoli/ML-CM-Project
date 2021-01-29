@@ -18,7 +18,6 @@
 	\begin{titlepage}
 		\maketitle
 		\pagenumbering{gobble}
-			%\pagenumbering{arabic} per rimettere i numeri
 	   \begin{center}
 		\vspace{0.5cm}
 	        \textit{A project presented for the\\Computational Mathematics for Learning and Data Analysis\\course}
@@ -32,10 +31,13 @@
 	\end{titlepage}
 	
 	\newpage
+	\tableofcontents
+	\vspace{4cm}
 	\begin{abstract}
 		 Project aim is developing the implementation of a model which follows an SVR-type approach including various different kernels. The implementation uses as optimization algorithm a dual approach with appropriate choices of the constraints to be dualized, where the Lagrangian Dual is solved by an algorithm of the class of deflected subgradient methods.
 	\end{abstract}
-	
+	\pagenumbering{arabic} %per rimettere i numeri di pagina
+	\pagebreak
 	\section{Introduction}
 Per affrontare questo problema di regressione ci vogliamo affidare ad un modello di apprendimento supervisionato che è il Support Vector Regression. SVR ha come obiettivo trovare una funzione tale per cui ogni record assegnatoci per il training non devii da essa più di  $\varepsilon$  (per questo ogni valore all’interno del cosiddetto $\varepsilon$-tube non viene considerato come errore nella fase di ottimizzazione, rendendo la loss del modello $\varepsilon$-insensitive). Per fare ciò abbiamo bisogno di un certo parametro C (per capire il livello di regolarizzazione che desideriamo) ed un valore $\varepsilon$ (per esprimere l’errore che accettiamo), oltre ad eventuali parametri necessari ad attuare i kernel (e.g. gamma per quanto riguarda il kernel RBF). Parte fondante del modello, oltre a ciò sopra descritto riguardo l’ $\varepsilon$-tube, è dare allo stesso tempo importanza al mantenere la funzione \textit{as flat as possible}, per evitare overfitting ed avere dunque un modello che sia un corretto tradeoff tra accuratezza e generalità.
 	\begin{figure}[h]
@@ -68,7 +70,7 @@ Introduciamo a questo punto delle variabili dette \textit{slack} per formulare l
 	\end{equation}
 
 	\begin{center}
-		\footnotesize{x i-esimo input, y i-esimo output}
+		\footnotesize{$x_i$ input, $y_i$ output}
 	\end{center}
 	
 	Essendo in un problema di ottimizzazione quadratico, la soluzione al \textit{dual problem} risulta equivalente a quella del \textit{primal problem}. In particolare in questa casistica risulta più facile la risoluzione del \textit{dual problem} vista la possibile applicazione del concetto di kernel. Costruiamo dunque il \textit{dual problem} definendo la relativa Lagrangiana (equivalente del \textit{primal problem} al quale aggiungiamo i vincoli sommandoli o sottraendoli):
@@ -80,11 +82,11 @@ Introduciamo a questo punto delle variabili dette \textit{slack} per formulare l
 		&+C\sum_{i=1}^{m}(\xi_{i} + \xi_{i}^*) \\
 		&+ \sum_{i=1}^{m}(\alpha_i(y_i - w^T\phi(x_i) - b - \epsilon - \xi_i))\\
 		&+ \sum_{i=1}^{m}(\alpha_i^*(w^T\phi(x_i) + b - y_i - \epsilon - \xi_i^*)) \\
-		\sum_{i=1}^{m}(\mu_i\xi_i + \mu_i^*\xi_i^*)
+		&- \sum_{i=1}^{m}(\mu_i\xi_i + \mu_i^*\xi_i^*)
 	\end{aligned}
 	\end{equation}
 
-	A causa del concetto di \textbf{\textit{weak duality}} qualsiasi valore del \textit{primal problem} risulta maggiore (o uguale) del \textit{dual problem}. Da questa considerazione deriviamo il fatto che il punto di massima vicinanza tra i 2 problemi è dove il \textit{primal problem} ha minimo e il \textit{dual problem} ha massimo. Nella casistica di \textit{strong duality} questa vicinanza si tramuta uguaglianza.
+	A causa del concetto di \textbf{\textit{weak duality}} qualsiasi valore del \textit{primal problem} risulta maggiore (o uguale) del \textit{dual problem}. Da questa considerazione deriviamo il fatto che il punto di massima vicinanza tra i due problemi è dove il \textit{primal problem} ha minimo e il \textit{dual problem} ha massimo. Nella casistica di \textit{strong duality} questa vicinanza si tramuta in uguaglianza.
 Cerchiamo dunque di rielaborare il \textit{dual problem} per lavorare con meno variabili possibili, in particolare eliminiamo dai calcoli la variabile w, b e le 2 \textit{slack} $\xi$ e $\xi^*$. In che modo? Stiamo cercando un valore ottimo che tra l’altro sarà unico data la casistica quadratica, dunque la derivata parziale relativa ad ognuna di queste variabili va posta a 0. Questo ci porta a poter ridefinire w:
 
 	\begin{equation}\label{eq:4}
@@ -119,14 +121,14 @@ In particolare questa implementazione prevede il possibile utilizzo di diversi k
 	\begin{itemize}
 		\item linear: $\langle x,x' \rangle$
 		\item polynomial: $(\gamma\langle x,x' \rangle + r)^d$
-		\item rbf: $\exp(-\frac{\norm{x \  x'}^2}{2\sigma^2})$
+		\item rbf: $\exp(-\frac{\norm{x-x'}^2}{2\sigma^2})$
 		\item sigmoid: $\tanh(\gamma\langle x,x' \rangle + r)$
 	\end{itemize}
 
 %discorsi parte finale post definizione problema
-	Definito il problema possiamo a questo punto cercare il massimo del \textit{dual problem}. La task da noi scelta utilizzerà \textbf{deflected subgradient methods} per raggiungere l’obiettivo. Una volta raggiunto il massimo avremo a nostra disposizione i corretti $\alpha$ e $\alpha^*$ necessari per il calcolo di w. 
+	Definito il problema possiamo a questo punto cercare il massimo del \textit{dual problem}. La task da noi scelta utilizzerà \textbf{deflected subgradient methods} per raggiungere l’obiettivo. Una volta raggiunto il massimo avremo a nostra disposizione i corretti $\alpha$ e $\alpha^*$ necessari per il calcolo di $w$. 
 
-	Per completare la funzione risolutrice del problema ci basta trovare il parametro b. Ricavarlo risulta semplice una volta preso in considerazione un qualsiasi elemento del nostro insieme di input tale per cui la relativa predizione (y i-esimo) sia al limite dell’ $\varepsilon$-tube o al di fuori di esso. Proprio quell’insieme di valori sarà infatti l’unico ad avere come vincoli attivi almeno uno tra i vari $\alpha$ e $\alpha^*$, ovvero un $\alpha$ o $\alpha^*$ diversi da 0. Essendo dunque al margine di un vincolo potremo, derivando da \eqref{eq:0} e \eqref{eq:4}:
+	Per completare la funzione risolutrice del problema ci basta trovare il parametro $b$. Ricavarlo risulta semplice se prendiamo in considerazione un qualsiasi elemento del nostro insieme di input tale per cui la relativa predizione $y_i$ sia al limite dell’ $\varepsilon$-tube o al di fuori di esso. Proprio quell’insieme di valori sarà infatti l’unico ad avere come vincoli attivi almeno uno tra i vari $\alpha$ e $\alpha^*$, ovvero un $\alpha$ o $\alpha^*$ diversi da 0. Essendo dunque al margine di un vincolo potremo, derivando da \eqref{eq:0} e \eqref{eq:4}:
 
 	\begin{equation}\label{eq:7}
 		x_j \  with\  \alpha_j \in(0,C): b = y_j - \sum_i(\alpha_i - \alpha_i^*)K(x_i,x_j)
@@ -136,8 +138,8 @@ In particolare questa implementazione prevede il possibile utilizzo di diversi k
 Questo fatto è particolarmente importante per il confronto tra modelli e dunque per la ricerca dei parametri migliori possibili (\textit{grid search}).
 
 %dscorsi per spiegare brevemente l'algoritmo, subgradient e deflected
-	\section{Algorithm introduction}
-	Come richiesto dalla task utilizzeremo un \textit{subgradient method}, il quale viene utilizzato per trattare funzioni che possono anche avere punti di \textit{nondifferenziabilità}. E’ dunque uno dei metodi più semplici e meno esigenti nei confronti di proprietà necessarie per f. In particolare si distingue dagli ordinari metodi di gradiente per due aspetti:
+	\section{Basic Algorithms Introduction}
+	Come richiesto dalla task utilizzeremo un \textit{subgradient method}, il quale viene utilizzato per trattare funzioni che possono anche avere punti di \textit{nondifferenziabilità}. E’ dunque uno dei metodi più semplici e meno esigenti nei confronti di proprietà necessarie per $f$. In particolare si distingue dagli ordinari metodi di gradiente per due aspetti:
 	\begin{itemize}
 		\item Lo \textit{stepsize} non viene scelto tramite \textit{line search} ma tramite altri ragionamenti (il più immediato tra tutti è \textbf{DSS}, dove lo stepsize viene fissato a priori con degli appropriati vincoli di scelta)
 		\item Non è un \textit{descent method}, ovvero il valore della funzione può incrementare nelle iterazioni. Questo avviene per il motivo che non tutti i subgradient portano a direzioni di discesa. Anche se questo è vero abbiamo provato durante il corso che iterazioni successive ci portano ad avvicinarci a $x^*$ monotonicamente scelta una corretta \textit{stepsize}. Con questa certezza sappiamo che convergeremo lentamente ma sicuramente ad $x^*$ e di conseguenza anche ad $f^*$ (anche se probabilmente non monotonicamente).  
@@ -145,15 +147,15 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 	Entrando più nel dettaglio per quanto riguarda lo \textit{stepsize}, la scelta di fissarlo a priori (DSS) ci porta ad una convergenza estremamente lenta, dunque preferiremmo utilizzare altre euristiche. In particolare, se avessimo a disposizione f* potremmo seguire la \textit{Polyak stepsize} (\textbf{PSS}), la quale ci permette di determinare lo stepsize ottimo basandosi sulla seguente formula:
 	
 	\begin{equation}\label{eq:polyak}
-		\alpha_i = \beta_i\frac{(f(x_i) - f(x^*)}{\norm{g_i}^2}
+		\alpha_i = \beta_i\frac{f(x_i) - f(x^*)}{\norm{g_i}^2}
 	\end{equation}
 
-	Osserviamo a questo punto l’ulteriore parametro $\beta$, il quale deve rispettare il vincolo $\beta \in [0,2]$ e che per la massima efficienza di convergenza viene posto (utilizzando PSS base, ovvero non il nostro caso) a 1.\\
+	Notiamo la necessità di un ulteriore parametro $\beta$, il quale deve rispettare il vincolo $\beta \in [0,2]$.\\
 	Purtroppo nel nostro caso non siamo a conoscenza di $f^*$ e dobbiamo di conseguenza introdurre la tecnica che verrà utilizzata in Algorithm\ref{algo:2}, ovvero \textit{Target Level Stepsize}. Essa si basa sullo stimare $f^*$ per poter poi attuare la stessa formulazione di  Polyak, rimanendo sempre pronto a rivalutare la stima nel momento in cui una nuova e migliore stima viene ottenuta.\\
 	Più approfonditamente la tecnica Target Value utilizza dei parametri $\rho$ e $\delta$, tramite i quali, dopo aver fissato una stima iniziale $fref$, ci permette di aggiornare la stima secondo i seguenti concetti:
 	\begin{itemize}
 	\item $\delta$ (parametro che segue il vincolo $\delta > 0$) ci permette di definire una stima di $f^*\longrightarrow fref - \delta$ tale per cui la stima $fref$ verrà aggiornata solo se troveremo un valore $f$ che migliori decisamente la stima (ovvero $f < fref - \delta$).
-	\item$\rho$ (parametro che segue il vincolo $\rho \in (0,1)$) ci permette di ottenere un vanishing $\delta$, ovvero dopo aver superato una certa threshold andremo a rimpicciolire $\delta \longrightarrow \delta = \rho \cdot \delta$. Questo viene effettuato perché più ci avvicineremo alla soluzione più il range che ci distanzia da $f^*$ rimpicciolisce, lasciando meno spazio di miglioramento ad $f$.
+	\item$\rho$ (parametro che segue il vincolo $\rho \in (0,1)$) ci permette di ottenere un vanishing $\delta$, ovvero dopo aver superato una certa threshold andremo a rimpicciolire $\delta \longrightarrow (\delta = \rho \cdot \delta)$. Questo viene effettuato perché più ci avvicineremo alla soluzione più il range che ci distanzia da $f^*$ rimpicciolisce, lasciando meno spazio di miglioramento ad $f$.
 	\end{itemize}
 	L’altro elemento richiestoci dalla task è l’utilizzo di un \textit{deflected method}. Questa metodologia ci permette di basare il nuovo punto di valutazione di $f$ (ovvero $x_i$) non solo dando peso al subgradient calcolato ma anche basandosi sulla \textit{precedente direzione intrapresa}, evitando un andamento esageratamente a zig zag. Per pesare le due parti necessitiamo di un parametro $\gamma$ (vincolato tra 0 e 1), arrivando alla formulazione: 
 	\begin{equation}\label{eq:direction}
@@ -161,11 +163,11 @@ Questo fatto è particolarmente importante per il confronto tra modelli e dunque
 	\end{equation}
 	In particolare all’interno di Algorithm\ref{algo:2} andremo ad utilizzare l’approccio \textit{deflection-first/stepsize-restricted}, ovvero ad ogni iterazione definiremo innanzitutto la direzione $d$ da intraprendere seguendo \eqref{eq:direction} per poi ottenere lo $stepsize$:
 	\begin{equation}\label{eq:stepsize}
-		stepsize_i = \beta_i\frac{(f(x_i) - fref + \delta}{\norm{d_i}^2}
+		stepsize_i = \beta_i\frac{f(x_i) - fref + \delta}{\norm{d_i}^2}
 	\end{equation}
 	Vincolando $\beta \longrightarrow \beta \leq \gamma$.
 
-
+	\pagebreak
 %discorsi su strutture necessarie per implementazione e motivazioni per scelte
 	\section{Structures for implementation}
 	Passando dalla formalizzazione matematica vista nella sezione precedente giungiamo alla sua implementazione. In Algorithm\ref{algo:1}, partendo dai dati di input ed il rispettivo output, vengono calcolati i valori dei moltiplicatori lagrangiani i quali successivamente permettono di trovare il valore di $w$ e $b$.
@@ -179,13 +181,15 @@ L’obiettivo è quindi quello di rappresentare il problema di massimizzazione f
 	\begin{itemize}
 		\item \textbf{kernel matrix}: presi $m$ record di input sarà una matrice simmetrica $ K(x,x') \in \mathbb{R}^{m,m}$
 		\item \textbf{alpha matrix ($x$)}: presi $m$ record di input sarà un vettore $ x \in \mathbb{R}^{2m} $ tale per cui $x_i \neq 0$ solo se il relativo input genera un output che contribuisce alla $loss$ . Prima metà di $x$ rappresenterà l'insieme di $\alpha$ mentre la seconda metà rappresenterà l'insieme di $\alpha*$ .
-		\item \textbf{Q}: da \eqref{eq:5} si nota che è rappresentato dalla \textit{kernel matrix}, fatto non sufficiente per assicurare la proprietà di essere \textit{positive semi-definite}, abbreviato da qui in poi con \textbf{PSD} (basta pensare al kernel \textit{sigmoid}). La formalizzazione che viene utilizzata all’interno di Algorithm \ref{algo:1} \linebreak({[ \ref{bib:1} ]}) ci assicura invece la proprietà di \textbf{PSD},  lo spazio del problema diventa dunque convesso assicurandoci che punti stazionari sono anche di minimo globale, proprietà non ottenuta da altri modelli (per esempio NN). 
+		\item \textbf{Q}: da \eqref{eq:5} si nota che è rappresentato dalla \textit{kernel matrix}, fatto non sufficiente per assicurare la proprietà di essere \textit{positive semi-definite}, abbreviato da qui in poi con \textbf{PSD} (basta pensare al kernel \textit{sigmoid}). La formalizzazione che viene utilizzata all’interno di Algorithm\ref{algo:1} \linebreak{[ \ref{bib:1} ]} ci assicura invece la proprietà di \textbf{PSD},  lo spazio del problema diventa dunque convesso assicurandoci che punti stazionari sono anche di minimo globale, proprietà non ottenuta da altri modelli (per esempio NN). 
 		\item \textbf{q}: costruita in modo da unire i rimanenti elementi di \eqref{eq:5}.
 		\item \textbf{linear constraint}: il vincolo lineare presente sui moltiplicatori lagrangiani ci permette di definire $lb=0$ e $ub=C$.
 	\end{itemize}
 		
-	Data questa formalizzazione tramite Algorithm \ref{algo:2} verrà risolto il problema di minimizzazione ottenendo i valori dei moltiplicatori lagrangiani. A questo punto sarà quindi possibile calcolare il valore di $w$ e $b$ in modo tale da rappresentare la nostra funzione:\\
-	$f(x)=wx+b$
+	Data questa formalizzazione tramite Algorithm\ref{algo:2} verrà risolto il problema di minimizzazione ottenendo i valori dei moltiplicatori lagrangiani. A questo punto sarà quindi possibile calcolare il valore di $w$ e $b$ in modo tale da rappresentare la nostra funzione:
+	\begin{center}
+		$f(x)=wx+b$
+	\end{center}
 
 	In particolare, per determinare il valore di $b$ andremo ad applicare quanto già evidenziato precedentemente in \eqref{eq:7}, sarà necessario trovare un elemento che si trovi al di fuori dell’$\varepsilon$-tube e rispetto quest’ultimo calcolare il valore.
 
@@ -311,11 +315,11 @@ L’obiettivo è quindi quello di rappresentare il problema di massimizzazione f
 		 \caption{Get\_Direction}
 	\end{algorithm}
 	\pagebreak
-	\section{Dubbi}
+	\section{Doubts}
 	\begin{enumerate}
 		\item Abbiamo letto diversi paper in letteratura e abbiamo trovato diversi modi in cui viene determinato il valore $b$. Alcuni dicono che basta usare un punto che sia fuori o al margine dell’$\varepsilon$-tube {[ \ref{bib:2} ]}, altri invece lo calcolano su tutti i punti per poi fare una media. C’è un metodo più corretto di un altro? 
 		\item Nel calcolo del \textit{Polyak stepsize} utilizziamo un parametro $\beta$ che nel caso di \textit{deflection-first}$ \longrightarrow \beta \leq \gamma$. Nelle slide e appunti però non abbiamo visto nessuna formula rispetto la quale è definito, esiste o è determinato tramite una $grid search$?
-		\item Abbiamo visto studiando dagli appunti presi a lezione e dalle slide che $\gamma$ (parametro necessario al \textit{deflected subgradient}) viene definito:\\ $ \gamma_i \in \min\{\norm{\gamma g_i + (1-\gamma)d_{i-1}}^2 : \gamma \in [0,1]\}$\\
+		\item Abbiamo visto studiando dagli appunti presi a lezione e dalle slide che $\gamma$ (parametro necessario al \textit{deflected subgradient}) viene definito:\begin{center} $ \gamma_i \in \min\{\norm{\gamma g_i + (1-\gamma)d_{i-1}}^2 : \gamma \in [0,1]\}$\end{center}
 		Come ha detto Lei non è obbligatorio avere un valore variabile di $\gamma$ che si adatta a quello che è il comportamento della nostra ricerca del minimo, anche se avere un valore adattivo ci permetterebbe di ottenere risultati migliori. Dobbiamo quindi analizzare entrambe le possibilità? Nel caso in cui dovessimo ottenere $\gamma$ tramite minimizzazione dovremo andare a risolvere un problema di minimizzazione ad ogni iterazione del nostro Algorithm\ref{algo:2}? Non diventa \textbf{pesante} dal punto di vista della computazione?
 	\end{enumerate}
 
