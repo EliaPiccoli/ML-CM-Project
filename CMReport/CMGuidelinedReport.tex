@@ -1,0 +1,78 @@
+ \documentclass[12pt]{article}
+\usepackage{graphicx} % for inserting images
+\usepackage[utf8]{inputenc} % for good practice
+\usepackage{amsmath} % for equations
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{setspace}
+\usepackage{siunitx}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\Lagr}{\mathcal{L}}
+
+\title{Support Vector Regression\\using\\Deflected Subgradient Methods}
+\author{Elia Piccoli\\Nicola Gugole}
+\begin{document}
+	\begin{titlepage}
+		\maketitle
+		\pagenumbering{gobble}
+	   \begin{center}
+		\vspace{0.5cm}
+	        \textit{A project presented for the\\Computational Mathematics for Learning and Data Analysis\\course}
+	       \vfill	     
+	       \includegraphics[width=0.2\textwidth]{unipi.png}\\
+	       University of Pisa\\
+	       Artificial Intelligence\\
+			A.Y. 2020/2021\\
+	            
+	   \end{center}
+	\end{titlepage}
+	
+	\newpage
+	\vspace{4cm}
+	\begin{abstract}
+		 Project aim is developing the implementation of a model which follows an SVR-type approach including various different kernels. The implementation uses as optimization algorithm a dual approach with appropriate choices of the constraints to be dualized, where the Lagrangian Dual is solved by an algorithm of the class of deflected subgradient methods.
+	\end{abstract}
+	\pagenumbering{arabic} %per rimettere i numeri di pagina
+	\pagebreak
+
+	\section{Introduction}
+	SVR objective is predicting a unidimensional real-valued output $y$ through the use of an \textit{objective function} built by optimization using an $\varepsilon$-insensitive loss function. Another fundamental aspect about SVR is keeping the function \textit{as flat as possible} through the tuning of a $C$ parameter in order to avoid overfitting and generating a correct tradeoff between accuracy and generalization.\\
+	The resulting function can be generically described as:
+		\begin{equation}\label{eq:1}
+			f(x) = w  x + b
+		\end{equation}
+	Keeping the above function \textit{as flat as possible} is equivalent to an optimization problem formulated as having minimum $\norm{w}$, or, for a more convenient mathematical derivation, minimum $\norm{w}^2$. This does not change the semantics of the problem.\\
+	This brings us to a convex minimization problem, which will be called \textit{primal problem}:
+\begin{equation}\label{eq:2}
+		\min_{w,\xi_i,\xi_i^*} \frac{1}{2}\norm{w}^2+C\sum_{i}(\xi_{i} + \xi_{i}^*)
+	\end{equation}
+	Where $\xi$ and $\xi^*$ are called \textit{slack variables}, used in conjunction with $C$ to create a \textit{regularization factor} and consequently a $penalty measure$ to elements which are not part of the $\varepsilon$-tube. Slack variables allow the definition of constraints applicable to \eqref{eq:2}:
+	\begin{subequations}
+	\begin{align}
+		&y_i - w^T\phi(x_i) - b \leq \varepsilon + \xi_i,  \label{eq:3a}\\ 
+		&b + w^T\phi(x_i) - y_i \leq \varepsilon + \xi_i, \label{eq:3b}\\
+		&\xi_i,\xi_i^*  \geq 0 \label{eq:3c}
+	\end{align}
+	\end{subequations}
+	\begin{center}
+		\footnotesize{$x_i$ input, $y_i$ output}
+	\end{center}
+	\pagebreak
+	\section{Dual Representation}
+	As expressed in the abstract, the implementation will follow a dual approach, which in SVR models is preferred due to the applicability and efficiency of the use of \textit{kernels}. \textit{Dual problem} formulation can be achieved defining the \textit{Lagrangian} function:
+	\begin{equation}\label{eq:4}
+	\begin{aligned}
+		\Lagr(\alpha,\alpha^*,\mu,\mu^*) =  \ &\frac{1}{2}\norm{w}^2\\
+		&+C\sum_{i=1}^{m}(\xi_{i} + \xi_{i}^*) \\
+		&+ \sum_{i=1}^{m}(\alpha_i(y_i - w^T\phi(x_i) - b - \varepsilon - \xi_i))\\
+		&+ \sum_{i=1}^{m}(\alpha_i^*(w^T\phi(x_i) + b - y_i - \varepsilon - \xi_i^*)) \\
+		&- \sum_{i=1}^{m}(\mu_i\xi_i + \mu_i^*\xi_i^*)
+	\end{aligned}
+	\end{equation}
+
+
+\end{document}
