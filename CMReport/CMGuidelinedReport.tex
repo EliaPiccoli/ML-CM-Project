@@ -32,6 +32,7 @@
 	\end{titlepage}
 	
 	\newpage
+	\tableofcontents
 	\vspace{4cm}
 	\begin{abstract}
 		 Project aim is developing the implementation of a model which follows an SVR-type approach including various different kernels. The implementation uses as optimization algorithm a dual approach with appropriate choices of the constraints to be dualized, where the Lagrangian Dual is solved by an algorithm of the class of deflected subgradient methods.
@@ -40,17 +41,17 @@
 	\pagebreak
 
 	\section{Introduction}
-	SVR objective is predicting a unidimensional real-valued output $y$ through the use of an \textit{objective function} built by optimization using an $\varepsilon$-insensitive loss function. Another fundamental aspect about SVR is keeping the function \textit{as flat as possible} through the tuning of a $C$ parameter in order to avoid overfitting and generating a correct tradeoff between accuracy and generalization.\\
+	SVR objective is predicting a uni-dimensional real-valued output $y$ through the use of an \textit{objective function} built by optimization using an $\varepsilon$-insensitive loss function. Another fundamental aspect about SVR is keeping the function \textit{as flat as possible} through the tuning of a $C$ parameter in order to avoid overfitting and generating a correct trade-off between accuracy and generalization.\\
 	The resulting function can be generically described as:
 		\begin{equation}\label{eq:1}
 			f(x) = w  x + b
 		\end{equation}
-	Keeping the above function \textit{as flat as possible} is equivalent to an optimization problem formulated as having minimum $\norm{w}$, or, for a more convenient mathematical derivation, minimum $\norm{w}^2$. This does not change the semantics of the problem.\\
+	Keeping the above function \textit{as flat as possible} is equivalent to an optimization problem formulated as having minimum $\norm{w}$, or, for a more convenient mathematical derivation, minimum $\norm{w}^2$, not changing the semantics of the problem.\\
 	This brings us to a convex minimization problem, which will be called \textit{primal problem}:
 \begin{equation}\label{eq:2}
 		\min_{w,\xi_i,\xi_i^*} \frac{1}{2}\norm{w}^2+C\sum_{i}(\xi_{i} + \xi_{i}^*)
 	\end{equation}
-	Where $\xi$ and $\xi^*$ are called \textit{slack variables}, used in conjunction with $C$ to create a \textit{regularization factor} and consequently a $penalty measure$ to elements which are not part of the $\varepsilon$-tube. Slack variables allow the definition of constraints applicable to \eqref{eq:2}:
+	Where $\xi$ and $\xi^*$ are called \textit{slack variables}, used in conjunction with $C$ to create a \textit{regularization factor} and consequently a \textit{penalty measure} to elements which are not part of the $\varepsilon$-tube. Slack variables allow the definition of constraints applicable to \eqref{eq:2}:
 	\begin{subequations}
 	\begin{align}
 		&y_i - w^T\phi(x_i) - b \leq \varepsilon + \xi_i,  \label{eq:3a}\\ 
@@ -73,6 +74,127 @@
 		&- \sum_{i=1}^{m}(\mu_i\xi_i + \mu_i^*\xi_i^*)
 	\end{aligned}
 	\end{equation}
+	
+	From which the following optimization problem can be obtained (full derivation shown in \ref{appendixA}):
+	\begin{equation}\label{eq:5}
+	\begin{aligned}
+		\max_{\alpha_i,\alpha_i^*} &- \frac{1}{2}\sum_i\sum_j(\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)K(x_i,x_j) \\
+		&- \epsilon\sum_i(\alpha_i + \alpha_i^*)\\
+		&+ \sum_i y_i(\alpha_i - \alpha_i^*)
+	\end{aligned}
+	\end{equation}
+	With constraints:
+	\begin{subequations}
+		\begin{align}
+		&\forall i \: \alpha_i,\alpha_i^* \geq 0 \qquad\qquad &&(KKT\;condition) \label{eq:6a}\\
+		&\forall i \: \alpha_i,\alpha_i^* \in [0,C]  \qquad\qquad &&(from \: derivation)\label{eq:6b}\\
+		&\forall i \: \sum (\alpha_i - \alpha_i^*) = 0 \qquad\qquad &&(from \: derivation)\label{eq:6c}\\
+		&\forall i \: \alpha_i \alpha_i^* = 0 \qquad\qquad &&(from \: model \: construction)\label{eq:6d}
+		\end{align}
+	\end{subequations}
+	\pagebreak
 
+
+	At this point a reformulation of \eqref{eq:5} is necessary to follow the task objective, which is solving the \textit{Lagrangian Dual} maximization with a subgradient method, therefore requiring a \textit{non-differentiable function}. Such function is achievable with a simple variable substitution:
+	\begin{equation*}
+	    \begin{aligned}
+	    &\;\beta_i \longleftarrow (\alpha_i - \alpha_i^*) \\
+	    &\abs{\beta_i} \longleftarrow (\alpha_i + \alpha_i^*)
+	    \end{aligned}
+	\end{equation*}
+	Bringing the definitive dual problem definition:
+	\begin{equation}\label{eq:7}
+	    \begin{aligned}
+	    \max_{\beta_i} &- \frac{1}{2}\sum_i \sum_j \beta_i \beta_j K(x_i,x_j) \\
+		&- \epsilon\sum_i\abs{\beta_i}\\
+		&+ \sum_i y_i\beta_i\\
+		&With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i \beta_i = 0 \\
+            \;\beta_i\in[-C,\;C] \\
+            \abs{\beta_i}\in[0,\;C]
+        \end{cases}
+        \end{aligned}
+	\end{equation}
+	It is important to notice how the above formulation defines a convex non-differentiable problem which still maintains the \textit{strong duality} property of SVR since it is possible to reshape \eqref{eq:5} to a quadratic problem, as shown in APPENDIX B (qui la nostra prossima idea per l'appendice B era ripartire da \eqref{eq:5} e mostrare come si può arrivare a formulare il problema quadratico tramite l'uso della matrice $Q=[K\;-K\; ; -K \; K]$, sarebbe sufficiente come dimostrazione?).\\
+	Having the \textit{strong duality} property assures that the optimal solution of the dual problem coincides with the one of the primal problem. 
+
+
+
+
+
+%APPENDIX
+    \pagebreak
+    \section{APPENDIX A} \label{appendixA}
+Define the Lagrangian function
+\begin{equation}\label{eq:APP1}
+    \begin{aligned}
+        \Lagr = \frac{1}{2} \norm{w}^2 + C \sum_i (\xi_i + \xi_i^*) &+\sum_i \alpha_i (y_i - w\phi_i -b - \varepsilon - \xi_i) \\
+        &+\sum_i \alpha_i (-y_i + w\phi_i -b - \varepsilon - \xi_i^*) \\
+        &-\sum_i \mu_i\xi_i \\
+        &-\sum_i \mu_i^*\xi_i^* \\
+        where \quad \forall_i \: \xi_i\xi_i^* \geq 0
+    \end{aligned}
+\end{equation}
+Variables of the two definition of the problem:
+\begin{equation*}
+    \begin{aligned}
+            &Primal \; problem \qquad && w, \; b, \; \xi_i, \; \xi_i^* \\
+            &Dual \; Problem && \alpha_i, \; \alpha_i^*, \; \mu_i, \; \mu_i^*
+    \end{aligned}
+\end{equation*}
+Next step is try to simplify the definition of the Lagrangian wrt the problem that needs to be solved. Since the objective is to find the \textit{minimum} the developments proceeds imposing this condition.
+\begin{subequations}
+    \begin{align}
+        &\frac {\partial \Lagr}{\partial w} = 0 \quad &&\longrightarrow \quad && w + \sum_i \alpha_i(-\phi_i) + \sum_i \alpha_i^*\phi_i = 0 \label{eq:APP2a}\\
+        &\frac {\partial \Lagr}{\partial b} = 0 &&\longrightarrow && \sum_i -\alpha_i + \sum_i \alpha_i^* = 0 \label{eq:APP2b}\\
+        &\frac {\partial \Lagr}{\partial \xi_i} = 0 &&\longrightarrow && C - \alpha_i - \mu_i = 0 \label{eq:APP2c}\\
+        &\frac {\partial \Lagr}{\partial \xi_i^*} = 0 &&\longrightarrow && C - \alpha_i^* - \mu_i^* = 0 \label{eq:APP2d}
+    \end{align}
+\end{subequations}
+From \eqref{eq:APP2a} the definition of w can be derived
+\begin{equation}\label{eq:APP3}
+    w = \sum_i (\alpha_i - \alpha_i^*)\phi_i
+\end{equation}
+From \eqref{eq:APP2b} the first constraint on the Lagrangian variables is obtained
+\begin{equation}\label{eq:APP4}
+    \sum_i (\alpha_i^* - \alpha_i) = 0
+\end{equation}
+While from \eqref{eq:APP2c}/\eqref{eq:APP2d} with some further development the second constraint on the Lagrangian variables can be defined
+\begin{equation*}
+    \begin{aligned}
+        &\alpha_i,\;\alpha_i^*,\;\mu_i,\;\mu_i^*\;\geq\;0 \quad \forall_i \\
+        &C = \alpha_i + \mu_i\quad\longrightarrow\quad\alpha_i = C - \mu_i \\
+        &\Longrightarrow\quad\alpha_i\;\in\;[0,\;C]\\
+        &and\;equivalently\quad\alpha_i^*\;\in\;[0,\;C]
+    \end{aligned}
+\end{equation*}
+Simplify \eqref{eq:APP1} using the substitution \eqref{eq:APP3}
+\begin{equation*}
+    \begin{aligned}
+        \Lagr\;=\;&\frac{1}{2} \sum_i \sum_j (\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)\phi_i\phi_j \\
+        &-\sum_i \sum_j (\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)\phi_i\phi_j \\
+        &+\sum_i (\alpha_i - \alpha_i^*)y_i
+        +\sum_i (\alpha_i - \alpha_i^*)b
+        -\sum_i (\alpha_i + \alpha_i^*)\varepsilon \\
+        &+\sum_i \alpha_i(-\xi_i) + \sum_i\alpha_i^*(-\xi_i^*) \\
+        &-\sum_i \mu_i\xi_i - \sum_i \mu_i^*\xi_i^* \\
+        & +C\sum_i \xi_i + \xi_i^*
+    \end{aligned}
+\end{equation*}
+Apply condition \eqref{eq:APP4} and \eqref{eq:APP2c} to simplify some terms and obtain the final formulation
+\begin{equation*}
+    \begin{aligned}
+        \Lagr(\alpha, \alpha^*)\;=\;&-\frac{1}{2}\sum_i\sum_j (\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)\phi_i\phi_j \\
+        &+ \sum_i (\alpha_i - \alpha_i^*)y_i \\
+        &- \sum_i (\alpha_i + \alpha_i^*)\varepsilon \\
+        &With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i (\alpha_i^* - \alpha_i) = 0 \\
+            \alpha_i\in[0,\;C] \\
+            \alpha_i^*\in[0,\;C]
+        \end{cases}
+    \end{aligned}
+\end{equation*}
 
 \end{document}
