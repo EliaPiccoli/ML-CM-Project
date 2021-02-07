@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage{graphicx} % for inserting images
+\usepackage[utf8]{inputenc} % for good practice
+\usepackage{amsmath} % for equations
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{setspace}
+\usepackage{siunitx}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\Lagr}{\mathcal{L}}
+
+\begin{document}
+\section{Demonstration}
+Define the Lagrangian function
+\begin{equation}\label{eq:1}
+    \begin{aligned}
+        \Lagr = \frac{1}{2} \norm{w}^2 + C \sum_i (\xi_i + \xi_i^*) &+\sum_i \alpha_i (y_i - w\phi_i -b - \varepsilon - \xi_i) \\
+        &+\sum_i \alpha_i (-y_i + w\phi_i -b - \varepsilon - \xi_i^*) \\
+        &-\sum_i \mu_i\xi_i \\
+        &-\sum_i \mu_i^*\xi_i^* \\
+        where \quad \forall_i \: \xi_i\xi_i^* \geq 0
+    \end{aligned}
+\end{equation}
+Variables of the two definition of the problem:
+\begin{equation*}
+    \begin{aligned}
+            &Primal \; problem \qquad && w, \; b, \; \xi_i, \; \xi_i^* \\
+            &Dual \; Problem && \alpha_i, \; \alpha_i^*, \; \mu_i, \; \mu_i^*
+    \end{aligned}
+\end{equation*}
+Next step is try to simplify the definition of the Lagrangian wrt the problem that needs to be solved. Since the objective is to find the \textit{minimum} the developments proceeds imposing this condition.
+\begin{subequations}
+    \begin{align}
+        &\frac {\partial \Lagr}{\partial w} = 0 \quad &&\longrightarrow \quad && w + \sum_i \alpha_i(-\phi_i) + \sum_i \alpha_i^*\phi_i = 0 \label{eq:2a}\\
+        &\frac {\partial \Lagr}{\partial b} = 0 &&\longrightarrow && \sum_i -\alpha_i + \sum_i \alpha_i^* = 0 \label{eq:2b}\\
+        &\frac {\partial \Lagr}{\partial \xi_i} = 0 &&\longrightarrow && C - \alpha_i - \mu_i = 0 \label{eq:2c}\\
+        &\frac {\partial \Lagr}{\partial \xi_i^*} = 0 &&\longrightarrow && C - \alpha_i^* - \mu_i^* = 0 \label{eq:2d}
+    \end{align}
+\end{subequations}
+From \eqref{eq:2a} the definition of w can be derived
+\begin{equation}\label{eq:3}
+    w = \sum_i (\alpha_i - \alpha_i^*)\phi_i
+\end{equation}
+From \eqref{eq:2b} the first constraint on the Lagrangian variables is obtained
+\begin{equation}\label{eq:4}
+    \sum_i (\alpha_i^* - \alpha_i) = 0
+\end{equation}
+While from \eqref{eq:2c}/\eqref{eq:2d} with some further development the second constraint on the Lagrangian variables can be defined
+\begin{equation}
+    \begin{aligned}
+        &\alpha_i,\;\alpha_i^*,\;\mu_i,\;\mu_i^*\;\geq\;0 \quad \forall_i \\
+        &C = \alpha_i + \mu_i\quad\longrightarrow\quad\alpha_i = C - \mu_i \\
+        &\Longrightarrow\quad\alpha_i\;\in\;[0,\;C]\\
+        &and\;equivalently\quad\alpha_i^*\;\in\;[0,\;C]
+    \end{aligned}
+\end{equation}
+Simplify \eqref{eq:1} using the substitution \eqref{eq:3}
+\begin{equation}
+    \begin{aligned}
+        \Lagr\;=\;&\frac{1}{2} \sum_i \sum_j (\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)\phi_i\phi_j \\
+        &-\sum_i \sum_j (\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)\phi_i\phi_j \\
+        &+\sum_i (\alpha_i - \alpha_i^*)y_i
+        +\sum_i (\alpha_i - \alpha_i^*)b
+        -\sum_i (\alpha_i + \alpha_i^*)\varepsilon \\
+        &+\sum_i \alpha_i(-\xi_i) + \sum_i\alpha_i^*(-\xi_i^*) \\
+        &-\sum_i \mu_i\xi_i - \sum_i \mu_i^*\xi_i^* \\
+        & +C\sum_i \xi_i + \xi_i^*
+    \end{aligned}
+\end{equation}
+Apply condition \eqref{eq:4} and \eqref{eq:2c} to simplify some terms and obtain the final formulation
+\begin{equation}
+    \begin{aligned}
+        \Lagr(\alpha, \alpha^*)\;=\;&-\frac{1}{2}\sum_i\sum_j (\alpha_i - \alpha_i^*)(\alpha_j - \alpha_j^*)\phi_i\phi_j \\
+        &+ \sum_i (\alpha_i - \alpha_i^*)y_i \\
+        &- \sum_i (\alpha_i + \alpha_i^*)\varepsilon \\
+        &With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i (\alpha_i^* - \alpha_i) = 0 \\
+            \alpha_i\in[0,\;C] \\
+            \alpha_i^*\in[0,\;C]
+        \end{cases}
+    \end{aligned}
+\end{equation}
+\end{document}
