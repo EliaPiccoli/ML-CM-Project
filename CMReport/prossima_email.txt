@@ -1,0 +1,12 @@
+[CM Group 3] Aggiornamento Task 14
+ 
+Buongiorno professore,
+Ci scusi il disturbo, la aggiorniamo sul piccolo passo effettuato.
+
+Siamo ripartiti da zero ridefinendo (speriamo più chiaramente) il problema e ci sarebbe molto utile una sua conferma.
+Il passo successivo sarà dunque un'introduzione all'algoritmo con un occhio di riguardo alla risoluzione di Convex Separable Quadratic Knapsack Problems. 
+
+Vi auguriamo una buona giornata e vi ringraziamo per la disponibilità!
+Cordiali Saluti,
+Nicola Gugole
+Elia Piccoli
