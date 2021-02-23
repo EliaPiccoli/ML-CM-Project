@@ -1,0 +1,103 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % for inserting images
+\usepackage[utf8]{inputenc} % for good practice
+\usepackage{amsmath} % for equations
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{setspace}
+\usepackage{siunitx}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\Lagr}{\mathcal{L}}
+
+\begin{document}
+    \section{Projection formulation}
+    Starting from the following formalization:
+	\begin{equation}\label{eq:8}
+	    \begin{aligned}
+	    \min_{\beta_i} \quad & \frac{1}{2}\sum_i \sum_j \beta_i \beta_j K(x_i,x_j) \\
+		&+ \varepsilon\sum_i\abs{\beta_i}\\
+		&- \sum_i y_i\beta_i\\
+		&With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i \beta_i = 0 \\
+            \;\beta_i\in[-C,\;C] 
+        \end{cases}
+        \end{aligned}
+	\end{equation}
+    The optimization problem can be solved by the following steps, including the deflection as specified by the task:
+    \begin{algorithm} \label{alg:1}
+        \small
+        \While{optima not found}{
+	        $v \longleftarrow f(\beta)$ \\
+	        $g \longleftarrow \nabla f(\beta)$ \\
+	        \texttt{\small check if current solution is best so far (to update)} \\
+	        $d \longleftarrow \gamma g + (1 - \gamma)dprev$ \\
+	        $stepsize \longleftarrow \frac{\psi(v-f_{ref}+\delta)}{\norm{d}^2}$ \\
+	        $\beta \longleftarrow \beta - stepsize\cdot d$ \\
+	        \texttt{project $\beta$ by solving the KP} \\
+	    }
+		\caption{Compute $\beta$}
+    \end{algorithm} 
+    \newline
+    Projection of line 8 is where a simple formulation can be exploited to solve efficiently a Convex Separable Knapsack Problem. The main objective of the formulation is keeping the resulting $\beta_{proj}$ vector as similar as possible to the one produced by line 7 while at the same time producing a $\beta_{proj}$ vector satisfying the constraints. Therefore:
+    \begin{equation}\label{eq:9}
+	    \begin{aligned}
+	    \min_{\beta_{proj}} \quad &\frac{1}{2}\norm{\beta - \beta_{proj}}^2\\ 
+		&With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i \beta_{proj}^i = 0 \\
+            \;\beta_{proj}^i\in[-C,\;C] 
+        \end{cases}
+        \end{aligned}
+	\end{equation}
+	
+	Which by lagrangian relaxation leads to:
+	\begin{equation}\label{eq:10}
+	    \begin{aligned}
+	    \min_{\beta_{proj}} \quad &\frac{1}{2}\sum_i((\beta^i - \beta_{proj}^i)^2 + \mu \beta_{proj}^i)\\
+		&With\;the\;constraints\qquad
+        \begin{cases}
+            \;\beta_{proj}^i\in[-C,\;C] 
+        \end{cases}
+        \end{aligned}
+	\end{equation}
+    
+    
+    \section{Alternative formulation}
+    A different concept came up while discussing with each other, probably slightly more intensive on the computational side (because of the more complex constraints), but carrying the same underlying thought process. Instead of focusing on ensuring the constraints exploiting as reference the $\beta$ vector from line 7 of [\ref{alg:1}] we could ensure them by exploiting the $d$ vector from line 5. This would imply projecting the deflected direction trying to keep as small as possible the variation to it, which in the language of mathematics results in:
+    \begin{equation}\label{eq:11}
+	    \begin{aligned}
+	    \min_{s} \quad \frac{1}{2}\norm{d - s}^2
+        \end{aligned}
+	\end{equation}
+	
+	Obviously the constraints are different in this occasion. The only constraints are on $\beta$ and since the supposedly new $\beta$ is constructed using the chosen direction (i.e. $\beta = \beta - stepsize \cdot s)$) we can test and ensure the constraints by deriving the ones relative to $s$:
+	\begin{equation}
+	    \begin{aligned}
+        \begin{cases}
+            \;s_i\in[\frac{\beta_i-C}{stepsize},\;\frac{\beta_i+C}{stepsize}]\\
+            \;\sum_i s_i = \frac{\sum_i\beta_i}{stepsize}
+        \end{cases}
+        \end{aligned}
+	\end{equation}
+	Which, wrapping up by lagrangian relaxation, leads to:
+	\begin{equation}
+	    \begin{aligned}
+	    \min_{s} \quad &\frac{1}{2}\sum_i(d_i - s_i)^2 + \mu(s_i - \frac{\sum_j\beta_j}{stepsize})\\
+	    &With\;the\;constraints\qquad
+	    \begin{cases}
+            \;s_i\in[\frac{\beta_i-C}{stepsize},\;\frac{\beta_i+C}{stepsize}]
+        \end{cases}
+        \end{aligned}
+	\end{equation}
+	
+	$stepsize$ is obtained using original direction $d$ so to avoid a recursive constraint on $s$. This is not a dramatic approximation since the objective of the minimization of \eqref{eq:11} is keeping $s$ as close as possible to $d$.
+
+	\pagebreak
+	\section{Wrapping Up}
+	The two formulations are both separable problems with constraints of the knapsack type and the underlying mathematical meaning seems accurate in both the cases. \\Obviously the age-old question remains: are we still missing on something? Is one of the two more correct than the other?
+\end{document}

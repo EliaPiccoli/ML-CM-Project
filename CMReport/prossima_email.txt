@@ -1,12 +1,11 @@
-[CM Group 3] Aggiornamento Task 14
+[CM Group 3] Aggiornamento Projection
  
-Buongiorno professore,
-Ci scusi il disturbo, la aggiorniamo sul piccolo passo effettuato.
+Buonasera professore,
+Innanzitutto la ringraziamo per l'immediata risposta e per la pazienza infinita.
 
-Siamo ripartiti da zero ridefinendo (speriamo più chiaramente) il problema e ci sarebbe molto utile una sua conferma.
-Il passo successivo sarà dunque un'introduzione all'algoritmo con un occhio di riguardo alla risoluzione di Convex Separable Quadratic Knapsack Problems. 
+Nell'allegato trova la formulazione (come vedrà in verità sono due differenti) per il problema di proiezione all'interno dell'algoritmo di subgradiente. Una volta ricevuta conferma sulla correttezza potremo spostarci sul risolvere il problema di proiezione.
 
-Vi auguriamo una buona giornata e vi ringraziamo per la disponibilità!
+Vi auguriamo nel frattempo una buona serata e come sempre vi ringraziamo per la disponibilità!
 Cordiali Saluti,
 Nicola Gugole
 Elia Piccoli
