@@ -85,7 +85,7 @@
         \end{aligned}
 	\end{equation}
 	Which, wrapping up by lagrangian relaxation, leads to:
-	\begin{equation}
+	\begin{equation}\label{eq:6}
 	    \begin{aligned}
 	    \min_{s} \quad &\frac{1}{2}\sum_i(d_i - s_i)^2 + \mu(s_i - \frac{\sum_j\beta_j}{stepsize})\\
 	    &With\;the\;constraints\qquad
@@ -96,8 +96,32 @@
 	\end{equation}
 	
 	$stepsize$ is obtained using original direction $d$ so to avoid a recursive constraint on $s$. This is not a dramatic approximation since the objective of the minimization of \eqref{eq:11} is keeping $s$ as close as possible to $d$.
-
-	\pagebreak
-	\section{Wrapping Up}
-	The two formulations are both separable problems with constraints of the knapsack type and the underlying mathematical meaning seems accurate in both the cases. \\Obviously the age-old question remains: are we still missing on something? Is one of the two more correct than the other?
+	
+	\section{Analysis of the projection problems}
+        Let's consider the two possible projection problems and try to correlate one with the other.
+        \begin{equation}
+            \begin{aligned}
+                &\emph{Project the direction}\quad &&\longrightarrow \quad &&\min \norm{d-s} \\
+                &\emph{Project the point} &&\longrightarrow &&\min \norm{\beta-\beta_{proj}}\\
+            \end{aligned}
+        \end{equation}
+        Consider as starting point the second one. \\
+        We can develop the two $\beta$ by its definition, as we can see at step 7 of \ref{alg:1}.
+        \begin{equation}
+            \begin{aligned}
+                &\norm{\beta-\beta_{proj}} = \norm{\beta_{old} - stepsize \cdot d - (\beta_{old} - stepsize^\prime \cdot d^\prime )}\\\\
+                &\qquad \qquad simplifying\\\\
+                &\norm{\beta-\beta_{proj}} = \norm{- stepsize \cdot d + stepsize^\prime \cdot d^\prime}
+            \end{aligned}
+        \end{equation}
+        Where $stepsize^\prime$ and $d^\prime$ represent the stepsize and direction projected into the feasible region.\\\\
+        As we previously explained for \eqref{eq:6} we can approximate $stepsize^\prime$ with $stepsize$ without loss of generality.
+        \begin{equation}
+            \begin{aligned}
+                    &\norm{-stepsize \cdot d + stepsize^\prime \cdot d^\prime} \approx \norm{stepsize(d^\prime - d)} \\\\
+                    &stepsize\norm{d^\prime - d} \approx \norm{d^\prime -d}
+            \end{aligned}
+        \end{equation}
+        So we can conclude that with reasonable assumption and with a small margin of approximation the two problems at the end of the day lead to the same solution.\\
+        Obviously this differences will play a role at each step of the iteration, so the analysis of both should be interesting to maybe derive some properties or behaviours wrt solving one projection or the other.
 \end{document}
