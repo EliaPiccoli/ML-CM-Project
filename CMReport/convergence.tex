@@ -1,0 +1,82 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % for inserting images
+\usepackage[utf8]{inputenc} % for good practice
+\usepackage{amsmath} % for equations
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{setspace}
+\usepackage{siunitx}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\Lagr}{\mathcal{L}}
+
+\begin{document}
+    \section*{Deflected Subgradient convergence analysis}
+    First of all a quick recap of the different aspects of the analysis.\\
+    \emph{Current formulation of the problem}
+	\begin{equation}\label{eq:1}
+	    \begin{aligned}
+	    \max_{\beta_i} &- \frac{1}{2}\sum_i \sum_j \beta_i \beta_j K(x_i,x_j) \\
+		&- \epsilon\sum_i\abs{\beta_i}\\
+		&+ \sum_i y_i\beta_i\\
+		&With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i \beta_i = 0 \\
+            \;\beta_i\in[-C,\;C] 
+        \end{cases}
+        \end{aligned}
+	\end{equation} \\
+	\emph{Pseudocode of the algorithm}
+	\begin{algorithm} \label{alg:1}
+        \small
+        \While{optima not found}{
+	        $v \longleftarrow f(\beta)$ \\
+	        $g \longleftarrow \nabla f(\beta)$ \\
+	        $d \longleftarrow \gamma g + (1 - \gamma)dprev$ \\
+	        \texttt{project $d$ as in \eqref{eq:2}} \\
+	        $stepsize \longleftarrow \frac{\psi(v-f_{ref}+\delta)}{\norm{d}^2}$ \\
+	        $\beta \longleftarrow \beta - stepsize\cdot d$ \\
+	        \texttt{project $\beta$ as in \eqref{eq:3}} \\
+	    }
+		\caption{Compute $\beta$}
+    \end{algorithm} \\
+    \emph{Direction projection formulation}
+        \begin{equation}\label{eq:2}
+	    \begin{aligned}
+	    \min_{s} \quad &\frac{1}{2}\norm{d - s}^2\\
+	    &With\;the\;constraints\qquad
+        \begin{cases}
+            \;(\beta_i -s_i)\in[-C,\;C]\\
+        \end{cases}
+        \end{aligned}
+	\end{equation} \\
+	\emph{$\beta$ projection formulation}
+    \begin{equation}\label{eq:3}
+	    \begin{aligned}
+	    \min_{\beta_{proj}} \quad &\frac{1}{2}\norm{\beta - \beta_{proj}}^2\\ 
+		&With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i \beta_{proj}^i = 0 \\
+            \;\beta_{proj}^i\in[-C,\;C] 
+        \end{cases}
+        \end{aligned}
+	\end{equation}
+	
+	\section*{Projection algorithms}
+	In this section the focus will focus on how the two projection problems will be solved. \\
+	$\eqref{eq:2} \longrightarrow \emph{Projected Gradient method for BCQP}$ \\
+	$\eqref{eq:3} \longrightarrow \emph{Convex Knapsack Separable Problem algorithm}$
+	
+	\section*{Deflected Subgradient algorithm}
+	($\ref{alg:1}) \longrightarrow \emph{Target level Polyak stepsize with nonvanishing threshold}$ \\
+	
+    The approach that we are going to analyze is target value stepsize. With this method $f^*$ is approximated by an estimate that is updated as the algorithm proceeds. The estimate will be the  \emph{target level} which is defined wrt two values: $f_{ref}^k$ which is the \emph{reference value}, and $\delta_k$ which is the \emph{threshold}.\\
+    This two values will be used to approximate $f^*$ in the formulation of the stepsize.
+    \begin{equation}
+        0 \leq \nu_k = \beta_k \frac{f_k - f_{ref}^k - \delta_k}{\norm{d_k}^2} \qquad 0 \leq \beta_k \leq \alpha_k \leq 1 
+    \end{equation}
+    
+\end{document}

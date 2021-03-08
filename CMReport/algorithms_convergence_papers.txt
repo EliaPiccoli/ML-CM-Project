@@ -1,0 +1,15 @@
+Projected Gradient -> always converge in O(1/t)
+	- http://www.princeton.edu/~yc5/ele522_optimization/lectures/grad_descent_constrained.pdf
+	- https://angms.science/doc/CVX/CVX_PGD.pdf
+	- http://niaohe.ise.illinois.edu/IE598_2016/pdf/IE598-lecture10-projected%20gradient%20descent.pdf
+
+	Maybe read:
+	- https://www.researchgate.net/publication/37594158_Convergence_of_a_gradient_projection_method
+	- https://www.sciencedirect.com/science/article/pii/0041555366901145?via%3Dihub
+
+Convex Separable Knapsack Problem -> always converge in O(n log n)
+	- http://pages.di.unipi.it/frangio/abstracts.html#EJOR13
+	- https://link.springer.com/article/10.1007/s10107-006-0050-z
+
+Deflected Subgradient -> always converge in O(1/t^2)
+	- https://core.ac.uk/download/pdf/11828603.pdf
