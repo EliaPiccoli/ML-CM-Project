@@ -1,21 +1,11 @@
-Buongiorno professore,
-In questa mail tentiamo di rispondere alle domande contenute nella sua precedente risposta.
-Per fare ciò ci basiamo su un'analisi che porta a visualizzare l'uguaglianza tra le 2 proiezioni (con una leggera approssimazione dovuta allo stepsize) oltre che su un suo paper (http://pages.di.unipi.it/frangio/papers/SubgradComp.pdf).
+Buonasera professore,
+Speriamo vada tutto bene!
 
-> Quale delle due vi serve? 
-Entrambe le tipologie di proiezione portano ad un risultante \beta appartenente all'insieme ammissibile. Questo è vero dati i constraint delle 2 diverse formulazioni (la prima impone i vincoli direttamente su \beta mentre la seconda pone i vincoli sulla direzione tale per cui, una volta risolto il problema di minimizzazione, il \beta corretto sia semplicemente ottenibile tramite \beta_old - stepsize*direzione).
-E' necessario dunque utilizzare solo una delle 2 tipologie di proiezione nella risoluzione del problema, utilizzarle tutte e 2 sarebbe ridondante.
+Le inviamo in allegato un primo approccio alla analisi sulla convergenza dell'algoritmo richiesto dalla task.
+Ci siamo affidati a quanto segnalato nelle Guidelines, se qualcosa manca di formalità o accuratezza ci scusiamo e rimaniamo pronti a rimediare.
 
-> Potete risolverlo con lo stesso algoritmo?
-La tipologia di constraint è equivalente come lo è la forma del problema di minimizzazione, quindi un algoritmo di risoluzione di KP sarebbe valido per entrambi. 
-
-La nostra propensione è verso l'utilizzo della proiezione sulla direzione, la quale ci restituirebbe direttamente la direzione da utilizzare all'iter corrente (d_k) e all'iter consecutivo (d_{k-1}) con il significato matematico di voler trovare tramite proiezione la feasible direction piu simile possibile alla deflected originale.
-
-Sarebbe interessante (una volta raggiunta l'implementazione) tentare di capire se sia presente una differenza, seppur lieve, a livello di convergenza tra le 2 formulazioni dovuta all'approssimazione dello stepsize.
-
-Rimaniamo a disposizione attendendo i suoi pensieri a riguardo,
-Vi ringraziamo per l'aiuto e la pazienza,
-Augurandovi un buon proseguimento di giornata,
-Cordiali Saulti,
+Attendendo gentilmente sua risposta,
+Vi auguriamo un buon proseguimento di settimana ed un buon lavoro,
+Cordiali Saluti,
 Nicola Gugole
 Elia Piccoli
