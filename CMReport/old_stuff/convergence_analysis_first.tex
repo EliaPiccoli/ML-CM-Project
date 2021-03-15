@@ -1,0 +1,133 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx} % for inserting images
+\usepackage[utf8]{inputenc} % for good practice
+\usepackage{amsmath} % for equations
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{setspace}
+\usepackage{siunitx}
+\usepackage[
+backend=biber,
+sorting=ynt
+]{biblatex}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+\addbibresource{biblio.bib}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\Lagr}{\mathcal{L}}
+\title{Deflected Subgradient Convergence Analysis}
+\date{}
+\author{Elia Piccoli\\ Nicola Gugole}
+
+\begin{document}
+    \pagenumbering{gobble}
+    \maketitle
+    \pagebreak
+    \pagenumbering{arabic}
+    \section{Recap}
+    First of all a quick recap of the different aspects of the analysis.\\
+    \emph{Current formulation of the problem}
+	\begin{equation}\label{eq:1}
+	    \begin{aligned}
+	    \max_{\beta_i} &- \frac{1}{2}\sum_i \sum_j \beta_i \beta_j K(x_i,x_j) \\
+		&- \epsilon\sum_i\abs{\beta_i}\\
+		&+ \sum_i y_i\beta_i\\
+		&With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i \beta_i = 0 \\
+            \;\beta_i\in[-C,\;C] 
+        \end{cases}
+        \end{aligned}
+	\end{equation} \\
+    \emph{Direction projection formulation}
+        \begin{equation}\label{eq:2}
+	    \begin{aligned}
+	    \min_{s} \quad &\frac{1}{2}\norm{d - s}^2\\
+	    &With\;the\;constraints\qquad
+        \begin{cases}
+            \;(\beta_i -s_i)\in[-C,\;C]\\
+        \end{cases}
+        \end{aligned}
+	\end{equation} \\
+	\emph{$\beta$ projection formulation}
+    \begin{equation}\label{eq:3}
+	    \begin{aligned}
+	    \min_{\beta_{proj}} \quad &\frac{1}{2}\norm{\beta - \beta_{proj}}^2\\ 
+		&With\;the\;constraints\qquad
+        \begin{cases}
+            \sum_i \beta_{proj}^i = 0 \\
+            \;\beta_{proj}^i\in[-C,\;C] 
+        \end{cases}
+        \end{aligned}
+	\end{equation}
+	
+	\section{Projection Algorithms} \label{projections}
+	In this section the focus will be on how the two projection problems are solved. \\
+	\begin{itemize}
+	    \item $\eqref{eq:3} \longrightarrow \emph{Convex Separable Knapsack Problem algorithm}$. This projection is \textit{easy} to perform and can also be attained fast with algorithms in the family of $\mathcal{O}(n\cdot log(n))$ /\ $\mathcal{O}(n)$, as stated in \parencite[see][Introduction]{cqknsp} and more in depth analyzed in \parencite[see][Algorithm 3.1 (convergence proved in Remark 3.2(d))]{Kiwiel2008}
+	    \item $\eqref{eq:2} \longrightarrow \emph{Projected Gradient method for BCQP}$. This projection is even \textit{easier} to achieve wrt the previous one and can be performed using the same algorithm seen in class \parencite[see][Slide 13]{slideproj}. This will converge to the global minimum given the structure of problem \eqref{eq:2} with a convergence rate of $\mathcal{O}(\frac{1}{\epsilon})$.\\
+	\end{itemize}
+
+	\section{Deflected Subgradient Algorithm}
+    The approach that we are going to analyze is a \textit{Constrained Deflected Subgradient Method} using \textit{Target Value Stepsize} with a \textit{Non-Vanishing Threshold}. With this method $f^*$ is approximated by an estimate that is updated as the algorithm proceeds. The estimate will be the  \emph{target level} which is defined wrt two values: $f_{ref}^k$ which is the \emph{reference value}, and $\delta_k$ which is the \emph{threshold}.\\
+    This two values will be used to approximate $f^*$ in the formulation of the stepsize. In particular the stepsize has to follow a constraint between the $\alpha$ and $\psi$ parameter (\textit{stepsize restriction}) to assure convergence.
+    \begin{equation}
+        0 \leq \nu_k = \psi_k \frac{f_k - f_{ref}^k + \delta_k}{\norm{d_k}^2} \qquad 0 \leq \psi_k \leq \alpha_k \leq 1 
+    \end{equation}
+    \pagebreak
+    \newline
+    Giving a general algorithm for solving \eqref{eq:1}:\\
+    \newline
+    \begin{algorithm}[H]
+		\small
+		\DontPrintSemicolon
+		\label{algo:2}
+		\setstretch{1.1}
+		
+		\Begin{
+		$xref \longleftarrow x$\\
+		$fref \longleftarrow inf$\\
+		$\delta \longleftarrow 0$\\
+		$dprev \longleftarrow 0$\\
+		\While{true}{
+			$v \longleftarrow \frac{1}{2}x'Qx + qx$\\
+			$g \longleftarrow Qx + q$\\
+			\texttt{\textbf{Check if in $stopped$ condition}}\\
+			\texttt{\textbf{Check if in $optimal$ condition}}\\
+			\texttt{// reset $\delta$ if $v$ is \textit{good} or decrease it otherwise}\\
+			\eIf{$v \leq fref - \delta$}{
+				$\delta \longleftarrow \delta\_reset \cdot \max{v,1}$\\
+				}{
+				$\delta \longleftarrow \max(\delta \rho , eps \cdot\max(\abs{ \min(v,fref) } , 1) )$\\
+				}
+			\texttt{// update $fref$ and $xref$ if needed}\\
+			\If{$v < fref$}{
+				$fref \longleftarrow v$\\
+				$xref \longleftarrow x$\\
+				}
+			$d \longleftarrow \alpha g + (1 - \alpha)dprev$\\
+			$d \longleftarrow Project(d)$ \hfill \texttt{// project $d$ solving \eqref{eq:2}}\\
+			$dprev \longleftarrow d$\\
+			$\lambda \longleftarrow v-fref+\delta$\\
+			$\nu \longleftarrow \frac{\psi \cdot \lambda}{\norm{d}^2}$ \hfill \texttt{// stepsize-restricted $\rightarrow \psi \leq \alpha$}\\
+			$x \longleftarrow x - \nu\cdot d$\\
+			$x \longleftarrow Project(x)$ \hfill \texttt{// project $x$ solving \eqref{eq:3}}\\
+			}
+		}
+		 \caption{Deflected Subgradient Algorithm \\(variable $x$ stands for $\beta$)}
+	\end{algorithm}
+	\pagebreak
+	The projections required in \hyperref[algo:2]{Algorithm 1} are the ones presented in \hyperref[projections]{Section 2}. The two projections are \textit{easy} to perform, allowing the convergence of the \textit{Deflected Subgradient Algorithm} as stated in \parencite[see][Theorem 3.6]{deflectconv}. The theorem has two conditions to ensure the convergence:
+	\begin{itemize}
+	    \item \parencite[see][Cond 2.13]{deflectconv} is satisfied since both the direction used in the current iteration and the direction used in the next iteration are the projection of the deflected direction of the current iteration [see \hyperref[algo:2]{\textit{Deflected Subgradient Algorithm}}].
+	    \item \parencite[see][Cond 3.5]{deflectconv} is satisfied since the $\lambda$ is always greater or equal to zero because of the algorithm structure [see \hyperref[algo:2]{\textit{Deflected Subgradient Algorithm}}].
+	\end{itemize}
+	In conclusion, since the requirements are satisfied the algorithm converges. The convergence rate expected is at best the convergence rate of a SM using \textit{Polyak} (since the algorithm proposed is an approximation using \textit{Target Level}), suggesting a best convergence of $\mathcal{O}(\frac{1}{\epsilon^2})$ \parencite[see][Slide 41]{slidesubgr} .
+
+    
+\pagebreak
+\printbibliography
+    
+\end{document}
