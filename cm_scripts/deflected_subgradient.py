@@ -6,12 +6,12 @@ import math
 
 def unrollArgs(optim_args):
     vareps = optim_args['vareps'] if 'vareps' in optim_args else 0.1
-    maxiter = optim_args['maxiter'] if 'maxiter' in optim_args else 3e+3
+    maxiter = optim_args['maxiter'] if 'maxiter' in optim_args else 1e3
     deltares = optim_args['deltares'] if 'deltares' in optim_args else 1e-4
     rho = optim_args['rho'] if 'rho' in optim_args else 0.95
     eps = optim_args['eps'] if 'eps' in optim_args else 1e-6
     alpha = optim_args['alpha'] if 'alpha' in optim_args else 0.75
-    psi = optim_args['psi'] if 'psi' in optim_args else 0.5
+    psi = optim_args['psi'] if 'psi' in optim_args else 0.6
     return vareps, maxiter, deltares, rho, eps, alpha, psi
 
 def projectDirection(x, d, box, eps=1e-10):
@@ -37,8 +37,9 @@ def solveDeflected(x, y, K, box, optim_args):
             + np.repeat(vareps,x.size).dot(np.abs(x)) 
             - np.transpose(y).dot(x))[0,0] # would return a matrix otherwise
         g = K.dot(x) + vareps*np.sign(x) - y
-        print(f"v: {round(v,2)} - norm_g ({i} iter): {np.linalg.norm(g)}")
-        if np.linalg.norm(g) < 1e-10:
+        norm_g = np.linalg.norm(g)
+        print("i: {:4d} - v: {:.2f} - ||g||: {:e}".format(i, v, norm_g))
+        if norm_g < 1e-10:
             # optimal condition reached
             # TODO ADD status bro
             return x
