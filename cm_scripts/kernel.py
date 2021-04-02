@@ -1,19 +1,19 @@
 import numpy as np
 
 def compute_gamma(x, gamma):
-    return 1/(x.shape[1]*x.var()) if gamma == 'scale' else 1/x.shape[1]
+    return 1/(x.shape[0]*x.var()) if gamma == 'scale' else 1/x.shape[0]
 
 def rbf(x, gamma='scale'):
     if isinstance(gamma, str):
         gamma = compute_gamma(x, gamma)
-    K = np.zeros((x.shape[1], x.shape[1]))
+    K = np.zeros((x.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
             K[i,j] = np.exp(-gamma * np.linalg.norm(x[i]-x[j])**2)
     return K
 
 def linear(x):
-    K = np.zeros((x.shape[1], x.shape[1]))
+    K = np.zeros((x.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
             K[i,j] = x[i].dot(x[j])
@@ -22,7 +22,7 @@ def linear(x):
 def poly(x, gamma='scale', deg=3, coef=0.0):
     if isinstance(gamma, str):
         gamma = compute_gamma(x, gamma)
-    K = np.zeros((x.shape[1], x.shape[1]))
+    K = np.zeros((x.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
             K[i,j] = (gamma * x[i].dot(x[j]) + coef) ** deg
@@ -31,7 +31,7 @@ def poly(x, gamma='scale', deg=3, coef=0.0):
 def sigmoid(x, gamma='scale', coef=0.0):
     if isinstance(gamma, str):
         gamma = compute_gamma(x, gamma)
-    K = np.zeros((x.shape[1], x.shape[1]))
+    K = np.zeros((x.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
             K[i,j] = np.tanh(gamma*x[i].dot(x[j]) + coef)

@@ -1,5 +1,5 @@
 from kp import solveKP
-from kernel import *
+import kernel
 import numpy as np
 import copy
 import math
@@ -19,7 +19,6 @@ def projectDirection(x, d, box, eps=1e-10):
         if (-box-x[i] < eps and d[i] < 0) or (box - x[i] < eps and d[i] > 0):
             d[i] = 0
     return d
-    
 
 def solveDeflected(x, y, K, box, optim_args):
     # optim_args - vareps, rho, eps, psi, alpha
@@ -60,9 +59,7 @@ def solveDeflected(x, y, K, box, optim_args):
         # print("before",x)
         x = solveKP(box, 0, x, False)
         # print("after",x) 
-        i += 1
-        
-    
+        i += 1    
 
 if __name__ == "__main__":
     # sizes = 1000
@@ -71,7 +68,6 @@ if __name__ == "__main__":
     # y = np.random.uniform(-1,1, (sizes,1))
     # optim_args = {}
     # optim_args['vareps'] = 1
-
 
     from sklearn.preprocessing import StandardScaler
     x = np.array([[1],[2],[3],[4],[5],[6],[7],[8],[9],[10]])
@@ -82,11 +78,7 @@ if __name__ == "__main__":
     x = sc_X.fit_transform(x)
     y = sc_y.fit_transform(y)
     
-    K = rbf(x, 1 / np.var(x))
-
-
-
+    K = kernel.rbf(x)
     box = 1.0
     x = solveDeflected(x, y, K, box, {})
     # print("LOL", x)
-
