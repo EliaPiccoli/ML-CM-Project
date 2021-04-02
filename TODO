@@ -13,8 +13,9 @@ NN:
     11. reshuffle - DONE
     12. inference - DONE
     13. best model save - DONE
-    14. plot.py
-    15. grid search
-    16. parallel grid search
+    14. plot.py - DONE
+    15. grid search - DONE
+    16. parallel grid search - DONE
+    17. coarse-to-fine grid search
 
 SVM:
