@@ -49,7 +49,7 @@ def solveKP(box, linear_constraint, betas, verbose = False):
     if verbose: print(f"INITIAL BETAS: {betas}\n INITIAL mu_L: {mu_L}\nINITIAL mu_U: {mu_U}")
     while M.size != 0:
         mu = median_of_medians(M)
-        print(f"\nMEDIAN OF {M} IS {mu}")
+        if verbose: print(f"\nMEDIAN OF {M} IS {mu}")
         temp_betas = generate_betas(mu, betas, box, original_M)
         betas_sum = np.sum(temp_betas)
         if verbose: print(f"NEW BETAS: {temp_betas}")
@@ -75,4 +75,4 @@ if __name__ == "__main__":
     linear_constraint = 0
     betas = np.random.uniform(-1,1,1530)
     betas = solveKP(box, linear_constraint, betas)
-    print(f"FINAL BETAS: {betas}\nAND FINAL SUM OF BETAS: {np.sum(betas)}")
+    if verbose: print(f"FINAL BETAS: {betas}\nAND FINAL SUM OF BETAS: {np.sum(betas)}")
