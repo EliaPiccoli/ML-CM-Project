@@ -75,4 +75,4 @@ if __name__ == "__main__":
     linear_constraint = 0
     betas = np.random.uniform(-1,1,1530)
     betas = solveKP(box, linear_constraint, betas)
-    if verbose: print(f"FINAL BETAS: {betas}\nAND FINAL SUM OF BETAS: {np.sum(betas)}")
+    print(f"FINAL BETAS: {betas}\nAND FINAL SUM OF BETAS: {np.sum(betas)}")
