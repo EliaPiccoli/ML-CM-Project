@@ -20,12 +20,12 @@ def median_of_medians(elems):
 def generate_betas(mu, betas, box, M):
     new_betas = []
     for i in range(len(betas)):
-        if mu < M[i][0]:
-            new_betas.append(box) # C
-        elif mu > M[i][1]:
-            new_betas.append(-box) # -C
-        else:
-            new_betas.append(float(betas[i] - mu)) # beta_i - mu
+        if mu < M[i][0]: # C
+            new_betas.append(box)   
+        elif mu > M[i][1]: # -C
+            new_betas.append(-box) 
+        else: # beta_i - mu
+            new_betas.append(float(betas[i] - mu)) 
     return np.array(new_betas)
 
 def lin_interp(mu_L, mu_U, betas, box, M):
@@ -39,23 +39,28 @@ def adjust_M(M, mu, mode):
     return M[M > mu] if mode == 0 else M[M < mu]
 
 def solveKP(box, linear_constraint, betas, verbose = False):
-    # box - range constraining the betas (-box box) = (-C C)
-    # linear_constraint - value which must be sum of betas
-    # betas - input variables
+    """
+    box               : range constraining the betas (-box box) = (-C C)
+    linear_constraint : value which must be sum of betas
+    betas             : input variables
+    """
     betas = np.hstack(betas)
     original_M = generate_all_mu(betas, box) # structured list - each element is a pair (0 for mu_u and 1 for mu_l)
     mu_L, mu_U = math.inf, -math.inf
-    M = np.ravel(original_M) # for keeping all mu_i_l and mu_i_u protected from the loop variations
-    if verbose: print(f"INITIAL BETAS: {betas}\n INITIAL mu_L: {mu_L}\nINITIAL mu_U: {mu_U}")
+    M = np.ravel(original_M) # copy and unroll original M
+    if verbose:
+        print(f"INITIAL BETAS: {betas}\n INITIAL mu_L: {mu_L}\nINITIAL mu_U: {mu_U}")
     while M.size != 0:
         mu = median_of_medians(M)
-        if verbose: print(f"\nMEDIAN OF {M} IS {mu}")
         temp_betas = generate_betas(mu, betas, box, original_M)
         betas_sum = np.sum(temp_betas)
-        if verbose: print(f"NEW BETAS: {temp_betas}")
-        if verbose: print(f"SUM OF BETAS: {betas_sum}")
-        if betas_sum == linear_constraint:
-            print("LUCKY ESCAPE!")
+        
+        if verbose:
+            print(f"\nMEDIAN OF {M} IS {mu}")
+            print(f"NEW BETAS: {temp_betas}")
+            print(f"SUM OF BETAS: {betas_sum}")
+        
+        if betas_sum == linear_constraint: # LUCKY ESCAPE!
             return np.vstack(temp_betas)
         elif betas_sum > linear_constraint:
             mu_L = mu
@@ -63,9 +68,13 @@ def solveKP(box, linear_constraint, betas, verbose = False):
         else:
             mu_U = mu
             M = adjust_M(M, mu, 1)
-        if verbose: print(f"END OF ITER mu_L {mu_L} AND mu_U {mu_U}")
+        
+        if verbose:
+            print(f"END OF ITER mu_L {mu_L} AND mu_U {mu_U}")
+
     # if we arrive here then solution stands in linear interpolation
-    if verbose: print("SOLUTION FOUND BY LINEAR INTERPOLATION")
+    if verbose:
+        print("SOLUTION FOUND BY LINEAR INTERPOLATION")
     mu = lin_interp(mu_L, mu_U, betas, box, original_M)
     return np.vstack(generate_betas(mu, betas, box, original_M))
 
@@ -73,6 +82,6 @@ if __name__ == "__main__":
     C = 3
     box = C
     linear_constraint = 0
-    betas = np.random.uniform(-1,1,1530)
+    betas = np.random.uniform(-1,1,1337)
     betas = solveKP(box, linear_constraint, betas)
-    print(f"FINAL BETAS: {betas}\nAND FINAL SUM OF BETAS: {np.sum(betas)}")
+    print(f"FINAL BETAS: {betas}\nFINAL SUM OF BETAS: {np.sum(betas)}")
