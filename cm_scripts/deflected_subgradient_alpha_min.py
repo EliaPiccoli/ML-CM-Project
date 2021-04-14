@@ -3,6 +3,9 @@ import kernel
 import numpy as np
 import copy
 import math
+from scipy import optimize
+def f(alpha,g,dprev):   # The rosenbrock function
+    return np.linalg.norm(alpha*g+(1-alpha)*dprev)**2
 
 def unrollArgs(optim_args):
     """
@@ -42,8 +45,7 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
     delta = 0
     dprev = np.zeros((x.size,1))
     i = 0
-    prevnormg = math.inf
-    zigzagcount = 0
+    prevg = math.inf
     while True:
         if i > maxiter:
             # stopped condition reached
@@ -54,13 +56,9 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
             - np.transpose(y).dot(x))[0,0] # would return a matrix otherwise
         g = K.dot(x) + vareps*np.sign(x) - y
         norm_g = np.linalg.norm(g)
-        if verbose: print("i: {:4d} - v: {:4f} - fref: {:4f} - ||g||: {:4f} - delta: {:e} - ||gdiff||: {:4f} - eps: {:e}".format(i, v, fref, norm_g, delta, prevnormg-norm_g, eps))
-        if prevnormg-norm_g < -1e-5:
-            zigzagcount += 1
-            if zigzagcount > 100 and eps > 1e-5:
-                zigzagcount = 0
-                eps /= 10
-        prevnormg = norm_g
+        # alpha = optimize.minimize_scalar(lambda alpha: f(alpha,g,dprev), bounds=(0,1), method='bounded').x
+        psi = alpha
+        if verbose: print("i: {:4d} - v: {:e} - fref: {:e} - ||g||: {:e} - delta: {:e} - alpha: {:e}".format(i, v, fref, norm_g, delta, alpha))
         if norm_g < 1e-10:
             # optimal condition reached
             # TODO ADD status

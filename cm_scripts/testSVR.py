@@ -20,7 +20,7 @@ y = sc_y.fit_transform(y)
 # print("LOL: ", beta)
 
 K = kernel.poly(x, 'scale', 2)
-box = 69.0
+box = 4.0
 DEG = 3
 x_init = np.zeros(x.shape)
 beta = solveDeflected(x_init, y, K, box, {}, True)
@@ -55,15 +55,15 @@ print(f"W : {W} - b: {b}")
 # First transform 6.5 to feature scaling
 sc_X_val = sc_X.transform(np.array([[6.5]]))
 # Second predict the value
-# scaled_y_pred = predict_gk(W, b, beta, sc_X_val, suppvect)
-scaled_y_pred = predict_poly(W, b, beta, sc_X_val, suppvect, DEG)
+# scaled_y_pred = predict_gk(b, beta, sc_X_val, suppvect)
+scaled_y_pred = predict_poly(b, beta, sc_X_val, suppvect, DEG)
 # Third - since this is scaled - we have to inverse transform
 y_pred = sc_y.inverse_transform(scaled_y_pred) 
 print('The predicted salary of a person at 6.5 Level is ', y_pred)
 
 plt.scatter(x, y , color="red")
-# pred = [float(predict_gk(W, b, beta, x[i], suppvect, 1)) for i in range(x.size)]
-pred = [float(predict_poly(W, b, beta, x[i], suppvect, DEG)) for i in range(x.size)]
+# pred = [float(predict_gk(b, beta, x[i], suppvect, 1)) for i in range(x.size)]
+pred = [float(predict_poly(b, beta, x[i], suppvect, DEG)) for i in range(x.size)]
 print(pred)
 plt.plot(x, pred, color="blue")
 plt.title("SVR")

@@ -12,6 +12,9 @@ def rbf(x, gamma='scale'):
             K[i,j] = np.exp(-gamma * np.linalg.norm(x[i]-x[j])**2)
     return K
 
+def rbf_one(xi, xj, gamma):
+    return np.exp(-gamma * np.linalg.norm(xi-xj)**2)
+
 def linear(x):
     K = np.zeros((x.shape[0], x.shape[0]))
     for i in range(len(K)):
