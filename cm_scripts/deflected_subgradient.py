@@ -1,5 +1,4 @@
 from kp import solveKP
-import kernel
 import numpy as np
 import copy
 import math
@@ -52,7 +51,8 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
             - np.transpose(y).dot(x))[0,0] # would return a matrix otherwise
         g = K.dot(x) + vareps*np.sign(x) - y
         norm_g = np.linalg.norm(g)
-        if verbose: print("i: {:4d} - v: {:e} - fref: {:e} - ||g||: {:e} - delta: {:e}".format(i, v, fref, norm_g, delta))
+        if verbose:
+            print("i: {:4d} - v: {:e} - fref: {:e} - ||g||: {:e} - delta: {:e}".format(i, v, fref, norm_g, delta))
         if norm_g < 1e-10:
             # optimal condition reached
             # TODO ADD status
@@ -69,13 +69,7 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
         d = alpha*g + (1-alpha)*dprev
         dproj = projectDirection(x, d, box)
         dprev = dproj
-        # print("dproj: ", dproj)
         nu = psi*(v-fref+delta)/(np.linalg.norm(dproj)**2)
-        # print("nu: ", nu)
-        # print("current: ",x)
         x = x - nu*dproj
-        # print("updated: ",x) 
         x = solveKP(box, 0, x, False)
-        # print("projected: ",x)
         i += 1
-        # input()
