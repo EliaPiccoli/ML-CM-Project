@@ -1,7 +1,7 @@
 import numpy as np
 import kernel
 
-def eps_insensitive_quad_loss_funct(x,y,eps,b,kernel='rbf', W=None, beta=None, sv=None, gamma=None)
+def eps_insensitive_quad_loss_funct(x,y,eps,b,kernel='rbf', W=None, beta=None, sv=None, gamma=None):
     loss = 0
     fx = np.array([])
     if kernel == 'linear' and W is not None:
