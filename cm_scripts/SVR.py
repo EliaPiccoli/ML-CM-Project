@@ -21,7 +21,7 @@ def predict_linear(W, b, x):
 
 def predict_rbf(b, beta, x, sv, gamma=None):
     if gamma is None:
-        gamma = 1/(sv.shape[0]*sv.var())
+        gamma = 1/(sv.shape[1]*sv.var())
     K = np.zeros((sv.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
@@ -30,7 +30,7 @@ def predict_rbf(b, beta, x, sv, gamma=None):
 
 def predict_poly(b, beta, x, sv, deg, gamma=None):
     if gamma is None:
-        gamma = 1/(sv.shape[0]*sv.var())
+        gamma = 1/(sv.shape[1]*sv.var())
     K = np.zeros((sv.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):

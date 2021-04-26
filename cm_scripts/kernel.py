@@ -1,11 +1,14 @@
 import numpy as np
 
 def compute_gamma(x, gamma):
-    return 1/(x.shape[0]*x.var()) if gamma == 'scale' else 1/x.shape[0]
+    return 1/(x.shape[1]*x.var()) if gamma == 'scale' else 1/x.shape[1]
 
-def rbf(x, gamma='scale'):
+def rbf(x, gamma='scale', orig_x=None):
     if isinstance(gamma, str):
-        gamma = compute_gamma(x, gamma)
+        if orig_x is not None:
+            gamma = compute_gamma(orig_x, gamma)
+        else:
+            gamma = compute_gamma(x, gamma)
     K = np.zeros((x.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
