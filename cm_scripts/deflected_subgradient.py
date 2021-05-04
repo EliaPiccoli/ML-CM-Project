@@ -47,8 +47,7 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
     while True:
         if i > maxiter:
             # stopped condition reached
-            # TODO ADD status
-            return xref
+            return xref, 'stopped'
         v = (0.5 * np.dot(np.dot(np.transpose(x), K), x) 
             + np.repeat(vareps,x.size).dot(np.abs(x)) 
             - np.transpose(y).dot(x))[0,0] # would return a matrix otherwise
@@ -63,8 +62,7 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
         prevnormg = norm_g
         if norm_g < 1e-10:
             # optimal condition reached
-            # TODO ADD status
-            return x
+            return x, 'optimal'
         # reset delta if v is good or decrease it otherwise
         if v <= fref - delta:
             delta = deltares * max(abs(v),1)
