@@ -1,20 +1,40 @@
 import numpy as np
 import kernel
+from sklearn.preprocessing import StandardScaler
 
-def eps_insensitive_quad_loss_funct(x,y,eps,b,kernel='rbf', W=None, beta=None, sv=None, gamma=None):
+class SVR:
+    def __init__(self, kernel, box=1.0, eps=0.1):
+        self.kernel = kernel
+        self.box = box
+        self.eps = eps
+
+    def fit(self, x, y, kernel_args, optim_args, beta_init=None, verbose_optim=True):
+        self.x = x
+        self.y = y
+
+        self.gamma  = kernel_args['gamma'] if 'gamma' in kernel_args else 'scale'
+        self.degree = kernel_args['degree'] if 'degree' in kernel_args else 1
+        self.coef   = kernel_args['coef'] if 'coef' in kernel_args else 0
+
+        sc_X = StandardScaler()
+        sc_y = StandardScaler()
+        self.x_scaled = sc_X.fit_transform(self.x)
+        self.y_scaled = sc_Y.fit_transform(self.y)
+        self.x_scaler = sc_X
+        self.y_scaler = sc_Y
+
+        self.K = kernel.get_kernel(self.x_scaled, self.kernel, self.x, self.gamma, self.degree, self.coef)
+
+        beta_init = np.zeros(self.x.shape) if beta_init is None else beta_init
+        self.beta = solveDeflected(beta_init, self.y_scaled, self.K, self.box, optim_args=optim_args, verbose=verbose_optim)
+
+def eps_ins_loss(y_true, y_pred,eps=0.1):
     loss = 0
-    fx = np.array([])
-    if kernel == 'linear' and W is not None:
-        fx = W * x + b
-    elif kernel == "rbf" and beta is not None and sv is not None:
-        if gamma is None:
-            gamma = 'scale'
-        for xi in x:
-            fx.append([predict_rbf(b, beta, xi, sv, gamma)])
-    for i in range(len(y)):
-        temp_loss = abs(y[i]-fx[i])
+    for i in range(len(y_true)):
+        temp_loss = abs(y_true[i]-y_pred[i])
         if temp_loss > eps:
             loss += (temp_loss - eps)**2
+    return loss
 
 def predict_linear(W, b, x):
     return np.dot(np.transpose(W), x) + b

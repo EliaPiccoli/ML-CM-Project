@@ -13,6 +13,7 @@ def rbf(x, gamma='scale', orig_x=None):
     for i in range(len(K)):
         for j in range(len(K[0])):
             K[i,j] = np.exp(-gamma * np.linalg.norm(x[i]-x[j])**2)
+    print("Gamma:",gamma)
     return K
 
 def rbf_one(xi, xj, gamma):
@@ -25,23 +26,40 @@ def linear(x):
             K[i,j] = x[i].dot(x[j])
     return K
 
-def poly(x, gamma='scale', deg=3, coef=0.0):
+def poly(x, gamma='scale', deg=3, coef=0.0, orig_x=None):
     if isinstance(gamma, str):
-        gamma = compute_gamma(x, gamma)
+        if orig_x is not None:
+            gamma = compute_gamma(orig_x, gamma)
+        else:
+            gamma = compute_gamma(x, gamma)
     K = np.zeros((x.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
             K[i,j] = (gamma * x[i].dot(x[j]) + coef) ** deg
     return K
 
-def sigmoid(x, gamma='scale', coef=0.0):
+def sigmoid(x, gamma='scale', coef=0.0, orig_x=None):
     if isinstance(gamma, str):
-        gamma = compute_gamma(x, gamma)
+        if orig_x is not None:
+            gamma = compute_gamma(orig_x, gamma)
+        else:
+            gamma = compute_gamma(x, gamma)
     K = np.zeros((x.shape[0], x.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
             K[i,j] = np.tanh(gamma*x[i].dot(x[j]) + coef)
     return K
+
+def get_kernel(x, kernel, orig_x, gamma, degree, coef):
+    if kernel == 'linear':
+        return linear(x)
+    elif kernel == 'rbf':
+        return rbf(x, gamma, orig_x)
+    elif kernel == 'poly':
+        return poly(x, gamma, degree, coef, orig_x)
+    elif kernel == 'sigmoid':
+        return sigmoid(x, gamma, coef, orig_x)
+
 
 if __name__ == "__main__":
     x = np.random.uniform(-1, 1, (10, 10))
