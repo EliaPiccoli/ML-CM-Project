@@ -54,11 +54,11 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
         g = K.dot(x) + vareps*np.sign(x) - y
         norm_g = np.linalg.norm(g)
         if verbose: print("i: {:4d} - v: {:4f} - fref: {:4f} - ||g||: {:4f} - delta: {:e} - ||gdiff||: {:4f} - eps: {:e}".format(i, v, fref, norm_g, delta, prevnormg-norm_g, eps))
-        if prevnormg-norm_g < -1e-4: # TODO formalize eps (new, not in literature! EPNG)
-            zigzagcount += 1
-            if zigzagcount > 100 and eps > 1e-6:
-                zigzagcount = 0
-                eps /= 2
+        # if prevnormg-norm_g < -1e-4: # TODO formalize eps (new, not in literature! EPNG)
+        #     zigzagcount += 1
+        #     if zigzagcount > 100 and eps > 1e-6:
+        #         zigzagcount = 0
+        #         eps /= 2
         prevnormg = norm_g
         if norm_g < 1e-10:
             # optimal condition reached
