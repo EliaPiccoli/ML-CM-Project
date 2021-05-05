@@ -4,17 +4,18 @@ from sklearn.preprocessing import StandardScaler
 from deflected_subgradient import solveDeflected
 
 class SVR:
-    def __init__(self, kernel, box=1.0, eps=0.1):
+    def __init__(self, kernel, kernel_args, box=1.0, eps=0.1):
         self.kernel = kernel
         self.box = box
         self.eps = eps
 
-    def fit(self, x, y, kernel_args, optim_args, beta_init=None, verbose_optim=True):
-        self.x = x
-        self.y = y
         self.gamma  = kernel_args['gamma'] if 'gamma' in kernel_args else 'scale'
         self.degree = kernel_args['degree'] if 'degree' in kernel_args else 1
         self.coef   = kernel_args['coef'] if 'coef' in kernel_args else 0
+
+    def fit(self, x, y, optim_args, beta_init=None, verbose_optim=True):
+        self.x = x
+        self.y = y
 
         sc_X = StandardScaler()
         sc_Y = StandardScaler()
@@ -25,6 +26,7 @@ class SVR:
 
         self.K = kernel.get_kernel(self)
         beta_init = np.zeros(self.x.shape) if beta_init is None else beta_init
+        # var_esp for deflected should be initialized to self.esp value (?)
         self.beta, self.status = solveDeflected(beta_init, self.ys, self.K, self.box, optim_args=optim_args, verbose=verbose_optim)
         self.compute_sv()
         if self.kernel == "linear":

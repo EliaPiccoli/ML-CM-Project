@@ -18,7 +18,7 @@ def unrollArgs(optim_args):
     maxiter = optim_args['maxiter'] if 'maxiter' in optim_args else 10000
     deltares = optim_args['deltares'] if 'deltares' in optim_args else 1e-4
     rho = optim_args['rho'] if 'rho' in optim_args else 0.95
-    eps = optim_args['eps'] if 'eps' in optim_args else 1e-1
+    eps = optim_args['eps'] if 'eps' in optim_args else 0.1
     alpha = optim_args['alpha'] if 'alpha' in optim_args else 0.7
     psi = optim_args['psi'] if 'psi' in optim_args else 0.7
     return vareps, maxiter, deltares, rho, eps, alpha, psi
