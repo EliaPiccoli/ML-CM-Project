@@ -63,20 +63,20 @@ class Gridsearch():
         
         # compare: HOW (?)
 
-        models_mee = []
+        models_rmse = []
         for i, pred in enumerate(models_pred):
             error = 0
             for j, test_pred in enumerate(pred):
                 error += math.sqrt((test_output[j] - test_pred)**2)
-            models_mee.append(error/len(test_output))
+            models_rmse.append(error/len(test_output))
 
-        for i, error in enumerate(models_mee):
+        for i, error in enumerate(models_rmse):
             print(f"SVR: {i} - RMSE {error} - PRED: {models_pred[i]}")
 
         # TODO: ml cup has 2 ouputs -> 2 SVR, avg the error over the single episodes or the total (?)
 
 if __name__ == "__main__":
-    x = np.vstack(np.arange(-10,11,1))
+    x = np.vstack(np.arange(-50,51,1))
     degree = 2
     noising_factor = 0.1
     y = [xi**degree for xi in x]

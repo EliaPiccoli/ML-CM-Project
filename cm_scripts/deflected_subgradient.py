@@ -29,7 +29,7 @@ def projectDirection(x, d, box, eps=1e-10):
             d[i] = 0
     return d
 
-def solveDeflected(x, y, K, box, optim_args, verbose=False):
+def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False):
     """
         x   : initial values of betas      [ vector of zero -> linear and box constraints satisfied ]
         y   : output vector
@@ -43,10 +43,12 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
     dprev = np.zeros((x.size,1))
     i = 0
     prevnormg = math.inf
-    zigzagcount = 0
+    history = []
     while True:
         if i > maxiter:
             # stopped condition reached
+            if return_history:
+                return x, 'stopped', np.array(history)
             return xref, 'stopped'
         v = (0.5 * np.dot(np.dot(np.transpose(x), K), x) 
             + np.repeat(vareps,x.size).dot(np.abs(x)) 
@@ -54,14 +56,11 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
         g = K.dot(x) + vareps*np.sign(x) - y
         norm_g = np.linalg.norm(g)
         if verbose: print("i: {:4d} - v: {:4f} - fref: {:4f} - ||g||: {:4f} - delta: {:e} - ||gdiff||: {:4f} - eps: {:e}".format(i, v, fref, norm_g, delta, prevnormg-norm_g, eps))
-        # if prevnormg-norm_g < -1e-4: # TODO formalize eps (new, not in literature! EPNG)
-        #     zigzagcount += 1
-        #     if zigzagcount > 100 and eps > 1e-6:
-        #         zigzagcount = 0
-        #         eps /= 2
         prevnormg = norm_g
         if norm_g < 1e-10:
             # optimal condition reached
+            if return_history:
+                return x, 'optimal', np.array(history)
             return x, 'optimal'
         # reset delta if v is good or decrease it otherwise
         if v <= fref - delta:
@@ -84,4 +83,4 @@ def solveDeflected(x, y, K, box, optim_args, verbose=False):
         x = solveKP(box, 0, x, False)
         # print("projected: ",x)
         i += 1
-        # input()
+        history.append(x)
