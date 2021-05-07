@@ -13,10 +13,35 @@ class SVR:
         self.gamma  = kernel_args['gamma'] if 'gamma' in kernel_args else 'scale'
         self.degree = kernel_args['degree'] if 'degree' in kernel_args else 1
         self.coef   = kernel_args['coef'] if 'coef' in kernel_args else 0
+        self.optim_args = None
+    
+    def __str__(self):
+        model_as_string = '\n'
+        model_as_string += "Kernel: "+self.kernel
+        if self.optim_args is not None: # model fit has happened
+            if self.kernel == 'linear':
+                model_as_string += "\nW: "+str(self.W)
+            elif self.kernel == 'rbf':
+                model_as_string += "\nGamma: "+str(self.gamma_value)
+            elif self.kernel == 'poly':
+                model_as_string += "\nGamma: "+str(self.gamma_value)
+                model_as_string += "\tDegree: "+str(self.degree)
+                model_as_string += "\tCoef: "+str(self.coef)
+            elif self.kernel == 'sigmoid':
+                model_as_string += "\nGamma: "+str(self.gamma_value)
+                model_as_string += "\tCoef: "+str(self.coef)
+            model_as_string += "\nIntercept: "+str(self.intercept)
+            model_as_string += "\Optim_args: "+str(self.optim_args)
+        model_as_string += "\nBox: "+str(self.box)
+        return model_as_string
+        
+
+            
 
     def fit(self, x, y, optim_args, scaled=False, beta_init=None, verbose_optim=True):
         self.x = x
         self.y = y
+        self.optim_args = optim_args
         
         self.scaled = scaled
         if scaled:
@@ -139,3 +164,4 @@ if __name__ == "__main__":
     plt.xlabel('Input')
     plt.ylabel('Output')
     plt.show()
+    print(svr)
