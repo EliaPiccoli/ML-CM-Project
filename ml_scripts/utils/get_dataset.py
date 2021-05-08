@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 """remember, input is read like: [null, class, val1, val2, val3, val4, val5, val6, label]"""
 
-dataset_path = os.path.dirname(os.path.abspath(__file__))[:-13] + 'monk_dataset/monks-'
+dataset_path = os.path.dirname(os.path.abspath(__file__))[:-13] + '/../monk_dataset/monks-'
 monk_max = [3,3,2,3,4,2]
 
 def _get_train_validation_data(dataset_num, split=0.25):

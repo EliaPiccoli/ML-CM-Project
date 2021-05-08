@@ -140,12 +140,11 @@ class Model:
         return self._lambda*sum_squares
 
     def _infer(self, inputs, expected):
-        # executed on the best version of myself
         test_eval_metric = 0
         for i in range(len(inputs)):
-            output = self.best_model._feed_forward(inputs[i])
+            output = self._feed_forward(inputs[i])
             test_eval_metric = self.metric_function(output, expected[i], test_eval_metric)
-        return (test_eval_metric/len(inputs), self.best_model.validation_eval_metric, self.best_model.validation_loss)
+        return test_eval_metric/len(inputs)
 
     def _validation_validation_validation(self, inputs, expected):
         self.validation_eval_metric = 0
@@ -155,14 +154,14 @@ class Model:
             self.validation_eval_metric = self.metric_function(output, expected[i], self.validation_eval_metric)
             self.validation_loss += self.loss_function._compute_loss(output, expected[i], regression=0)/len(inputs)
         self.validation_eval_metric /= len(inputs)
-        if self.best_model is None:
-            self.best_model = copy.deepcopy(self)
-        elif self.task and self.validation_eval_metric >= self.best_model.validation_eval_metric and self.validation_loss < self.best_model.validation_loss:
-            del self.best_model
-            self.best_model = copy.deepcopy(self)
-        elif not self.task and self.validation_eval_metric <= self.best_model.validation_eval_metric and self.validation_loss < self.best_model.validation_loss:
-            del self.best_model
-            self.best_model = copy.deepcopy(self)
+        # if self.best_model is None: # TODO delete if not useful at all
+        #     self.best_model = copy.deepcopy(self)
+        # elif self.task and self.validation_eval_metric >= self.best_model.validation_eval_metric and self.validation_loss < self.best_model.validation_loss:
+        #     del self.best_model
+        #     self.best_model = copy.deepcopy(self)
+        # elif not self.task and self.validation_eval_metric <= self.best_model.validation_eval_metric and self.validation_loss < self.best_model.validation_loss:
+        #     del self.best_model
+        #     self.best_model = copy.deepcopy(self)
 
     def _train(self, train_inputs, train_expected, val_inputs, val_expected, batch_size=1, epoch=100, decay=1e-5, verbose=False):
         train_stats = []
