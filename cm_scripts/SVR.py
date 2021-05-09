@@ -82,6 +82,8 @@ class SVR:
         mask = np.logical_or(self.beta > 1e-8, self.beta < -1e-8)
         if True not in mask and plotting:
             return False
+        else: # to avoid crashing the application
+            mask = np.logical_or(self.beta == np.max(self.beta), self.beta == np.min(self.beta))
         support = np.vstack(np.vstack(np.arange(len(self.beta)))[mask])
         self.sv = np.vstack(self.xs[mask])
         y_sv = np.vstack(self.ys[mask])
