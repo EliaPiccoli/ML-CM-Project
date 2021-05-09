@@ -27,7 +27,7 @@ epoch = 500
 stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, decay=1e-5, batch_size=len(ohe_inp), epoch=epoch)
 
 # testing the model
-print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)[0]))
+print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)))
 
 
 Plot._plot_train_stats([stats], epochs=[epoch])

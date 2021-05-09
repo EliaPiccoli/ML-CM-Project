@@ -50,14 +50,14 @@ class GridSearch:
             self.weight_range = parameters["weight_range"]
     
     def _compute_model_score(self, model_infos):
-        # model_infos : (vacc_bm, vlossbm, training_bm[(a, va, l, vl)])
+        # model_infos : (vacc_bm, vlossbm, training_bm[(a, va, l, vl)], model)
         # score = 0
         score = 2000*model_infos[0] if model_infos[0] > 0.95 else 0
         # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []
         train_loss = []
         threshold = 5e-3
-        for epoch in model_infos[-1]:
+        for epoch in model_infos[-2]:
             val_loss.append(epoch[3])
             train_loss.append(epoch[2])
         not_decrease_times = 0
@@ -78,12 +78,12 @@ class GridSearch:
         train_result = model._train(train, train_label, validation, validation_label, batch_size=batch_size, epoch=epoch, decay=decay)
         return train_result
 
-    def _run(self, train, train_label, validation, validation_label, familyofmodelsperconfiguration=5):
-        print("I am not fast, sorry")
-        print("But I will use all your cores ^-^")
+    def _run(self, train, train_label, validation, validation_label, familyofmodelsperconfiguration=5, plot_results=False):
+        print("(GS) - I am not fast, sorry")
+        print("(GS) - But I will use all your cores ^-^")
         print()
 
-        print("Generating weights")
+        print("(GS) - Generating weights")
         weights_per_configuration = []         # confs: [ weight_range_inits:[ weight_inits: [particular weight matrix]]]
         for configuration in self.models_layers:
             dimensions = [] # [(in, out), (in, out)] for each layer
@@ -105,7 +105,7 @@ class GridSearch:
         # max is useless but is more clear what happens if the hyperparameter was not considered
         # if missing value the class initialize all the lists to the default value
         # list of tuple (epoch, batch, decay, compiled_model)
-        print("Generating models")
+        print("(GS) - Generating models")
         models_configurations = []
         counter = 0
         for i in range(len(weights_per_configuration)):
@@ -132,15 +132,15 @@ class GridSearch:
                                         model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix)
                                         models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], model))
                 counter += 1
-        print(f"Generated {len(models_configurations)} different models.")
-        print("Starting Models Analysis")
+        print(f"(GS) - Generated {len(models_configurations)} different models.")
+        print("(GS) - Starting Models Analysis")
         models_per_structure = len(models_configurations) // len(self.models_layers)
         configurations_per_model = len(self.epoch)*len(self.batch_size)*len(self.lr_decay)*len(self.eta)*len(self.alpha)*len(self._lambda)
 
         subprocess_pool_size = min(os.cpu_count(), models_per_structure)
         structures_best_configurations = []
         for i in range(len(self.models_layers)):
-            print("Model ", i)
+            print("(GS) - Model ", i)
             configuration_best_model = [None]*configurations_per_model
 
             models_training_stats = []      # [[(acc, vacc, loss, vloss), (acc, vacc, loss, vloss)], ...]
@@ -154,43 +154,50 @@ class GridSearch:
                 training_stats = models_training_stats[j]
                 best_model_vaccuracy = training_stats[-1][1]
                 best_model_vloss = training_stats[-1][3]
+                model = models_configurations[i*models_per_structure + j][3]
                 
                 if configuration_best_model[j%configurations_per_model] is None:
-                    configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats)
+                    configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats, model)
                 else:
                     if configuration_best_model[j%configurations_per_model][0] <= best_model_vaccuracy and configuration_best_model[j%configurations_per_model][1] > best_model_vloss:
-                        configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats)
+                        configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats, model)
 
             structures_best_configurations.append(configuration_best_model)
         
         for i in range(len(structures_best_configurations)):
-            print("Structure", i)
+            print("(GS) - Structure", i)
             for j in range(len(structures_best_configurations[i])):
-                print("Configuration", j)
-                print(structures_best_configurations[i][j][:-1])
+                print(f"(GS) - Configuration {j} : {structures_best_configurations[i][j][:-2]}")
 
         # evaluate models to find best
+        best_model_info = None
         for i in range(len(structures_best_configurations)):
             # i-th model structure
             scores = []
             stats = []
             params = []
-            test_eval_metrics = []
+            models = []
             for j in range(len(structures_best_configurations[i])):
                 scores.append(self._compute_model_score(structures_best_configurations[i][j]))
-                stats.append(structures_best_configurations[i][j][-1])
-                params.append(self._get_model_parameters(j,len(structures_best_configurations[i])))
+                stats.append(structures_best_configurations[i][j][-2])
+                params.append(self._get_model_parameters(j, len(structures_best_configurations[i])))
+                models.append(structures_best_configurations[i][j][-1])
 
-            zipped_triples = sorted(zip(stats, scores, params), key = lambda x : x[1], reverse = True) # sort everything by decreasing score
+            zipped_triples = sorted(zip(stats, scores, params, models), key = lambda x : x[1], reverse = True) # sort everything by decreasing score
             max_len = min(len(zipped_triples), 8) # to only get top best results for visualization sake
-            stats  =            [x for x,_,_ in zipped_triples[:max_len]]
-            scores =            [x for _,x,_ in zipped_triples[:max_len]]
-            params =            [x for _,_,x in zipped_triples[:max_len]]
+            stats  = [x for x,_,_,_ in zipped_triples[:max_len]]
+            scores = [x for _,x,_,_ in zipped_triples[:max_len]]
+            params = [x for _,_,x,_ in zipped_triples[:max_len]]
+            best_model_info = (zipped_triples[0][-1], params[0], stats[0])
 
+            print("(GS) - Models evalutation")
             for j in range(max_len):
-                print(f"Configuration {j}, score : {scores[j]}, params:{params[j]}")
+                print(f"(GS) - Configuration {j}, score : {scores[j]}, params:{params[j]}")
 
-            Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1))
+            if plot_results:
+                Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1))
+
+        return best_model_info
 
     def _get_model_parameters(self, index, configurations_per_model):
         # ALL THIS IS FOR COMPREHENSION ONLY, TUTTO RIDUCIBILE AD UN CICLO VOLENDO, 5-6 RIGHE MAX TRANQUI EP NO RABIA

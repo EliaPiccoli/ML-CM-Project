@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 """remember, input is read like: [null, class, val1, val2, val3, val4, val5, val6, label]"""
 
-dataset_path = os.path.dirname(os.path.abspath(__file__))[:-13] + '/../monk_dataset/monks-'
+dataset_path = os.path.dirname(os.path.abspath(__file__))[:-16] + 'monk_dataset\monks-'
 monk_max = [3,3,2,3,4,2]
 
 def _get_train_validation_data(dataset_num, split=0.25):
@@ -22,7 +22,7 @@ def _get_train_validation_data(dataset_num, split=0.25):
     return inputs[l:], inputs[:l], labels[l:], labels[:l]
 
 def _get_test_data(dataset_num):
-    return _get_dataset(dataset_num,'test')
+    return _get_dataset(dataset_num, 'test')
 
 def _get_dataset(dataset_num, dataset_type): #dataset_num in [1,2,3] dataset_type in ['train','test']
     # returns 2 lists, first one being dataset requested (either training or test) and second one being data label wrt dataset
@@ -33,6 +33,7 @@ def _get_dataset(dataset_num, dataset_type): #dataset_num in [1,2,3] dataset_typ
     data_set = list()
     data_label = list()
     path = dataset_path + str(dataset_num) + "." + dataset_type
+    print(path)
     with open(path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=' ')
         for row in csv_reader:
@@ -46,7 +47,6 @@ def _get_one_hot_encoding(pattern):
     for i in range(len(pattern)):
         one_hot_pattern.append(np.eye(monk_max[i])[pattern[i]-1])
     return [inp for sublist in one_hot_pattern for inp in sublist]
-
 
 # -------------------------------------------------------- MLCUP -------------------------------------------------------- #
 cup_path = os.path.dirname(os.path.abspath(__file__))[:-13] + 'ml_cup/ML-CUP20-'
