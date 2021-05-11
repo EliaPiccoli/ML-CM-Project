@@ -52,7 +52,7 @@ class GridSearch:
     def _compute_model_score(self, model_infos):
         # model_infos : (vacc_bm, vlossbm, training_bm[(a, va, l, vl)], model)
         # score = 0
-        score = 2000*model_infos[0] if model_infos[0] > 0.95 else 0
+        score = 2000*model_infos[0] if model_infos[0] >= 0.90 else 0
         # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []
         train_loss = []
@@ -79,9 +79,9 @@ class GridSearch:
         return train_result
 
     def _run(self, train, train_label, validation, validation_label, familyofmodelsperconfiguration=5, plot_results=False):
-        print("(GS) - I am not fast, sorry")
-        print("(GS) - But I will use all your cores ^-^")
-        print()
+        # print("(GS) - I am not fast, sorry")
+        # print("(GS) - But I will use all your cores ^-^")
+        # print()
 
         print("(GS) - Generating weights")
         weights_per_configuration = []         # confs: [ weight_range_inits:[ weight_inits: [particular weight matrix]]]
@@ -140,11 +140,12 @@ class GridSearch:
         subprocess_pool_size = min(os.cpu_count(), models_per_structure)
         structures_best_configurations = []
         for i in range(len(self.models_layers)):
-            print("(GS) - Model ", i)
+            print("(GS) - Model", i)
             configuration_best_model = [None]*configurations_per_model
 
             models_training_stats = []      # [[(acc, vacc, loss, vloss), (acc, vacc, loss, vloss)], ...]
-            with Parallel(n_jobs=subprocess_pool_size, verbose=10) as processes:
+            # TODO: https://joblib.readthedocs.io/en/latest/parallel.html#shared-memory-semantics
+            with Parallel(n_jobs=subprocess_pool_size, verbose=10, require='sharedmem') as processes:
                 result = processes(delayed(self._train_model)(models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2]) for j in range(models_per_structure))
             
             for res in result:
@@ -163,40 +164,47 @@ class GridSearch:
                         configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats, model)
 
             structures_best_configurations.append(configuration_best_model)
-        
+        print()
         for i in range(len(structures_best_configurations)):
             print("(GS) - Structure", i)
             for j in range(len(structures_best_configurations[i])):
-                print(f"(GS) - Configuration {j} : {structures_best_configurations[i][j][:-2]}")
-
+                print(f"(GS) - \tConfiguration {j} : {structures_best_configurations[i][j][:-2]}")
+        print()
         # evaluate models to find best
         best_model_info = None
+        current_best_score = 0
         for i in range(len(structures_best_configurations)):
             # i-th model structure
             scores = []
             stats = []
             params = []
             models = []
+            confidx = []
             for j in range(len(structures_best_configurations[i])):
                 scores.append(self._compute_model_score(structures_best_configurations[i][j]))
                 stats.append(structures_best_configurations[i][j][-2])
                 params.append(self._get_model_parameters(j, len(structures_best_configurations[i])))
                 models.append(structures_best_configurations[i][j][-1])
+                confidx.append(j)
 
-            zipped_triples = sorted(zip(stats, scores, params, models), key = lambda x : x[1], reverse = True) # sort everything by decreasing score
+            zipped_triples = sorted(zip(stats, scores, params, confidx, models), key = lambda x : x[1], reverse = True) # sort everything by decreasing score
             max_len = min(len(zipped_triples), 8) # to only get top best results for visualization sake
-            stats  = [x for x,_,_,_ in zipped_triples[:max_len]]
-            scores = [x for _,x,_,_ in zipped_triples[:max_len]]
-            params = [x for _,_,x,_ in zipped_triples[:max_len]]
-            best_model_info = (zipped_triples[0][-1], params[0], stats[0])
+            stats   = [x for x,_,_,_,_ in zipped_triples[:max_len]]
+            scores  = [x for _,x,_,_,_ in zipped_triples[:max_len]]
+            params  = [x for _,_,x,_,_ in zipped_triples[:max_len]]
+            confidx = [x for _,_,_,x,_ in zipped_triples[:max_len]]
+            if zipped_triples[0][1] > current_best_score:
+                best_model_info = (zipped_triples[0][-1], params[0], stats[0])
+                current_best_score = zipped_triples[0][1]
 
-            print("(GS) - Models evalutation")
+            print(f"(GS) - Model {i} evalutation")
             for j in range(max_len):
-                print(f"(GS) - Configuration {j}, score : {scores[j]}, params:{params[j]}")
-
+                print(f"(GS) - \tConfiguration {confidx[j]}, score : {scores[j]}, params:{params[j]}")
+            print()
             if plot_results:
                 Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1))
-
+        if best_model_info is None:
+            raise SystemError("No model was worth to be evaluated ( all negative score )")
         return best_model_info
 
     def _get_model_parameters(self, index, configurations_per_model):

@@ -33,7 +33,7 @@ def _get_dataset(dataset_num, dataset_type): #dataset_num in [1,2,3] dataset_typ
     data_set = list()
     data_label = list()
     path = dataset_path + str(dataset_num) + "." + dataset_type
-    print(path)
+    # print(path)
     with open(path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=' ')
         for row in csv_reader:

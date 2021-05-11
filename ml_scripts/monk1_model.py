@@ -26,17 +26,19 @@ test_exp = [[elem] for elem in test_labels]
 print("Starting GridSearch")
 gs = GridSearch()
 models = [
-        [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")]
+        [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],
+        [Layer(5, "tanh", _input=(17,)), Layer(1, "tanh")],
+        [Layer(7, "tanh", _input=(17,)), Layer(1, "tanh")]
     ]
 gs._set_parameters(layers=models, 
-                weight_range=[(-0.03, 0.03)],
-                eta=[0.1, 0.01, 0.001],
-                alpha=[0.1, 0.8],
+                weight_range=[(-0.05, 0.05)],
+                eta=[1e-3, 99e-4],
+                alpha=[0.85, 0.9, 0.98],
                 batch_size=[len(train_labels)],
-                epoch=[500],
-                lr_decay=[5e-6]
+                epoch=[1000],
+                lr_decay=[1e-5, 5e-6, 1e-6]
             )
-best_model, model_conf, model_infos = gs._run(ohe_inp, train_exp, ohe_val, validation_exp, 1)
+best_model, model_conf, model_infos = gs._run(ohe_inp, train_exp, ohe_val, validation_exp, familyofmodelsperconfiguration=1, plot_results=True)
 print("Best model configuration: ", model_conf)
 
 # testing the model

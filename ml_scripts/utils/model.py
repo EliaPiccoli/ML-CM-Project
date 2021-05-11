@@ -22,7 +22,7 @@ class Model:
     def _add_layer(self, layer):
         self.layers.append(layer)
 
-    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, stopping_eta=0.1, weight_range=None, weight_matrix=None, bias_matrix=None, isClassification=True, gradient_clipping=False):
+    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, stopping_eta=0.01, weight_range=None, weight_matrix=None, bias_matrix=None, isClassification=True, gradient_clipping=False):
         for i in range(len(self.layers)):
             if weight_matrix is None and bias_matrix is None:
                 self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), w_range=weight_range)
@@ -77,8 +77,8 @@ class Model:
             for j in range(len(self.batch_weights_delta[layer_index][i])):
                 self.batch_weights_delta[layer_index][i][j] += layer_bp[1][i][j]
 
-    def _feed_forward(self,input):
-        layer_output = input
+    def _feed_forward(self, _input):
+        layer_output = _input
         for i in range(len(self.layers)):
             layer_output = self.layers[i]._feed_forward(layer_output)
             # print(f"Output layer {i}: {layer_output}")
@@ -167,10 +167,6 @@ class Model:
         train_stats = []
         assert(len(train_inputs) == len(train_expected) and len(val_inputs) == len(val_expected))
         for e in range(epoch):
-            
-            if verbose: # TODO se vuoi fare lo schifoso verboso
-                print(f"EPOCH: {e+1}")
-
             self._init_epoch(decay*epoch, train_inputs, train_expected)
             for i in range(0, len(train_inputs), batch_size): # for all inputs
                 j = i
@@ -187,13 +183,16 @@ class Model:
                 # print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
             self.eval_metric /= len(train_inputs)
             self._validation_validation_validation(val_inputs, val_expected)
-            #print("Epoch {:4d} - LR: {:.6f} - Train_Eval_Metric: {:.6f} - Train_Loss: {:.6f} - Validation_Eval_Metric: {:.6f} - Validation_Loss: {:.6f}"
-            #         .format(e, self.eta, self.eval_metric, self.batch_loss, self.validation_eval_metric, self.validation_loss)) 
+            print("Epoch {:4d} - LR: {:.6f} - Train_Eval_Metric: {:.6f} - Train_Loss: {:.6f} - Validation_Eval_Metric: {:.6f} - Validation_Loss: {:.6f}"
+                    .format(e, self.eta, self.eval_metric, self.batch_loss, self.validation_eval_metric, self.validation_loss)) 
             train_stats.append((self.eval_metric, self.validation_eval_metric, self.batch_loss, self.validation_loss))
 
+            if verbose: # TODO se vuoi fare lo schifoso verboso
+                print("Epoch: {:3d} - Loss: {:.3f} - ValLoss: {:.3f} Acc: {:.3f} - ValAcc: {:.3f}".format(e+1, *train_stats[-1]))
             self.curr_epoch += 1
             
         #get smart
+        # self.model = copy.deepcopy(self)
         return train_stats
 
     def __str__(self):
