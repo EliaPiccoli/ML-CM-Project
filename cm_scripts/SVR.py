@@ -56,6 +56,7 @@ class SVR:
             self.ys = y
 
         self.K, self.gamma_value = kernel.get_kernel(self)
+        print(self.gamma_value)
         beta_init = np.zeros(self.x.shape) if beta_init is None else beta_init
         optim_args['vareps'] = self.eps
         self.beta, self.status, self.betas_history = solveDeflected(beta_init, self.ys, self.K, self.box, optim_args=optim_args, verbose=verbose_optim)
@@ -85,8 +86,9 @@ class SVR:
         else: # to avoid crashing the application
             mask = np.logical_or(self.beta == np.max(self.beta), self.beta == np.min(self.beta))
         support = np.vstack(np.vstack(np.arange(len(self.beta)))[mask])
-        self.sv = np.vstack(self.xs[mask])
-        y_sv = np.vstack(self.ys[mask])
+        x_mask = np.repeat(mask, self.xs.shape[1], axis=1)
+        self.sv = np.vstack(self.xs[x_mask])
+        y_sv = np.vstack(self.ys.reshape(-1,1)[mask])
         self.betasv = np.vstack(self.beta[mask])
         self.intercept = 0
         for i in range(self.betasv.size):
