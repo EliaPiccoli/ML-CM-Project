@@ -194,7 +194,7 @@ class GridSearch:
             params  = [x for _,_,x,_,_ in zipped_triples[:max_len]]
             confidx = [x for _,_,_,x,_ in zipped_triples[:max_len]]
             if zipped_triples[0][1] > current_best_score:
-                best_model_info = (zipped_triples[0][-1], params[0], stats[0])
+                best_model_info = (zipped_triples[0][-1], params[0], stats[0], self.models_layers[i])
                 current_best_score = zipped_triples[0][1]
 
             print(f"(GS) - Model {i} evalutation")
@@ -234,6 +234,36 @@ class GridSearch:
         _lambda = self._lambda[index // alpha_len]
 
         return {'epoch':epoch, 'batch_size':batch_size, 'lr_decay':lr_decay, 'eta':eta, 'alpha':alpha, '_lambda':_lambda}
+
+    def get_model_perturbations(self, model_conf, model_architecture, weight_range=None):
+        layers=model_architecture
+        weight_range=[(-0.05, 0.05)] if weight_range is not None else [weight_range]
+        batch_size=[model_conf['batch_size']]
+        epoch=[model_conf['epoch']]
+        lr_decay=[model_conf['lr_decay']]
+
+        eta=[]
+        alpha=[]
+        _lambda=[]
+
+        eta_perturb = model_conf['eta'] / 2
+        alpha_perturb = 0.1
+        lambda_perturb = model_conf['_lambda'] / 2
+
+        # keep original model_conf
+        eta.append(model_conf['eta'])
+        alpha.append(model_conf['alpha'])
+        _lambda.append(model_conf['_lambda'])
+
+        # perturb to create new random model_confs
+        for i in range(5):
+            eta.append(np.random.uniform(model_conf['eta'] - eta_perturb, model_conf['eta'] + eta_perturb))
+        for i in range(3):
+            alpha.append(max(min(np.random.uniform(model_conf['alpha'] - alpha_perturb, model_conf['alpha'] + alpha_perturb), 0.99), 0))
+        if model_conf['_lambda'] != 0:
+            for i in range(3):
+                _lambda.append(np.random.uniform(model_conf['_lambda'] - lambda_perturb, model_conf['_lambda'] + lambda_perturb))
+        return layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda
                   
 if __name__ == "__main__":
     gs = GridSearch()

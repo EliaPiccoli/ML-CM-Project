@@ -34,7 +34,7 @@ class Gridsearch():
         if "box" in param:
             self.box = param["box"]
         if "eps" in param:
-            self.kernel = param["eps"]
+            self.eps = param["eps"]
         if "optiargs" in param:
             self.opti_args = param["optiargs"]
 
@@ -59,15 +59,22 @@ class Gridsearch():
         for i, model in enumerate(models_conf): # parallelizable
             tmp_pred = []
             for test in test_x:
-                tmp_pred.append(model.predict(test))
+                prediction = model.predict(test)
+                # print('Test',test)
+                # print('Prediction', prediction)
+                tmp_pred.append(prediction)
+            # print("TESTING",tmp_pred)
             models_pred.append(tmp_pred)
+        # print('wtf',len(models_pred), 'wtf2', len(models_pred[0]), 'wtf3', len(models_pred[0][0]), 'wtf4', len(test_x))
         
         # compare: HOW (?)
 
         models_rmse = []
         for i, pred in enumerate(models_pred):
             error = 0
+            # print('PRED', pred)
             for j, test_pred in enumerate(pred):
+                print(test_output[j], test_pred)
                 error += math.sqrt((test_output[j] - test_pred)**2)
             models_rmse.append(error/len(test_output))
 
@@ -81,7 +88,21 @@ class Gridsearch():
         kernel = []
         kparam = []
         optiargs = []
+
+        # keep original model
+        kernel.append(model.kernel)
+        kparam.append({"gamma": model.gamma_value, "degree": model.degree, "coef": model.coef})
+        optiargs.append(model.optim_args)
+
+
+        
+
+        #
+
+        #
+        # create perturbations of origi
         gamma_perturbation = 0.2
+        coef_perturbation = 1.0
         eps_perturbation = 10
         vareps_perturbation = 0.1
         for i in range(n_perturbations):
@@ -90,7 +111,13 @@ class Gridsearch():
                 kparam.append({"gamma": np.random.uniform(model.gamma_value - gamma_perturbation, model.gamma_value + gamma_perturbation)})
             elif model.kernel == 'poly':
                 kernel.append('poly')
-                kparam.append({"gamma": np.random.uniform(model.gamma_value - gamma_perturbation, model.gamma_value + gamma_perturbation), "degree": model.degree, "coef": model.coef})
+                kparam.append({"gamma": np.random.uniform(model.gamma_value - gamma_perturbation, model.gamma_value + gamma_perturbation), "degree": model.degree, "coef": np.random.uniform(model.coef - coef_perturbation, model.coef + coef_perturbation)})
+            elif model.kernel == 'sigmoid':
+                kparam.append({"gamma": np.random.uniform(model.gamma_value - gamma_perturbation, model.gamma_value + gamma_perturbation), "coef": np.random.uniform(model.coef - coef_perturbation, model.coef + coef_perturbation)})
+            else: # linear
+                kernel.append('linear')
+                kparam.append({})
+
         for i in range(n_optimargs):
             temp_optiargs = {}
             if 'eps' in model.optim_args:

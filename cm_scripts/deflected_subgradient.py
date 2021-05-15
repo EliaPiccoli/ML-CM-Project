@@ -45,7 +45,8 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
     prevnormg = math.inf
     history = []
     while True:
-        # print("lol0",x.shape, K.shape, K.dot(x).shape, np.dot(np.dot(np.transpose(x), K), x).shape)
+        # print("lol0",x.shape, K.shape, K.dot(x).shape, np.dot(np.dot(np.transpose(x), K), x).shape, )
+        # print('repeated vareps',np.repeat(vareps,x.size).shape, 'x',np.abs(x).shape, 'K', K.shape)
         if i > maxiter:
             # stopped condition reached
             if return_history:

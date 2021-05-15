@@ -35,10 +35,10 @@ gs._set_parameters(layers=models,
                 eta=[1e-3, 99e-4],
                 alpha=[0.85, 0.9, 0.98],
                 batch_size=[len(train_labels)],
-                epoch=[1000],
+                epoch=[500],
                 lr_decay=[1e-5, 5e-6, 1e-6]
             )
-best_model, model_conf, model_infos = gs._run(ohe_inp, train_exp, ohe_val, validation_exp, familyofmodelsperconfiguration=1, plot_results=True)
+best_model, model_conf, model_infos, model_architecture = gs._run(ohe_inp, train_exp, ohe_val, validation_exp, familyofmodelsperconfiguration=1, plot_results=True)
 print("Best model configuration: ", model_conf)
 
 # testing the model

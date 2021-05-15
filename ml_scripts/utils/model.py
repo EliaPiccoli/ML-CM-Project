@@ -22,14 +22,14 @@ class Model:
     def _add_layer(self, layer):
         self.layers.append(layer)
 
-    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, stopping_eta=0.01, weight_range=None, weight_matrix=None, bias_matrix=None, isClassification=True, gradient_clipping=False):
+    def _compile(self, eta=0.01, loss_function='mse', _lambda=0, alpha=0, stopping_eta=0.01, weight_range=None, weight_matrix=None, bias_matrix=None, isClassification=True, gradient_clipping=False,seed=None):
         for i in range(len(self.layers)):
             if weight_matrix is None and bias_matrix is None:
-                self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), w_range=weight_range)
+                self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), w_range=weight_range, seed=seed)
             elif weight_matrix is not None and bias_matrix is None:
-                self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), weigths=weight_matrix[i])
+                self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), weigths=weight_matrix[i], seed=seed)
             else:
-                self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), weigths=weight_matrix[i], bias=bias_matrix[i])
+                self.layers[i]._init_layer(None if i==0 else (self.layers[i-1].nodes,), weigths=weight_matrix[i], bias=bias_matrix[i], seed=seed)
         self.stopping_eta = stopping_eta*eta # useful for several lr_decay schedulers by stopping the decrease of eta at a ceratin percentage
         self.eta = eta
         self._lambda = _lambda
@@ -183,7 +183,7 @@ class Model:
                 # print(f"{math.ceil(i / batch_size)} / {len(inputs) // batch_size} - Loss: {self.batch_loss}")
             self.eval_metric /= len(train_inputs)
             self._validation_validation_validation(val_inputs, val_expected)
-            print("Epoch {:4d} - LR: {:.6f} - Train_Eval_Metric: {:.6f} - Train_Loss: {:.6f} - Validation_Eval_Metric: {:.6f} - Validation_Loss: {:.6f}"
+            if verbose: print("Epoch {:4d} - LR: {:.6f} - Train_Eval_Metric: {:.6f} - Train_Loss: {:.6f} - Validation_Eval_Metric: {:.6f} - Validation_Loss: {:.6f}"
                     .format(e, self.eta, self.eval_metric, self.batch_loss, self.validation_eval_metric, self.validation_loss)) 
             train_stats.append((self.eval_metric, self.validation_eval_metric, self.batch_loss, self.validation_loss))
 

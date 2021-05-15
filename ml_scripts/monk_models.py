@@ -6,7 +6,7 @@ from utils.plot import Plot
 
 # ----------------------------------------- MAIN ----------------------------------------- #
 print("One day I will be a very smart Artificial Intelligence!")
-MONK_MODEL = 4
+MONK_MODEL = 1
 
 if MONK_MODEL == 1:
     seed = 1234
@@ -24,8 +24,8 @@ if MONK_MODEL == 1:
     model = Model()
     model._add_layer(Layer(4, "tanh", _input=(17,)))
     model._add_layer(Layer(1, "tanh"))
-    model._compile(eta=0.01, loss_function="mse", alpha=0.9, stopping_eta=0.25, weight_range=(-0.1, 0.1), seed=seed)
-    epoch = 600
+    model._compile(eta=0.01, loss_function="mse", alpha=0.99, stopping_eta=0.3, weight_range=(-0.1, 0.1), seed=seed)
+    epoch = 700
     stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, decay=4e-6, batch_size=len(ohe_inp), epoch=epoch, verbose=True)
 
     # testing the model

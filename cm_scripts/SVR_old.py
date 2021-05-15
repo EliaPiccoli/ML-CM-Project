@@ -56,8 +56,7 @@ class SVR:
             self.ys = y
 
         self.K, self.gamma_value = kernel.get_kernel(self)
-        # print(self.gamma_value)
-        beta_init = np.vstack(np.zeros(self.x.shape[0])) if beta_init is None else beta_init
+        beta_init = np.zeros(self.x.shape) if beta_init is None else beta_init
         optim_args['vareps'] = self.eps
         self.beta, self.status, self.betas_history = solveDeflected(beta_init, self.ys, self.K, self.box, optim_args=optim_args, verbose=verbose_optim)
         self.compute_sv()
@@ -79,20 +78,15 @@ class SVR:
         plt.show()
         self.beta, self.sv, self.betasv, self.intercept = temp_beta, temp_sv, temp_betasv, temp_intercept
 
-
-
     def compute_sv(self, plotting=False):
-        mask = np.logical_or(self.beta > 1e-6, self.beta < -1e-6)
-        if True not in mask:
-            if plotting:
-                return False
+        mask = np.logical_or(self.beta > 1e-8, self.beta < -1e-8)
+        if True not in mask and plotting:
+            return False
+        else: # to avoid crashing the application
             mask = np.logical_or(self.beta == np.max(self.beta), self.beta == np.min(self.beta))
-
         support = np.vstack(np.vstack(np.arange(len(self.beta)))[mask])
-        x_mask = np.repeat(mask, self.xs.shape[1], axis=1)
-        self.sv = self.xs[x_mask].reshape(-1,self.xs.shape[1])
-        # print("self.sv:",self.sv.shape, "\nself.sv all:", self.sv, "\nself.xs all:", self.xs)
-        y_sv = np.vstack(self.ys.reshape(-1,1)[mask])
+        self.sv = np.vstack(self.xs[mask])
+        y_sv = np.vstack(self.ys[mask])
         self.betasv = np.vstack(self.beta[mask])
         self.intercept = 0
         for i in range(self.betasv.size):
@@ -104,11 +98,13 @@ class SVR:
         return True
     
     def predict(self, x):
-        x = np.array([x])
+        if isinstance(x, int):
+            x = np.array([[x]])
         if self.scaled:
-            x = self.x_scaler.transform(x.reshape(-1,1))
+            x = self.x_scaler.transform(x)
+        
         if self.kernel == 'linear':
-            prediction = np.dot(self.W, x.T) + self.intercept
+            prediction = np.dot(self.W.T, x) + self.intercept
             return prediction if not self.scaled else self.y_scaler.inverse_transform(prediction)
 
         if isinstance(self.gamma, str):
@@ -121,7 +117,6 @@ class SVR:
             K, _ = kernel.poly(self.sv, x, gamma, self.degree, self.coef)
         elif self.kernel == 'sigmoid':
             K, _ = kernel.sigmoid(self.sv, x, gamma, self.coef)
-        # print("K:",K.shape,"self.betasv:",self.betasv.shape, "self.sv:",self.sv.shape,"x:",x.shape)
         prediction = np.dot(self.betasv.T, K) + self.intercept
         return prediction if not self.scaled else self.y_scaler.inverse_transform(prediction)
 

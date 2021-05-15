@@ -12,9 +12,10 @@ from sklearn.preprocessing import MinMaxScaler
 dataset_path = os.path.dirname(os.path.abspath(__file__))[:-16] + 'monk_dataset\monks-'
 monk_max = [3,3,2,3,4,2]
 
-def _get_train_validation_data(dataset_num, split=0.25):
+def _get_train_validation_data(dataset_num, split=0.25, seed=None):
     inputs, labels = _get_dataset(dataset_num,'train')
-    seed = np.random.randint(0,42069)
+    if seed is None:
+        seed = np.random.randint(0,42069)
     random.Random(seed).shuffle(inputs)
     random.Random(seed).shuffle(labels)
     l = int(len(inputs)*split)
@@ -49,12 +50,12 @@ def _get_one_hot_encoding(pattern):
     return [inp for sublist in one_hot_pattern for inp in sublist]
 
 # -------------------------------------------------------- MLCUP -------------------------------------------------------- #
-cup_path = os.path.dirname(os.path.abspath(__file__))[:-13] + 'ml_cup/ML-CUP20-'
+cup_path = os.path.dirname(os.path.abspath(__file__))[:-16] + 'ml_cup/ML-CUP20-'
 
-def _get_split_cup(test_split = 0.2, val_split = 0.2):
+def _get_split_cup(test_split = 0.2, val_split = 0.2, seed=None):
     inputs, labels = _get_cup()
-
-    seed = np.random.randint(0,42069)
+    if seed is None:
+        seed = np.random.randint(0,42069)
     random.Random(seed).shuffle(inputs)
     random.Random(seed).shuffle(labels)
 
