@@ -2,6 +2,7 @@ import numpy as np # more important than "#include <stdio.h>"
 import utils.get_dataset as dt
 import copy
 import os
+import pickle
 
 from utils.layer import Layer
 from utils.model import Model
@@ -74,8 +75,13 @@ class GridSearch:
 
         return score
 
-    def _train_model(self, model, train, train_label, validation, validation_label, batch_size, epoch, decay):
+    def _train_model(self, index, model, train, train_label, validation, validation_label, batch_size, epoch, decay):
         train_result = model._train(train, train_label, validation, validation_label, batch_size=batch_size, epoch=epoch, decay=decay)
+        
+        save_file = f"models/conf{index}"
+        with open(save_file, 'wb') as f:
+            pickle.dump({"model": model, "layers": model.layers}, f, protocol=pickle.HIGHEST_PROTOCOL)
+
         return train_result
 
     def _run(self, train, train_label, validation, validation_label, familyofmodelsperconfiguration=5, plot_results=False):
@@ -145,8 +151,8 @@ class GridSearch:
 
             models_training_stats = []      # [[(acc, vacc, loss, vloss), (acc, vacc, loss, vloss)], ...]
             # TODO: https://joblib.readthedocs.io/en/latest/parallel.html#shared-memory-semantics
-            with Parallel(n_jobs=subprocess_pool_size, verbose=10, require='sharedmem') as processes:
-                result = processes(delayed(self._train_model)(models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2]) for j in range(models_per_structure))
+            with Parallel(n_jobs=subprocess_pool_size, verbose=10) as processes:
+                result = processes(delayed(self._train_model)(i*models_per_structure+j, models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2]) for j in range(models_per_structure))
             
             for res in result:
                 models_training_stats.append(res)
@@ -155,7 +161,12 @@ class GridSearch:
                 training_stats = models_training_stats[j]
                 best_model_vaccuracy = training_stats[-1][1]
                 best_model_vloss = training_stats[-1][3]
-                model = models_configurations[i*models_per_structure + j][3]
+                # create model + init loss function
+                index = i*models_per_structure + j
+                data = {}
+                with open(f"models/conf{index}", 'rb') as f:
+                    data = pickle.load(f)
+                model = data['model']
                 
                 if configuration_best_model[j%configurations_per_model] is None:
                     configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats, model)
@@ -205,6 +216,9 @@ class GridSearch:
                 Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1))
         if best_model_info is None:
             raise SystemError("No model was worth to be evaluated ( all negative score )")
+
+        # TODO: clean model folder
+
         return best_model_info
 
     def _get_model_parameters(self, index, configurations_per_model):

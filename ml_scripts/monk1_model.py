@@ -26,9 +26,9 @@ test_exp = [[elem] for elem in test_labels]
 print("Starting GridSearch")
 gs = GridSearch()
 models = [
-        [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(5, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(7, "tanh", _input=(17,)), Layer(1, "tanh")]
+        [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")]
+        # [Layer(5, "tanh", _input=(17,)), Layer(1, "tanh")],
+        # [Layer(7, "tanh", _input=(17,)), Layer(1, "tanh")]
     ]
 gs._set_parameters(layers=models, 
                 weight_range=[(-0.05, 0.05)],

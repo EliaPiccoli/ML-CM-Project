@@ -112,7 +112,7 @@ class Model:
             for j in range(len(self.layers[i].weights)):
                 multiplier = 1
                 if self.grad_clip:
-                    clipping_ts = 1000 # heuristically obtained, look at gradient_norm_print.txt
+                    clipping_ts = 1000 # heuristically obtained, look at gradient_norm_print.txt # TODO: generalize with parameter
                     gradient_norm = np.linalg.norm(self.layers[i].weight_delta[j])
                     #print(f"Layer: {i} - {gradient_norm}")
                     if gradient_norm > clipping_ts:
