@@ -38,7 +38,7 @@ class SVR:
 
             
 
-    def fit(self, x, y, optim_args, scaled=False, beta_init=None, verbose_optim=True):
+    def fit(self, x, y, optim_args, scaled=False, beta_init=None, verbose_optim=True, precomp_kernel = None):
         self.x = x
         self.y = y
         self.optim_args = optim_args
@@ -55,7 +55,10 @@ class SVR:
             self.xs = x
             self.ys = y
 
-        self.K, self.gamma_value = kernel.get_kernel(self)
+        if precomp_kernel is None:
+            self.K, self.gamma_value = kernel.get_kernel(self)
+        else:
+            self.K, self.gamma_value = precomp_kernel[0], precomp_kernel[1]
         # print(self.gamma_value)
         beta_init = np.vstack(np.zeros(self.x.shape[0])) if beta_init is None else beta_init
         optim_args['vareps'] = self.eps

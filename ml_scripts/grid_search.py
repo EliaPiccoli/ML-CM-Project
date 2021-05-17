@@ -50,7 +50,7 @@ class GridSearch:
         if "weight_range" in parameters:
             self.weight_range = parameters["weight_range"]
     
-    def _compute_model_score(self, model_infos):
+    def _compute_model_score(self, model_infos): # TODO utilize avg val acc ? 
         # model_infos : (vacc_bm, vlossbm, training_bm[(a, va, l, vl)], model)
         # score = 0
         score = 2000*model_infos[0] if model_infos[0] >= 0.90 else 0
@@ -250,8 +250,8 @@ class GridSearch:
         return {'epoch':epoch, 'batch_size':batch_size, 'lr_decay':lr_decay, 'eta':eta, 'alpha':alpha, '_lambda':_lambda}
 
     def get_model_perturbations(self, model_conf, model_architecture, weight_range=None):
-        layers=model_architecture
-        weight_range=[(-0.05, 0.05)] if weight_range is not None else [weight_range]
+        layers=[model_architecture]
+        weight_range=[(-0.05, 0.05)] if weight_range is None else [weight_range]
         batch_size=[model_conf['batch_size']]
         epoch=[model_conf['epoch']]
         lr_decay=[model_conf['lr_decay']]
@@ -270,12 +270,12 @@ class GridSearch:
         _lambda.append(model_conf['_lambda'])
 
         # perturb to create new random model_confs
-        for i in range(5):
+        for i in range(4):
             eta.append(np.random.uniform(model_conf['eta'] - eta_perturb, model_conf['eta'] + eta_perturb))
-        for i in range(3):
+        for i in range(2):
             alpha.append(max(min(np.random.uniform(model_conf['alpha'] - alpha_perturb, model_conf['alpha'] + alpha_perturb), 0.99), 0))
         if model_conf['_lambda'] != 0:
-            for i in range(3):
+            for i in range(2):
                 _lambda.append(np.random.uniform(model_conf['_lambda'] - lambda_perturb, model_conf['_lambda'] + lambda_perturb))
         return layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda
                   

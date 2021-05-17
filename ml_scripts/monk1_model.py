@@ -21,25 +21,38 @@ validation_exp = [[elem] for elem in validation_labels]
 test, test_labels = dt._get_test_data(MONK_MODEL)
 ohe_test = [dt._get_one_hot_encoding(i) for i in test]
 test_exp = [[elem] for elem in test_labels]
+weight_range=(-0.01, 0.01)
 
 # define data for gridsearch
 print("Starting GridSearch")
 gs = GridSearch()
 models = [
-        [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")]
-        # [Layer(5, "tanh", _input=(17,)), Layer(1, "tanh")],
-        # [Layer(7, "tanh", _input=(17,)), Layer(1, "tanh")]
+        [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],
+        [Layer(8, "tanh", _input=(17,)), Layer(1, "tanh")],
+        [Layer(12, "tanh", _input=(17,)), Layer(1, "tanh")]
     ]
 gs._set_parameters(layers=models, 
-                weight_range=[(-0.05, 0.05)],
-                eta=[1e-3, 99e-4],
-                alpha=[0.85, 0.9, 0.98],
+                weight_range=[weight_range],
+                eta=[1e-2,8e-3,5e-3,1e-3, 5e-4],
+                alpha=[0.85,0.98],
                 batch_size=[len(train_labels)],
-                epoch=[500],
-                lr_decay=[1e-5, 5e-6, 1e-6]
+                epoch=[500,700],
+                lr_decay=[1e-5,1e-6]
             )
-best_model, model_conf, model_infos, model_architecture = gs._run(ohe_inp, train_exp, ohe_val, validation_exp, familyofmodelsperconfiguration=1, plot_results=True)
+best_model, model_conf, model_infos, model_architecture = gs._run(ohe_inp, train_exp, ohe_val, validation_exp, familyofmodelsperconfiguration=3, plot_results=True)
 print("Best model configuration: ", model_conf)
+
+layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda = gs.get_model_perturbations(model_conf, model_architecture, weight_range=weight_range)
+gs._set_parameters(layers=layers, 
+                weight_range=weight_range,
+                eta=eta,
+                alpha=alpha,
+                batch_size=batch_size,
+                epoch=epoch,
+                lr_decay=lr_decay,
+                _lambda=_lambda
+            )
+best_model, model_conf, model_infos, model_architecture = gs._run(ohe_inp, train_exp, ohe_val, validation_exp, familyofmodelsperconfiguration=3, plot_results=True)
 
 # testing the model
 print("Best model test accuracy: {:.6f}".format(best_model._infer(ohe_test, test_exp)))
