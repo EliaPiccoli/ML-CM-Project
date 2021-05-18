@@ -270,12 +270,12 @@ class GridSearch:
         _lambda.append(model_conf['_lambda'])
 
         # perturb to create new random model_confs
-        for i in range(4):
+        for i in range(7):
             eta.append(np.random.uniform(model_conf['eta'] - eta_perturb, model_conf['eta'] + eta_perturb))
-        for i in range(2):
+        for i in range(3):
             alpha.append(max(min(np.random.uniform(model_conf['alpha'] - alpha_perturb, model_conf['alpha'] + alpha_perturb), 0.99), 0))
         if model_conf['_lambda'] != 0:
-            for i in range(2):
+            for i in range(5):
                 _lambda.append(np.random.uniform(model_conf['_lambda'] - lambda_perturb, model_conf['_lambda'] + lambda_perturb))
         return layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda
                   

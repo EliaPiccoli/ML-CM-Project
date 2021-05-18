@@ -1,7 +1,8 @@
 import numpy as np # more important than "#include <stdio.h>"
 import utils.get_dataset as dt
-import copy
 import os
+import pickle
+import math
 
 from utils.layer import Layer
 from utils.model import Model
@@ -51,14 +52,13 @@ class GridSearch:
     
     def _compute_model_score(self, model_infos):
         # model_infos : (vacc_bm, vlossbm, training_bm[(a, va, l, vl)])
-        # model_infos : (avg_test_acc, (test_acc_bm, vacc_bm, vlossbm, training_bm[(a, va, l, vl)]))
         # test accuracy
-        score = 100*model_infos[0] # FOR ML CUP: try to start low and each oscillation will higher the score, then sort decreasingly
+        score = 100*model_infos[0] # FOR ML CUP: try to start low and each oscillation will higher the score, then sort increasingly
         # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []
         train_loss = []
         threashold = 5e-3
-        for epoch in model_infos[-1]:
+        for epoch in model_infos[-2]:
             val_loss.append(epoch[3])
             train_loss.append(epoch[2])
         not_decrease_times = 0
@@ -75,9 +75,11 @@ class GridSearch:
 
         return score
 
-    def _train_model(self, model, train, train_label, validation, validation_label, batch_size, epoch, decay):
+    def _train_model(self, index, model, train, train_label, validation, validation_label, batch_size, epoch, decay):
         train_result = model._train(train, train_label, validation, validation_label, batch_size=batch_size, epoch=epoch, decay=decay)
-        
+        save_file = f"models/cup_conf{index}"
+        with open(save_file, 'wb') as f:
+            pickle.dump({"model": model, "layers": model.layers}, f, protocol=pickle.HIGHEST_PROTOCOL)
         return train_result
 
     # TODO: add loss function name for model (not hyperparameter) (atm set it as defualt)
@@ -144,7 +146,7 @@ class GridSearch:
 
             models_training_stats = []      # [[(acc, vacc, loss, vloss), (acc, vacc, loss, vloss)], ...]
             with Parallel(n_jobs=subprocess_pool_size, verbose=10) as processes:
-                result = processes(delayed(self._train_model)(models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2]) for j in range(models_per_structure))
+                result = processes(delayed(self._train_model)(i*models_per_structure+j, models_configurations[i*models_per_structure + j][3], train, train_label, validation, validation_label, models_configurations[i*models_per_structure + j][1], models_configurations[i*models_per_structure + j][0], models_configurations[i*models_per_structure + j][2]) for j in range(models_per_structure))
             
             for res in result:
                 models_training_stats.append(res)
@@ -153,12 +155,19 @@ class GridSearch:
                 training_stats = models_training_stats[j]
                 best_model_vaccuracy = training_stats[-1][1]
                 best_model_vloss = training_stats[-1][3]
+
+                
+                index = i*models_per_structure + j
+                data = {}
+                with open(f"models/cup_conf{index}", 'rb') as f:
+                    data = pickle.load(f)
+                model = data['model']
                 
                 if configuration_best_model[j%configurations_per_model] is None:
-                    configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats)
+                    configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats, model)
                 else: # REMEMBER: WE ARE NOT TALKING ABOUT ACCURACY ANYMORE, WE ARE USING MEE
                     if configuration_best_model[j%configurations_per_model][0] >= best_model_vaccuracy and configuration_best_model[j%configurations_per_model][1] >= best_model_vloss:
-                        configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats)
+                        configuration_best_model[j%configurations_per_model] = (best_model_vaccuracy, best_model_vloss, training_stats, model)
 
             structures_best_configurations.append(configuration_best_model)
         
@@ -169,27 +178,30 @@ class GridSearch:
 
         # evaluate models to find best
         best_model_info = None
-        current_best_score = 0
+        current_best_score = math.inf
         for i in range(len(structures_best_configurations)):
             # i-th model structure
             scores = []
             stats = []
             params = []
+            models = []
             confidx = []
             for j in range(len(structures_best_configurations[i])):
                 scores.append(self._compute_model_score(structures_best_configurations[i][j]))
-                stats.append(structures_best_configurations[i][j][-1])
+                stats.append(structures_best_configurations[i][j][-2])
                 params.append(self._get_model_parameters(j,len(structures_best_configurations[i])))
+                models.append(structures_best_configurations[i][j][-1])
                 confidx.append(j)
 
-            zipped_triples = sorted(zip(stats, scores, params, confidx), key = lambda x : x[1]) # sort everything by decreasing score
+            zipped_triples = sorted(zip(stats, scores, params, confidx, models), key = lambda x : x[1]) # sort everything by increasing score
             max_len = min(len(zipped_triples), 8) # to only get top best results for visualization sake
-            stats   =            [x for x,_,_,_ in zipped_triples[:max_len]]
-            scores  =            [x for _,x,_,_ in zipped_triples[:max_len]]
-            params  =            [x for _,_,x,_ in zipped_triples[:max_len]]
-            confidx =            [x for _,_,_,x in zipped_triples[:max_len]]
-            if zipped_triples[0][1] > current_best_score:
-                best_model_info = (params[0], stats[0], self.models_layers[i])
+            stats   =            [x for x,_,_,_,_ in zipped_triples[:max_len]]
+            scores  =            [x for _,x,_,_,_ in zipped_triples[:max_len]]
+            params  =            [x for _,_,x,_,_ in zipped_triples[:max_len]]
+            confidx =            [x for _,_,_,x,_ in zipped_triples[:max_len]]
+            models  =            [x for _,_,_,_,x in zipped_triples[:max_len]]
+            if zipped_triples[0][1] < current_best_score:
+                best_model_info = (zipped_triples[0][-1], params[0], stats[0], self.models_layers[i])
                 current_best_score = zipped_triples[0][1]
 
             print(f"(GS - MLCUP) - Model {i} evalutation")
@@ -299,7 +311,7 @@ if __name__ == "__main__":
                     # lr_decay=[1e-5],
                     # _lambda=[1e-3, 1e-4, 1e-5]
                 )
-    model_conf, model_infos, model_architecture = gs._run(train, train_labels, validation, validation_labels)
+    best_model, model_conf, model_infos, model_architecture = gs._run(train, train_labels, validation, validation_labels)
     print("Best model configuration: ", model_conf)
 
     layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda = gs.get_model_perturbations(model_conf, model_architecture)
@@ -313,5 +325,8 @@ if __name__ == "__main__":
                 lr_decay=lr_decay,
                 _lambda=_lambda
             )
-    model_conf, model_infos, model_architecture = gs._run(train, train_labels, validation, validation_labels)
+    best_model, model_conf, model_infos, model_architecture = gs._run(train, train_labels, validation, validation_labels)
     print("Best model configuration: ", model_conf)
+
+    print("Best model test accuracy: {:.6f}".format(best_model._infer(test, test_labels)))
+    Plot._plot_train_stats([model_infos], epochs=[model_conf['epoch']])

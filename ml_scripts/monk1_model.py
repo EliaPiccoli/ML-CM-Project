@@ -28,16 +28,15 @@ print("Starting GridSearch")
 gs = GridSearch()
 models = [
         [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(8, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(12, "tanh", _input=(17,)), Layer(1, "tanh")]
+        [Layer(2, "tanh", _input=(17,)), Layer(2, "tanh"), Layer(1, "tanh")]
     ]
 gs._set_parameters(layers=models, 
                 weight_range=[weight_range],
-                eta=[1e-2,8e-3,5e-3,1e-3, 5e-4],
+                eta=[1e-2,8e-3,5e-3,1e-3, 5e-4, 1e-4, 5e-5, 1e-5],
                 alpha=[0.85,0.98],
                 batch_size=[len(train_labels)],
                 epoch=[500,700],
-                lr_decay=[1e-5,1e-6]
+                lr_decay=[1e-5,5e-6,1e-6]
             )
 best_model, model_conf, model_infos, model_architecture = gs._run(ohe_inp, train_exp, ohe_val, validation_exp, familyofmodelsperconfiguration=3, plot_results=True)
 print("Best model configuration: ", model_conf)
