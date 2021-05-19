@@ -114,7 +114,7 @@ class Gridsearch():
         coef_perturbation = 1.0
         eps_perturbation = 10
         vareps_perturbation = 0.1
-        for i in range(n_perturbations):
+        for i in range(n_perturbations-1):
             if model.kernel == 'rbf':
                 kernel.append('rbf')
                 kparam.append({"gamma": np.random.uniform(model.gamma_value - gamma_perturbation, model.gamma_value + gamma_perturbation)})
@@ -127,7 +127,7 @@ class Gridsearch():
                 kernel.append('linear')
                 kparam.append({})
 
-        for i in range(n_optimargs):
+        for i in range(n_optimargs-1):
             temp_optiargs = {}
             if 'eps' in model.optim_args:
                 temp_optiargs['eps'] = np.random.uniform(model.optim_args['eps'] / eps_perturbation, model.optim_args['eps'] * eps_perturbation)
