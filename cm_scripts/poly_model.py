@@ -2,12 +2,14 @@ import numpy as np
 from svr_grid_search import Gridsearch
 import matplotlib.pyplot as plt
 import time
+import sys
 
 start = time.time()
 
+
 x = np.vstack(np.arange(-50,51,1))
-degree = 2
-noising_factor = 0.1
+degree = int(sys.argv[1]) if len(sys.argv) > 1 else 2
+print(f"Chosen degree is: {degree}")
 y = [xi**degree for xi in x]
 y = np.array(y, dtype=np.float64)
 
@@ -16,9 +18,12 @@ test_y = [xi**degree for xi in test_x]
 
 gs = Gridsearch()
 gs.set_parameters(
-    kernel=["poly", "poly", "poly", "poly", "poly", "poly"],
-    kparam=[{"degree":2, "gamma":0.2}, {"degree":2, "gamma":0.4}, {"degree":2, "gamma":0.6}, {"degree":2, "gamma":0.8}, {"degree":2, "gamma":"scale"}, {"degree":2, "gamma":"auto"}],
-    optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':1e-3, 'maxiter':3e3}, {'eps':3e-4, 'maxiter':3e3}]
+    kernel=["poly", "poly", "poly", "poly", "poly"],
+    kparam=[{"degree":2, "gamma":1},{"degree":3, "gamma":1},{"degree":4, "gamma":1},{"degree":5, "gamma":1},{"degree":10, "gamma":1}],
+    optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
+    # kernel=["poly", "poly", "poly", "poly", "poly", "poly"],
+    # kparam=[{"degree":2, "gamma":0.2}, {"degree":2, "gamma":0.4}, {"degree":2, "gamma":0.6}, {"degree":2, "gamma":0.8}, {"degree":2, "gamma":"scale"}, {"degree":2, "gamma":"auto"}],
+    # optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':1e-3, 'maxiter':3e3}, {'eps':3e-4, 'maxiter':3e3}]
 )
 best_coarse_model = gs.run(
     x, y, test_x, test_y
@@ -50,7 +55,7 @@ print("Time taken:",time.time()-start)
 
 plt.scatter(x, y , color="red")
 plt.plot(x, pred, color="blue")
-plt.title('SVR')
+plt.title(f'SVR - poly search with degree {degree}')
 plt.xlabel('Input')
 plt.ylabel('Output')
 plt.show()

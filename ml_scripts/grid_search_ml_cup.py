@@ -53,6 +53,8 @@ class GridSearch:
     def _compute_model_score(self, model_infos):
         # model_infos : (vacc_bm, vlossbm, training_bm[(a, va, l, vl)])
         # test accuracy
+        if np.isnan(model_infos[0]):
+            return 1e4
         score = 100*model_infos[0] # FOR ML CUP: try to start low and each oscillation will higher the score, then sort increasingly
         # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []

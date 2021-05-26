@@ -28,8 +28,7 @@ print("Starting GridSearch")
 gs = GridSearch()
 models = [
         [Layer(4, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(8, "tanh", _input=(17,)), Layer(1, "tanh")],
-        [Layer(12, "tanh", _input=(17,)), Layer(1, "tanh")]
+        [Layer(8, "tanh", _input=(17,)), Layer(1, "tanh")]
     ]
 gs._set_parameters(layers=models, 
                 weight_range=[weight_range],

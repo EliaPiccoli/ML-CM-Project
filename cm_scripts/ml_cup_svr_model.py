@@ -254,7 +254,7 @@ def search_poly2(x, y, test_x, test_y):
 
 start = time.time()
 
-grid = True
+first_dim = False
 train, train_labels = dt._get_cup('train')
 test, test_labels = train[:len(train)//10], train_labels[:len(train_labels)//10]
 test_labels1, test_labels2 = test_labels[:,0], test_labels[:,1]
@@ -277,8 +277,9 @@ train, train_labels = train[len(train)//10:], train_labels[len(train_labels)//10
 
 print("Training data:",len(train))
 
-if grid: 
-    train_labels1, train_labels2 = train_labels[:,0], train_labels[:,1]
+train_labels1, train_labels2 = train_labels[:,0], train_labels[:,1]
+if first_dim: 
+    print("GridSearching first y dim..")
     if sys.argv[1] == 'linear':
         print("Linear gridsearch..")
         search_linear(train, train_labels1, test, test_labels1)
@@ -291,6 +292,20 @@ if grid:
     elif sys.argv[1] == 'sigmoid':
         print("Sigmoid gridsearch..")
         search_sigmoid(train, train_labels1, test, test_labels1)
+else:
+    print("GridSearching second y dim..")
+    if sys.argv[1] == 'linear':
+        print("Linear gridsearch..")
+        search_linear(train, train_labels2, test, test_labels2)
+    elif sys.argv[1] == 'rbf':
+        print("RBF gridsearch..")
+        search_rbf(train, train_labels2, test, test_labels2)
+    elif sys.argv[1] == 'poly':
+        print("Poly gridsearch..")
+        search_poly(train, train_labels2, test, test_labels2)
+    elif sys.argv[1] == 'sigmoid':
+        print("Sigmoid gridsearch..")
+        search_sigmoid(train, train_labels2, test, test_labels2)
 
 print("Time taken:",time.time()-start)
 
