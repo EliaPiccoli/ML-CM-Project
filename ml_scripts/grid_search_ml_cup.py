@@ -132,7 +132,7 @@ class GridSearch:
                                                 for weight in node_weights:
                                                     weights_copy[-1].append(weight)
                                             weights_matrix.append(weights_copy)
-                                        model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix, isClassification = False)
+                                        model._compile(eta=self.eta[eta_index], alpha=self.alpha[alpha_index], _lambda=self._lambda[lambda_index], weight_matrix=weights_matrix, isClassification = False, gradient_clipping=True)
                                         models_configurations.append((self.epoch[epoch_index], self.batch_size[batch_size_index], self.lr_decay[decay_index], model))
                 counter += 1
         print(f"(GS - MLCUP) - Generated {len(models_configurations)} diffent models.")
@@ -210,12 +210,12 @@ class GridSearch:
             for j in range(max_len):
                 print(f"(GS - MLCUP) - Configuration {j}, score : {scores[j]}, best_validation_mee : {stats[j][-1][1]}, params:{params[j]}")
 
-            Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1), classification=False)
+        Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1), classification=False)
 
-            if best_model_info is None:
-                raise SystemError("No model was worth to be evaluated ( all negative score )")
+        if best_model_info is None:
+            raise SystemError("No model was worth to be evaluated ( all negative score )")
 
-            return best_model_info
+        return best_model_info
 
     def _get_model_parameters(self, index, configurations_per_model):
         # ALL THIS IS FOR COMPREHENSION ONLY, TUTTO RIDUCIBILE AD UN CICLO VOLENDO, 5-6 RIGHE MAX TRANQUI EP NO RABIA
