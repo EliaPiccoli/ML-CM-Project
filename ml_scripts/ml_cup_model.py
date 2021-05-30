@@ -16,11 +16,10 @@ models = [
     Layer(8, "leaky_relu"),
     Layer(8, "leaky_relu"), 
     Layer(2, "linear")],
-    [Layer(8, "leaky_relu", _input=(10,)), 
-    Layer(8, "leaky_relu"),
-    Layer(8, "leaky_relu"),
-    Layer(8, "tanh"),
-    Layer(8, "tanh"), 
+    [Layer(13, "leaky_relu", _input=(10,)), 
+    Layer(24, "leaky_relu"),
+    Layer(29, "leaky_relu"),
+    Layer(44, "leaky_relu"), 
     Layer(2, "linear")],
     [Layer(20, "leaky_relu", _input=(10,)), 
     Layer(20, "leaky_relu"),
@@ -31,7 +30,7 @@ models = [
 ]
 gs._set_parameters(layers=models, 
                 weight_range=[(-0.69, 0.69)],
-                eta=[1e-5,5e-5,1e-5,5e-6],
+                eta=[1e-4,5e-5,1e-5,9e-6,5e-6],
                 alpha=[0.8,0.9],
                 batch_size=[len(train_labels)],
                 epoch=[150],
@@ -42,7 +41,7 @@ best_model, model_conf, model_infos, model_architecture = gs._run(train, train_l
 print("Best model configuration: ", model_conf)
 
 layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda = gs.get_model_perturbations(model_conf, model_architecture)
-print("Created perturbations: ",layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda)
+print("Created perturbations: [", *model_architecture, "]", weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda)
 gs._set_parameters(layers=layers, 
             weight_range=weight_range,
             eta=eta,

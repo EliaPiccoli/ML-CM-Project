@@ -1,0 +1,11 @@
+(GS - MLCUP) - Configuration 0, score : 410.9386636114313, best_validation_mee : 4.109386636114313, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.895836008685332e-06, 'alpha': 0.8445622434341347, '_lambda': 0.0001}
+(GS - MLCUP) - Configuration 1, score : 410.9386636114313, best_validation_mee : 4.109386636114313, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.895836008685332e-06, 'alpha': 0.99, '_lambda': 0.0001}
+(GS - MLCUP) - Configuration 2, score : 410.93866361143137, best_validation_mee : 4.109386636114314, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.895836008685332e-06, 'alpha': 0.9, '_lambda': 0.0001}
+(GS - MLCUP) - Configuration 3, score : 413.9476082107502, best_validation_mee : 4.139476082107502, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.895836008685332e-06, 'alpha': 0.99, '_lambda': 6.895875543567732e-05}
+(GS - MLCUP) - Configuration 4, score : 413.94760821075033, best_validation_mee : 4.139476082107503, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.895836008685332e-06, 'alpha': 0.9, '_lambda': 6.895875543567732e-05}
+(GS - MLCUP) - Configuration 5, score : 413.94760821075033, best_validation_mee : 4.139476082107503, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.895836008685332e-06, 'alpha': 0.8445622434341347, '_lambda': 6.895875543567732e-05}
+(GS - MLCUP) - Configuration 6, score : 413.9626928882268, best_validation_mee : 4.139626928882268, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.273667116401043e-06, 'alpha': 0.9, '_lambda': 6.431760286186389e-05}
+(GS - MLCUP) - Configuration 7, score : 413.9626928882273, best_validation_mee : 4.139626928882273, params:{'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.273667116401043e-06, 'alpha': 0.99, '_lambda': 6.431760286186389e-05}
+
+Best model configuration:  {'epoch': 150, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 5.895836008685332e-06, 'alpha': 0.8445622434341347, '_lambda': 0.0001}
+Best model test accuracy: 4.372406

@@ -69,4 +69,4 @@ class Layer:
         return delta, weight_delta
 
     def __str__(self):
-        return f'Layer (input: {self.input[0]}, nodes: {self.nodes}, activation_function: {self.activation_function})'
+        return f'Layer (nodes: {self.nodes}, activation_function: {self.activation_function_type})'

@@ -18,7 +18,7 @@ class GridSearch:
         self.batch_size = [1]
         self.models_layers = [] # [[Layers#1], [Layers#2], ...]
         self.lr_decay = [1e-5]
-        self.epoch = [300]
+        self.epoch = [5]
         self.weight_range = [(-0.69, 0.69)]
 
     def _set_parameters(self, **parameters):
@@ -59,7 +59,7 @@ class GridSearch:
         # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []
         train_loss = []
-        threashold = 5e-3
+        threashold = 1.5
         for epoch in model_infos[-2]:
             val_loss.append(epoch[3])
             train_loss.append(epoch[2])
@@ -210,7 +210,7 @@ class GridSearch:
             for j in range(max_len):
                 print(f"(GS - MLCUP) - Configuration {j}, score : {scores[j]}, best_validation_mee : {stats[j][-1][1]}, params:{params[j]}")
 
-        Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1), classification=False)
+            Plot._plot_train_stats(stats,title=f"Model {i}", epochs=[x['epoch'] for x in params], block=(i==len(structures_best_configurations)-1), classification=False)
 
         if best_model_info is None:
             raise SystemError("No model was worth to be evaluated ( all negative score )")
