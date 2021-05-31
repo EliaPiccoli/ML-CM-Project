@@ -59,7 +59,7 @@ class GridSearch:
         # validation loss smooth and training loss smooth (val has more weight)
         val_loss = []
         train_loss = []
-        threashold = 1.5
+        threashold = 0.75
         for epoch in model_infos[-2]:
             val_loss.append(epoch[3])
             train_loss.append(epoch[2])
