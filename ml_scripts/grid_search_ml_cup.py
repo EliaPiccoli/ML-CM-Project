@@ -181,6 +181,7 @@ class GridSearch:
         # evaluate models to find best
         best_model_info = None
         current_best_score = math.inf
+        models_with_scores = []
         for i in range(len(structures_best_configurations)):
             # i-th model structure
             scores = []
@@ -194,6 +195,7 @@ class GridSearch:
                 params.append(self._get_model_parameters(j,len(structures_best_configurations[i])))
                 models.append(structures_best_configurations[i][j][-1])
                 confidx.append(j)
+                models_with_scores.append((scores[-1], models[-1]))
 
             zipped_triples = sorted(zip(stats, scores, params, confidx, models), key = lambda x : x[1]) # sort everything by increasing score
             max_len = min(len(zipped_triples), 8) # to only get top best results for visualization sake
@@ -214,6 +216,14 @@ class GridSearch:
 
         if best_model_info is None:
             raise SystemError("No model was worth to be evaluated ( all negative score )")
+        
+        # save best models for ensemble exec
+        ensemble_dim = 5
+        models_with_scores = sorted(models_with_scores, key = lambda x : x[0])
+        for i in range(ensemble_dim):
+            save_file = f"models/ensemble_models/cup_ensemble{i}"
+            with open(save_file, 'wb') as f:
+                pickle.dump({"model": models_with_scores[i][1], "layers": models_with_scores[i][1].layers}, f, protocol=pickle.HIGHEST_PROTOCOL)
 
         return best_model_info
 
@@ -275,7 +285,6 @@ class GridSearch:
                 _lambda.append(np.random.uniform(model_conf['_lambda'] - lambda_perturb, model_conf['_lambda'] + lambda_perturb))
         return layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda
 
-                                 
 if __name__ == "__main__":
     gs = GridSearch()
     train, validation, test, train_labels, validation_labels, test_labels = dt._get_split_cup()
