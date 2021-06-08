@@ -195,7 +195,7 @@ class GridSearch:
                 params.append(self._get_model_parameters(j,len(structures_best_configurations[i])))
                 models.append(structures_best_configurations[i][j][-1])
                 confidx.append(j)
-                models_with_scores.append((scores[-1], models[-1]))
+                models_with_scores.append((scores[-1], models[-1], stats[-1]))
 
             zipped_triples = sorted(zip(stats, scores, params, confidx, models), key = lambda x : x[1]) # sort everything by increasing score
             max_len = min(len(zipped_triples), 8) # to only get top best results for visualization sake
@@ -223,7 +223,7 @@ class GridSearch:
         for i in range(ensemble_dim):
             save_file = f"models/ensemble_models/cup_ensemble{i}"
             with open(save_file, 'wb') as f:
-                pickle.dump({"model": models_with_scores[i][1], "layers": models_with_scores[i][1].layers}, f, protocol=pickle.HIGHEST_PROTOCOL)
+                pickle.dump({"model": models_with_scores[i][1], "layers": models_with_scores[i][1].layers, "stats": models_with_scores[i][2]}, f, protocol=pickle.HIGHEST_PROTOCOL)
 
         return best_model_info
 

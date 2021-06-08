@@ -1,0 +1,13 @@
+Created perturbations: [ Layer (nodes: 20, activation_function: leaky_relu) Layer (nodes: 20, activation_function: leaky_relu) Layer (nodes: 20, activation_function: leaky_relu) Layer (nodes: 20, activation_function: leaky_relu) Layer (nodes: 2, activation_function: linear) ] [(-0.69, 0.69)] [916] [200] [5e-06] [9e-06, 7.794775962300694e-06, 6.07100641174859e-06, 7.412129423524185e-06, 1.0751922699250594e-05] [0.9, 0.8340360938765368, 0.8594993919833573] [0.0001, 7.124741601959679e-05, 0.00013963763800352584]
+
+(GS - MLCUP) - Model 0: Done  45 out of  45 | elapsed: 68.7min finished
+
+(GS - MLCUP) - Model 0 evalutation
+(GS - MLCUP) - Configuration 0, score : 366.3307305095105, best_validation_mee : 3.663307305095105, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 9e-06, 'alpha': 0.9, '_lambda': 7.124741601959679e-05}
+(GS - MLCUP) - Configuration 1, score : 366.3307305095108, best_validation_mee : 3.663307305095108, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 9e-06, 'alpha': 0.8340360938765368, '_lambda': 7.124741601959679e-05}
+(GS - MLCUP) - Configuration 2, score : 366.33073050951083, best_validation_mee : 3.6633073050951084, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 9e-06, 'alpha': 0.8594993919833573, '_lambda': 7.124741601959679e-05}
+(GS - MLCUP) - Configuration 3, score : 367.5530505806584, best_validation_mee : 3.675530505806584, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 1.0751922699250594e-05, 'alpha': 0.8340360938765368, '_lambda': 7.124741601959679e-05}
+(GS - MLCUP) - Configuration 4, score : 367.55305058065846, best_validation_mee : 3.675530505806585, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 1.0751922699250594e-05, 'alpha': 0.9, '_lambda': 7.124741601959679e-05}
+(GS - MLCUP) - Configuration 5, score : 367.55305058065886, best_validation_mee : 3.6755305058065884, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 1.0751922699250594e-05, 'alpha': 0.8594993919833573, '_lambda': 7.124741601959679e-05}
+(GS - MLCUP) - Configuration 6, score : 369.4547874481407, best_validation_mee : 3.694547874481407, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 1.0751922699250594e-05, 'alpha': 0.9, '_lambda': 0.0001}
+(GS - MLCUP) - Configuration 7, score : 369.4547874481407, best_validation_mee : 3.694547874481407, params:{'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 1.0751922699250594e-05, 'alpha': 0.8340360938765368, '_lambda': 0.0001}

@@ -1,0 +1,5 @@
+Best model configuration:  {'epoch': 200, 'batch_size': 916, 'lr_decay': 5e-06, 'eta': 9e-06, 'alpha': 0.9, '_lambda': 7.124741601959679e-05}
+Architecture: [ Layer (nodes: 20, activation_function: leaky_relu) Layer (nodes: 20, activation_function: leaky_relu) Layer (nodes: 20, activation_function: leaky_relu) Layer (nodes: 20, activation_function: leaky_relu) Layer (nodes: 2, activation_function: linear) ]
+Best model test accuracy: 3.867447
+
+Ensemble result is: 3.869648849112038
