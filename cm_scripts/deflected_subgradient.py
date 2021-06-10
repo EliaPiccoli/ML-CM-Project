@@ -45,8 +45,6 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
     prevnormg = math.inf
     history = []
     while True:
-        # print("lol0",x.shape, K.shape, K.dot(x).shape, np.dot(np.dot(np.transpose(x), K), x).shape, )
-        # print('repeated vareps',np.repeat(vareps,x.size).shape, 'x',np.abs(x).shape, 'K', K.shape)
         if i > maxiter:
             # stopped condition reached
             if return_history:
@@ -55,7 +53,6 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
         v = (0.5 * np.dot(np.dot(np.transpose(x), K), x) 
             + np.repeat(vareps,x.size).dot(np.abs(x)) 
             - np.transpose(y).dot(x))[0,0] # would return a matrix otherwise
-        # print('lolg',(K.dot(x)).shape, (vareps*np.sign(x)).shape, y.shape)
         g = K.dot(x) + vareps*np.sign(x) - y.reshape(-1,1) # magic stands in reshaping
         norm_g = np.linalg.norm(g)
         if verbose: print("i: {:4d} - v: {:4f} - fref: {:4f} - ||g||: {:4f} - delta: {:e} - ||gdiff||: {:4f} - eps: {:e}".format(i, v, fref, norm_g, delta, prevnormg-norm_g, eps))
@@ -75,24 +72,10 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
             fref = copy.deepcopy(v)
             xref = copy.deepcopy(x)
         d = alpha*g + (1-alpha)*dprev
-        # print("lol1x",x.shape, 'd',d.shape,'g', g.shape)
         dproj = projectDirection(x, d, box)
-        # print("lol2x",x.shape)
         dprev = dproj
-        # print("dproj: ", dproj)
         nu = psi*(v-fref+delta)/(np.linalg.norm(dproj)**2)
-        # print("nu: ", nu)
-        # print("current: ",x)
-        # print("lol3x",x.shape, (nu*dproj).shape, dproj.shape)
         x = x - nu*dproj
-        # print("lol4x",x.shape)
-        # print("updated: ",x) 
         x = solveKP(box, 0, x, False)
-        # print("projected: ",x)
         i += 1
         history.append(x)
-        # print("lol1",x.shape)
-        # print("lol2", K.shape)
-        # print("lol3", K.dot(x).shape)
-        # print("lol4", np.dot(np.dot(np.transpose(x), K), x).shape)
-

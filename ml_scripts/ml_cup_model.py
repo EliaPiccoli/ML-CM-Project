@@ -12,19 +12,19 @@ def ensemble_exec(test, test_labels, num_models=5, verbose=False):
     dir_ensemble = "models/ensemble_models"
     ensemble_models = []
     num_models = min(len(os.listdir(dir_ensemble)), num_models)
+    # load models
     for i in range(num_models):
         data = {}
         with open(f"models/ensemble_models/cup_ensemble{i}", 'rb') as f:
             data = pickle.load(f)
         ensemble_models.append(data['model'])
-    
+    # compute test inference
     avg_inference = 0.0
-
     for i in range(len(ensemble_models)):
         model_score = ensemble_models[i]._infer(test, test_labels)
         avg_inference += model_score
         if verbose: print(f"Model {i} result: {model_score}")
-    
+    # avg
     return avg_inference / len(ensemble_models)
 
 gs = GridSearch()
@@ -69,9 +69,11 @@ gs._set_parameters(layers=models,
                 lr_decay=[5e-6, 1e-6],
                 _lambda=[1e-3, 1e-4]
             )
+# Run coarse GridSearch
 best_model, model_conf, model_infos, model_architecture = gs._run(train, train_labels, validation, validation_labels)
 print("Best model configuration: ", model_conf)
 
+# Compute perturbations
 layers, weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda = gs.get_model_perturbations(model_conf, model_architecture)
 print("Created perturbations: [", *model_architecture, "]", weight_range, batch_size, epoch, lr_decay, eta, alpha, _lambda)
 gs._set_parameters(layers=layers, 
@@ -83,17 +85,10 @@ gs._set_parameters(layers=layers,
             lr_decay=lr_decay,
             _lambda=_lambda
         )
+# Run random GridSearch
 best_model, model_conf, model_infos, model_architecture = gs._run(train, train_labels, validation, validation_labels)
 print("Best model configuration: ", model_conf)
-
 print("Best model test accuracy: {:.6f}".format(best_model._infer(test, test_labels)))
 Plot._plot_train_stats([model_infos], epochs=[model_conf['epoch']])
-
-data = {}
-with open(f"models/ensemble_models/cup_ensemble0", 'rb') as f:
-    data = pickle.load(f)
-model = data['model']
-
-print("Best model test accuracy: {:.6f}".format(model._infer(test, test_labels)))
 
 print("Ensemble result is:", ensemble_exec(test, test_labels, verbose=False))

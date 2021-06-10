@@ -13,8 +13,6 @@ def plot_svr_predict(svr, x, y, pred, text="fig_title"):
     fig.suptitle(text)
     plt.show()
 
-# ------------------------------------- MAIN ------------------------------------- #
-
 train, train_labels = dt._get_cup('train')
 test, test_labels = train[:len(train)//10], train_labels[:len(train_labels)//10]
 test_labels1, test_labels2 = test_labels[:,0], test_labels[:,1]

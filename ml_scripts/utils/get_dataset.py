@@ -3,7 +3,6 @@ import os
 import numpy as np
 import random
 import copy
-from sklearn.preprocessing import MinMaxScaler
 
 # -------------------------------------------------------- MONK -------------------------------------------------------- #
 
@@ -34,7 +33,6 @@ def _get_dataset(dataset_num, dataset_type): #dataset_num in [1,2,3] dataset_typ
     data_set = list()
     data_label = list()
     path = dataset_path + str(dataset_num) + "." + dataset_type
-    # print(path)
     with open(path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=' ')
         for row in csv_reader:
@@ -64,15 +62,7 @@ def _get_split_cup(test_split = 0.2, val_split = 0.2, seed=None):
     test_labels = copy.deepcopy(labels[:test_l])
     train_val_inputs = inputs[test_l:]
     train_val_labels = labels[test_l:]
-
-    scaler = MinMaxScaler()
-    #test_inputs = scaler.fit_transform(test_inputs)
-    #test_labels = scaler.fit_transform(test_labels)
-    #train_val_inputs = scaler.fit_transform(train_val_inputs)
-    #train_val_labels = scaler.fit_transform(train_val_labels)
-
     val_l = int(len(inputs)*val_split)
-
     # train, validation, test, train_labels, validation_labels, test_labels
     return train_val_inputs[val_l:], train_val_inputs[:val_l], test_inputs, train_val_labels[val_l:], train_val_labels[:val_l], test_labels
 

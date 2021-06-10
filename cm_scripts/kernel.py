@@ -46,12 +46,3 @@ def get_kernel(model):
         return poly(model.xs, model.xs, model.gamma, model.degree, model.coef, model.x)
     elif model.kernel == 'sigmoid':
         return sigmoid(model.xs, model.xs, model.gamma, model.coef, model.x)
-
-
-if __name__ == "__main__":
-    x = np.random.uniform(-1, 1, (10, 10))
-    print("x: ", x)
-    print("Linear: ", linear(x,x))
-    print("RBF: ", rbf(x,x))
-    print("Poly: ", poly(x,x))
-    print("Sigmoid: ", sigmoid(x,x))

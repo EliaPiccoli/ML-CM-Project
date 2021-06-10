@@ -34,11 +34,8 @@ class SVR:
             model_as_string += "\Optim_args: "+str(self.optim_args)
         model_as_string += "\nBox: "+str(self.box)
         return model_as_string
-        
 
-            
-
-    def fit(self, x, y, optim_args, scaled=False, beta_init=None, verbose_optim=True, precomp_kernel = None):
+    def fit(self, x, y, optim_args, scaled=False, beta_init=None, verbose_optim=True, precomp_kernel=None):
         self.x = x
         self.y = y
         self.optim_args = optim_args
@@ -59,14 +56,12 @@ class SVR:
             self.K, self.gamma_value = kernel.get_kernel(self)
         else:
             self.K, self.gamma_value = precomp_kernel[0], precomp_kernel[1]
-        # print(self.gamma_value)
         beta_init = np.vstack(np.zeros(self.x.shape[0])) if beta_init is None else beta_init
         optim_args['vareps'] = self.eps
         self.beta, self.status, self.betas_history = solveDeflected(beta_init, self.ys, self.K, self.box, optim_args=optim_args, verbose=verbose_optim)
         self.compute_sv()
         if self.kernel == "linear":
             self.W = np.dot(self.betasv.T, self.sv)
-        # ------------------END------------------ #
 
     def plot_loss(self):
         temp_beta, temp_sv, temp_betasv, temp_intercept = self.beta, self.sv, self.betasv, self.intercept
@@ -82,8 +77,6 @@ class SVR:
         plt.show()
         self.beta, self.sv, self.betasv, self.intercept = temp_beta, temp_sv, temp_betasv, temp_intercept
 
-
-
     def compute_sv(self, plotting=False):
         mask = np.logical_or(self.beta > 1e-6, self.beta < -1e-6)
         if True not in mask:
@@ -94,7 +87,6 @@ class SVR:
         support = np.vstack(np.vstack(np.arange(len(self.beta)))[mask])
         x_mask = np.repeat(mask, self.xs.shape[1], axis=1)
         self.sv = self.xs[x_mask].reshape(-1,self.xs.shape[1])
-        # print("self.sv:",self.sv.shape, "\nself.sv all:", self.sv, "\nself.xs all:", self.xs)
         y_sv = np.vstack(self.ys.reshape(-1,1)[mask])
         self.betasv = np.vstack(self.beta[mask])
         self.intercept = 0
@@ -103,7 +95,7 @@ class SVR:
             for j in range(self.beta.size):
                 self.intercept -= self.beta[j] * self.K[j, support[i]]
         self.intercept /= self.betasv.size # average bias
-        self.intercept -= self.eps # -eps -eps
+        self.intercept -= self.eps # -eps -eps -eps
         return True
     
     def predict(self, x):
@@ -124,7 +116,6 @@ class SVR:
             K, _ = kernel.poly(self.sv, x, gamma, self.degree, self.coef)
         elif self.kernel == 'sigmoid':
             K, _ = kernel.sigmoid(self.sv, x, gamma, self.coef)
-        # print("K:",K.shape,"self.betasv:",self.betasv.shape, "self.sv:",self.sv.shape,"x:",x.shape)
         prediction = np.dot(self.betasv.T, K) + self.intercept
         return prediction if not self.scaled else self.y_scaler.inverse_transform(prediction)
 
@@ -133,45 +124,3 @@ class SVR:
         for i in range(len(self.y)):
             loss += (abs(self.y[i]-y_pred[i]) - self.eps)**2 if abs(self.y[i]-y_pred[i]) > self.eps else 0
         return loss
-
-
-if __name__ == "__main__":
-    prova = 2
-    if prova == 0:
-        x = np.vstack(np.arange(-10,11,1))
-        degree = 2
-        noising_factor = 0.1
-        y = [xi**degree for xi in x]
-        y = [ yi + noising_factor * (np.random.rand()*yi) for yi in y]
-        y = np.array(y)
-        svr = SVR('poly', {'degree':2})
-    elif prova == 1:
-        x = np.vstack(np.arange(1,11,1))
-        y = np.array([[45000],[50000],[60000],[80000],[110000],[150000],[200000],[300000],[500000],[1000000]], dtype=np.float64)
-        svr = SVR("rbf", {"gamma": 10})
-    elif prova == 2:
-        x = np.vstack(np.arange(-50,51,1))
-        degree = 2
-        noising_factor = 0.1
-        y = [xi**degree for xi in x]
-        y = [ yi + noising_factor * (np.random.rand()*yi) for yi in y]
-        y = np.array(y)
-        svr = SVR('poly', {'degree':2, 'gamma':'auto'})
-
-    svr.fit(x,y, {'eps':1e-2, 'maxiter':3e3}, scaled=False)
-    svr.plot_loss()
-    all_to_predict = [12,15,18]
-    for to_predict in all_to_predict:
-        pred = svr.predict(to_predict)
-        print(f'PREDICTION (INPUT = {to_predict})', pred)
-    print(f"b: {svr.intercept}")
-    print(f"Gamma: {svr.gamma_value} - Box: {svr.box}")
-    pred = [float(svr.predict(np.array([x[i]]))) for i in range(x.size)]
-    print("LOSS:", svr.eps_ins_loss(pred))
-    plt.scatter(x, y , color="red")
-    plt.plot(x, pred, color="blue")
-    plt.title('SVR')
-    plt.xlabel('Input')
-    plt.ylabel('Output')
-    plt.show()
-    print(svr)

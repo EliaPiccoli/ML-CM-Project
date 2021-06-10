@@ -7,19 +7,6 @@ import time
 from SVR import SVR
 import kernel as k
 
-# Parametri SVR:
-# - kernel
-#   - gamma
-#   - degree
-#   - coef
-# - box
-# - eps
-# Parametri Deflected:
-# - iteration (?)
-# - eps
-# - alpha
-# - psi
-
 class Gridsearch():
     def __init__(self):
         self.kernel = ['rbf']
@@ -42,7 +29,7 @@ class Gridsearch():
 
     def run(self, train_x, train_output, test_x, test_output):
         # declare all SVR
-        print("(GS - SVR) Creating models")        
+        print("(GS - SVR) - Creating models")        
         models_conf = []
         kernel_conf = []
         precomp_kernels = {}
@@ -54,49 +41,38 @@ class Gridsearch():
                         kernel_conf.append(i) # to get correct kernel afterwards
 
             # precompute kernels
-            # BUG not working on scaled models!
             temp_model = SVR(kernel,self.k_params[i])
             temp_model.x, temp_model.xs = train_x, train_x
             precomp_kernel, precomp_gamma_value = k.get_kernel(temp_model)
             precomp_kernels[i] = (precomp_kernel, precomp_gamma_value)
         
-
-        # fit
-        print(f"Fitting {len(models_conf)} models")
+        print(f"(GS - SVR) - Fitting {len(models_conf)} models")
         start_fit = time.time()
-        for i, model in enumerate(models_conf): # parallelizable
-            print(f"(GS - SVR) model {i+1}/{len(models_conf)}", sep=" ")
-            model.fit(train_x, train_output, self.opti_args[i%len(self.opti_args)], verbose_optim=False, precomp_kernel = precomp_kernels[kernel_conf[i]])
-            print(f"\tTime taken: {time.time() - start_fit} - Remaining: {(time.time() - start_fit) / (i+1) * (len(models_conf)-i-1)}")
-        # test
-        print("Testing models")
+        for i, model in enumerate(models_conf):
+            print(f"(GS - SVR) - model {i+1}/{len(models_conf)}", sep=" ")
+            model.fit(train_x, train_output, self.opti_args[i%len(self.opti_args)], verbose_optim=False, precomp_kernel=precomp_kernels[kernel_conf[i]])
+            print(f"\t(GS - SVR) - Time taken: {time.time() - start_fit} - Remaining: {(time.time() - start_fit) / (i+1) * (len(models_conf)-i-1)}")
+        
+        print("(GS - SVR) - Testing models")
         models_pred = []
-        for i, model in enumerate(models_conf): # parallelizable
+        for i, model in enumerate(models_conf):
             tmp_pred = []
             for test in test_x:
                 prediction = model.predict(test)
-                # print('Test',test)
-                # print('Prediction', prediction)
                 tmp_pred.append(prediction)
-            # print("TESTING",tmp_pred)
             models_pred.append(tmp_pred)
-        # print('wtf',len(models_pred), 'wtf2', len(models_pred[0]), 'wtf3', len(models_pred[0][0]), 'wtf4', len(test_x))
-        
-        # compare: HOW (?)
 
         models_rmse = []
         for i, pred in enumerate(models_pred):
             error = 0
-            # print('PRED', pred)
             for j, test_pred in enumerate(pred):
                 print(test_output[j], test_pred)
                 error += math.sqrt((test_output[j] - test_pred)**2)
             models_rmse.append(error/len(test_output))
 
         for i, error in enumerate(models_rmse):
-            print(f"SVR: {i} - RMSE {error} - PRED: {models_pred[i]} - MODEL: {models_conf[i]}")
+            print(f"(GS - SVR) - SVR: {i} - RMSE {error} - PRED: {models_pred[i]} - MODEL: {models_conf[i]}")
 
-        # TODO: ml cup has 2 ouputs -> 2 SVR, avg the error over the single episodes or the total (?)
         return models_conf[np.argmin(models_rmse)]
 
     def get_model_perturbations(self, model, n_perturbations, n_optimargs):
@@ -136,55 +112,5 @@ class Gridsearch():
             if 'maxiter' in model.optim_args:
                 temp_optiargs['maxiter'] = model.optim_args['maxiter']
             optiargs.append(temp_optiargs)
+
         return kernel, kparam, optiargs
-
-if __name__ == "__main__":
-    x = np.vstack(np.arange(-50,51,1))
-    degree = 2
-    noising_factor = 0.1
-    y = [xi**degree for xi in x]
-    # y = np.sin(x)
-    # y = [ yi + noising_factor * (np.random.rand()*yi) for yi in y]
-    y = np.array(y, dtype=np.float64)
-
-    test_x = [12, 15, 18]
-    test_y = [144, 225, 324]
-    # test_y = [0.2079, 0.2588, 0.3090]
-
-    gs = Gridsearch()
-    gs.set_parameters(
-        kernel=["linear", "rbf", "poly", "poly", "poly"],
-        kparam=[{}, {"gamma":"scale"}, {"degree":2, "gamma":0.6}, {"degree":2, "gamma":"scale"}, {"degree":2, "gamma":"auto"}],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':1e-3, 'maxiter':3e3}]
-    )
-    best_coarse_model = gs.run(
-        x, y, test_x, test_y
-    )
-    print("BEST COARSE GRID SEARCH MODEL:",best_coarse_model)
-
-    kernel, kparam, optiargs = gs.get_model_perturbations(best_coarse_model, 4, 4)
-    print(kernel, kparam, optiargs)
-    gs.set_parameters(
-        kernel=kernel,
-        kparam=kparam,
-        optiargs=optiargs
-    )
-    best_fine_model = gs.run(
-        x, y, test_x, test_y
-    )
-    print("BEST FINE GRID SEARCH MODEL:",best_fine_model)
-
-    svr = best_fine_model
-    to_predict = 12
-    pred = svr.predict(to_predict)
-    print(f"b: {svr.intercept}")
-    print(f"Gamma: {svr.gamma_value} - Box: {svr.box}")
-    print(f'PREDICTION (INPUT = {to_predict})', pred)
-    pred = [float(svr.predict(np.array([x[i]]))) for i in range(x.size)]
-    print("LOSS:", svr.eps_ins_loss(pred))
-    plt.scatter(x, y , color="red")
-    plt.plot(x, pred, color="blue")
-    plt.title('SVR')
-    plt.xlabel('Input')
-    plt.ylabel('Output')
-    plt.show()
