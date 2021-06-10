@@ -3,11 +3,12 @@ import utils.get_dataset as dt
 from utils.model import Model
 from utils.layer import Layer
 from utils.plot import Plot
+import random
 
-MONK_MODEL = 4
+MONK_MODEL = 1
 
 if MONK_MODEL == 1:
-    seed = 1234
+    seed = 10
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_MODEL, split=0.25, seed=seed)
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
@@ -49,7 +50,7 @@ elif MONK_MODEL == 2:
     # testing the model
     print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)))
 elif MONK_MODEL == 3: # no-reg
-    seed = 1234
+    seed = 1
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_MODEL, split=0.25, seed=seed)
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
@@ -63,7 +64,7 @@ elif MONK_MODEL == 3: # no-reg
     model = Model()
     model._add_layer(Layer(4, "relu", _input=(17,)))
     model._add_layer(Layer(1, "sigmoid"))
-    model._compile(eta=0.05, loss_function="mse", alpha=0.99, stopping_eta=1, _lambda=0, weight_range=(-0.5, 0.5), seed=seed)
+    model._compile(eta=0.02, loss_function="mse", alpha=0.99, stopping_eta=1, _lambda=0, weight_range=(-0.5, 0.5), seed=seed)
     epoch = 500
     stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, decay=5e-6, batch_size=len(ohe_inp), epoch=epoch, verbose=True)
 
@@ -71,7 +72,7 @@ elif MONK_MODEL == 3: # no-reg
     print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)))
 elif MONK_MODEL == 4: # reg
     MONK_MODEL = 3
-    seed = 1234
+    seed = 1
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_MODEL, split=0.25, seed=seed)
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
@@ -85,7 +86,7 @@ elif MONK_MODEL == 4: # reg
     model = Model()
     model._add_layer(Layer(4, "relu", _input=(17,)))
     model._add_layer(Layer(1, "sigmoid"))
-    model._compile(eta=0.05, loss_function="mse", alpha=0.99, stopping_eta=0.2, _lambda=3.5e-3, weight_range=(-0.5, 0.5), seed=seed)
+    model._compile(eta=0.02, loss_function="mse", alpha=0.99, stopping_eta=1, _lambda=3.5e-3, weight_range=(-0.5, 0.5), seed=seed)
     epoch = 500
     stats = model._train(ohe_inp, train_exp, ohe_val, validation_exp, decay=1e-5, batch_size=len(ohe_inp), epoch=epoch, verbose=True)
 
