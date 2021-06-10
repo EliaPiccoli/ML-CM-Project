@@ -8,7 +8,6 @@ class Model:
 
     def __init__(self):
         self.layers = []
-        self.decay_type = "exp"
 
     def _add_layer(self, layer):
         self.layers.append(layer)
@@ -41,12 +40,7 @@ class Model:
     
     def _apply_decay(self, epoch_decay):
         # various other learning rate schedulers could be implemented
-        if self.decay_type == "exp":
-            self.eta = max(self.stopping_eta, self.eta/(1 + epoch_decay))
-        elif self.decay_type == "lin":
-            pass
-        elif self.decay_type == "step":
-            pass
+        self.eta = max(self.stopping_eta, self.eta/(1 + epoch_decay))
 
     def _init_epoch(self, epoch_decay, inp, exp):
         self.eval_metric = 0
