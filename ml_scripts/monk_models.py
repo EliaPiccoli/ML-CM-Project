@@ -8,11 +8,7 @@ import random
 MONK_MODEL = 1
 
 if MONK_MODEL == 1:
-<<<<<<< HEAD
     seed = 10
-=======
-    seed = 10
->>>>>>> d938def0979aa1021573c90d91f443679dda1d63
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_MODEL, split=0.25, seed=seed)
     ohe_inp = [dt._get_one_hot_encoding(i) for i in train]
     ohe_val = [dt._get_one_hot_encoding(i) for i in validation]
@@ -96,7 +92,6 @@ elif MONK_MODEL == 4: # reg
 
     # testing the model
     print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)))
-<<<<<<< HEAD
 elif MONK_MODEL == 5: # decay-test
     MONK_MODEL = 2
     seed = 100
@@ -120,6 +115,3 @@ elif MONK_MODEL == 5: # decay-test
     # testing the model
     print("Test Accuracy: {:.6f}".format(model._infer(ohe_test, test_exp)))
 Plot._plot_train_stats([stats], epochs=[epoch])
-=======
-Plot._plot_train_stats([stats], epochs=[epoch])
->>>>>>> d938def0979aa1021573c90d91f443679dda1d63
