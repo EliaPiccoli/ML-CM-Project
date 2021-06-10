@@ -9,7 +9,7 @@ MONK_MODEL = 1
 
 if MONK_MODEL == 1:
 <<<<<<< HEAD
-    seed = 10    # 1234, 10, 12345 #10 e 0.05
+    seed = 10
 =======
     seed = 10
 >>>>>>> d938def0979aa1021573c90d91f443679dda1d63
