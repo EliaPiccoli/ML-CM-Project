@@ -99,15 +99,10 @@ def search_linear(x, y, val_x, val_y):
 
 def search_rbf(x, y, val_x, val_y):
     gs = Gridsearch()
-    # gs.set_parameters(
-    #     kernel=["rbf", "rbf", "rbf", "rbf", "rbf", "rbf"],
-    #     kparam=[{'gamma':'scale'}, {"gamma":'auto'},{"gamma":0.1},{"gamma":1},{"gamma":2},{"gamma":5}],
-    #     optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
-    # )
     gs.set_parameters(
-        kernel=["rbf"],
-        kparam=[{"gamma":0.1}],
-        optiargs=[{'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}]
+        kernel=["rbf", "rbf", "rbf", "rbf", "rbf", "rbf"],
+        kparam=[{'gamma':'scale'}, {"gamma":'auto'},{"gamma":0.1},{"gamma":1},{"gamma":2},{"gamma":5}],
+        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
