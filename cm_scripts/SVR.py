@@ -119,8 +119,8 @@ class SVR:
         prediction = np.dot(self.betasv.T, K) + self.intercept
         return prediction if not self.scaled else self.y_scaler.inverse_transform(prediction)
 
-    def eps_ins_loss(self, y_pred):
+    def eps_ins_loss(self, y, y_pred):
         loss = 0
-        for i in range(len(self.y)):
-            loss += (abs(self.y[i]-y_pred[i]) - self.eps)**2 if abs(self.y[i]-y_pred[i]) > self.eps else 0
+        for i in range(len(y)):
+            loss += (abs(y[i]-y_pred[i]) - self.eps)**2 if abs(y[i]-y_pred[i]) > self.eps else 0
         return loss

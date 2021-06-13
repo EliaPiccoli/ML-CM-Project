@@ -5,8 +5,9 @@ from svr_grid_search import Gridsearch
 import time
 import matplotlib.pyplot as plt
 import sys
+import math
 
-def search(x, y, test_x, test_y):
+def search(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
         kernel=["linear", "rbf", "rbf", "poly", "poly", "sigmoid", "sigmoid", "sigmoid"],
@@ -16,7 +17,7 @@ def search(x, y, test_x, test_y):
         optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
     )
     best_coarse_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
@@ -29,17 +30,22 @@ def search(x, y, test_x, test_y):
         optiargs=optiargs
     )
     best_fine_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
     print("BEST FINE GRID SEARCH MODEL:", best_fine_model)
 
     svr = best_fine_model
     pred = [float(svr.predict(x[i])) for i in range(x.shape[0])]
-    print("LOSS:", svr.eps_ins_loss(pred))
+    print("T LOSS:", svr.eps_ins_loss(y, pred))
+
+    pred = [float(svr.predict(val_x[i])) for i in range(val_x.shape[0])]
+    print("V LOSS:", svr.eps_ins_loss(val_y, pred))
+
+    return svr
 
 # ----------------------------------------------------------------- #
 
-def search_linear(x, y, test_x, test_y):
+def search_linear(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
         kernel=["linear"],
@@ -49,7 +55,7 @@ def search_linear(x, y, test_x, test_y):
         optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}, {'eps':1e-4, 'maxiter':3e3}]
     )
     best_coarse_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
@@ -62,33 +68,49 @@ def search_linear(x, y, test_x, test_y):
         optiargs=optiargs
     )
     best_fine_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
     print("BEST FINE GRID SEARCH MODEL:", best_fine_model)
 
     svr = best_fine_model
     pred = [float(svr.predict(x[i])) for i in range(x.shape[0])]
-    print("LOSS:", svr.eps_ins_loss(pred))
+    print("T LOSS:", svr.eps_ins_loss(y, pred))
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red")
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue")
-    fig.suptitle('Linear')
-
+    fig.suptitle('TLinear')
     plt.show()
+
+    pred = [float(svr.predict(val_x[i])) for i in range(val_x.shape[0])]
+    print("V LOSS:", svr.eps_ins_loss(val_y, pred))
+
+    fig,axs = plt.subplots(2,5)
+    for i in range(val_x.shape[1]):
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red")
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue")
+    fig.suptitle('VLinear')
+    plt.show()
+    
+    return svr
 
 # ----------------------------------------------------------------- #
 
-def search_rbf(x, y, test_x, test_y):
+def search_rbf(x, y, val_x, val_y):
     gs = Gridsearch()
+    # gs.set_parameters(
+    #     kernel=["rbf", "rbf", "rbf", "rbf", "rbf", "rbf"],
+    #     kparam=[{'gamma':'scale'}, {"gamma":'auto'},{"gamma":0.1},{"gamma":1},{"gamma":2},{"gamma":5}],
+    #     optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
+    # )
     gs.set_parameters(
-        kernel=["rbf", "rbf", "rbf", "rbf", "rbf"],
-        kparam=[{"gamma":'auto'},{"gamma":1},{"gamma":2},{"gamma":5},{"gamma":10}],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
+        kernel=["rbf"],
+        kparam=[{"gamma":0.1}],
+        optiargs=[{'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}]
     )
     best_coarse_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
@@ -101,25 +123,36 @@ def search_rbf(x, y, test_x, test_y):
         optiargs=optiargs
     )
     best_fine_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
     print("BEST FINE GRID SEARCH MODEL:", best_fine_model)
 
     svr = best_fine_model
     pred = [float(svr.predict(x[i])) for i in range(x.shape[0])]
-    print("LOSS:", svr.eps_ins_loss(pred))
+    print("T LOSS:", svr.eps_ins_loss(y, pred))
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red")
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue")
-    fig.suptitle('RBF')
-
+    fig.suptitle('TRBF')
     plt.show()
+
+    pred = [float(svr.predict(val_x[i])) for i in range(val_x.shape[0])]
+    print("V LOSS:", svr.eps_ins_loss(val_y, pred))
+
+    fig,axs = plt.subplots(2,5)
+    for i in range(val_x.shape[1]):
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red")
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue")
+    fig.suptitle('VRBF')
+    plt.show()
+    
+    return svr
 
 # --------------------------------------------------------------------------------------- #
     
-def search_sigmoid(x, y, test_x, test_y):
+def search_sigmoid(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
         kernel=["sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid"],
@@ -127,7 +160,7 @@ def search_sigmoid(x, y, test_x, test_y):
         optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
     )
     best_coarse_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
@@ -140,24 +173,36 @@ def search_sigmoid(x, y, test_x, test_y):
         optiargs=optiargs
     )
     best_fine_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
     print("BEST FINE GRID SEARCH MODEL:", best_fine_model)
 
     svr = best_fine_model
     pred = [float(svr.predict(x[i])) for i in range(x.shape[0])]
-    print("LOSS:", svr.eps_ins_loss(pred))
+    print("T LOSS:", svr.eps_ins_loss(y, pred))
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red")
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue")
-    fig.suptitle('Sigmoid')
-
+    fig.suptitle('TSigmoid')
     plt.show()
+
+    pred = [float(svr.predict(val_x[i])) for i in range(val_x.shape[0])]
+    print("V LOSS:", svr.eps_ins_loss(val_y, pred))
+
+    fig,axs = plt.subplots(2,5)
+    for i in range(val_x.shape[1]):
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red")
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue")
+    fig.suptitle('VSigmoid')
+    plt.show()
+    
+    return svr
+
 # -------------------------------------------------------------------------------------------- #
 
-def search_poly(x, y, test_x, test_y):
+def search_poly(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
         kernel=["poly", "poly", "poly", "poly", "poly"],
@@ -165,7 +210,7 @@ def search_poly(x, y, test_x, test_y):
         optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
     )
     best_coarse_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
 
     print("BEST COARSE GRID SEARCH MODEL:",best_coarse_model)
@@ -178,25 +223,36 @@ def search_poly(x, y, test_x, test_y):
         optiargs=optiargs
     )
     best_fine_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
     print("BEST FINE GRID SEARCH MODEL:",best_fine_model)
 
     svr = best_fine_model
     pred = [float(svr.predict(x[i])) for i in range(x.shape[0])]
-    print("LOSS:", svr.eps_ins_loss(pred))
+    print("T LOSS:", svr.eps_ins_loss(y, pred))
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red")
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue")
-    fig.suptitle('Poly1')
-
+    fig.suptitle('TPoly1')
     plt.show()
+
+    pred = [float(svr.predict(val_x[i])) for i in range(val_x.shape[0])]
+    print("V LOSS:", svr.eps_ins_loss(val_y, pred))
+
+    fig,axs = plt.subplots(2,5)
+    for i in range(val_x.shape[1]):
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red")
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue")
+    fig.suptitle('VPoly1')
+    plt.show()
+    
+    return svr
 
 # -------------------------------------------------------------------------------------------- #
 
-def search_polydeg3(x, y, test_x, test_y):
+def search_polydeg3(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
         kernel=["poly", "poly", "poly", "poly", "poly"],
@@ -204,7 +260,7 @@ def search_polydeg3(x, y, test_x, test_y):
         optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
     )
     best_coarse_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
@@ -217,59 +273,93 @@ def search_polydeg3(x, y, test_x, test_y):
         optiargs=optiargs
     )
     best_fine_model = gs.run(
-        x, y, test_x, test_y
+        x, y, val_x, val_y
     )
     print("BEST FINE GRID SEARCH MODEL:", best_fine_model)
 
     svr = best_fine_model
     pred = [float(svr.predict(x[i])) for i in range(x.shape[0])]
-    print("LOSS:", svr.eps_ins_loss(pred))
+    print("T LOSS:", svr.eps_ins_loss(y, pred))
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red")
         axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue")
-    fig.suptitle('Poly2')
-
+    fig.suptitle('TPolyD3')
     plt.show()
+
+    pred = [float(svr.predict(val_x[i])) for i in range(val_x.shape[0])]
+    print("V LOSS:", svr.eps_ins_loss(val_y, pred))
+
+    fig,axs = plt.subplots(2,5)
+    for i in range(val_x.shape[1]):
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red")
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue")
+    fig.suptitle('VPolyD3')
+    plt.show()
+    
+    return svr
 
 # MAIN
 start = time.time()
-first_dim = False
-train, train_labels = dt._get_cup('train')
+first_dim = True
+data, data_out = dt._get_cup('train')
+test_split = 0.2
+val_split = 0.2
 
-test, test_labels = train[:len(train)//10], train_labels[:len(train_labels)//10]
-test_labels1, test_labels2 = test_labels[:,0], test_labels[:,1]
-train, train_labels = train[len(train)//10:], train_labels[len(train_labels)//10:]
-train_labels1, train_labels2 = train_labels[:,0], train_labels[:,1]
+test_len = int(len(data)*test_split)
+test, test_out = data[:test_len, :], data_out[:test_len, :]
+test_out1, test_out2 = test_out[:, 0], test_out[:, 1]
+dev_set, dev_out = data[test_len:, :], data_out[test_len:, :]
 
+val_len = int(len(dev_set)*val_split)
+val, val_out = dev_set[:val_len, :], dev_out[:val_len, :]
+val_out1, val_out2 = val_out[:, 0], val_out[:, 1] 
+train, train_out = dev_set[val_len:, :], dev_out[val_len:, :]
+train_out1, train_out2 = train_out[:, 0], train_out[:, 1]
+
+# Training & Model selection
 if first_dim: 
     print("GridSearching first y dim..")
     if sys.argv[1] == 'linear':
         print("Linear gridsearch..")
-        search_linear(train, train_labels1, test, test_labels1)
+        model = search_linear(train, train_out1, val, val_out1)
     elif sys.argv[1] == 'rbf':
         print("RBF gridsearch..")
-        search_rbf(train, train_labels1, test, test_labels1)
+        model = search_rbf(train, train_out1, val, val_out1)
     elif sys.argv[1] == 'poly':
         print("Poly gridsearch..")
-        search_polydeg3(train, train_labels1, test, test_labels1)
+        model = search_polydeg3(train, train_out1, val, val_out1)
     elif sys.argv[1] == 'sigmoid':
         print("Sigmoid gridsearch..")
-        search_sigmoid(train, train_labels1, test, test_labels1)
+        model = search_sigmoid(train, train_out1, val, val_out1)
 else:
     print("GridSearching second y dim..")
     if sys.argv[1] == 'linear':
         print("Linear gridsearch..")
-        search_linear(train, train_labels2, test, test_labels2)
+        model = search_linear(train, train_out2, val, val_out2)
     elif sys.argv[1] == 'rbf':
         print("RBF gridsearch..")
-        search_rbf(train, train_labels2, test, test_labels2)
+        model = search_rbf(train, train_out2, val, val_out2)
     elif sys.argv[1] == 'poly':
         print("Poly gridsearch..")
-        search_poly(train, train_labels2, test, test_labels2)
+        model = search_poly(train, train_out2, val, val_out2)
     elif sys.argv[1] == 'sigmoid':
         print("Sigmoid gridsearch..")
-        search_sigmoid(train, train_labels2, test, test_labels2)
+        model = search_sigmoid(train, train_out2, val, val_out2)
 
 print("Time taken:", time.time()-start)
+
+# Testing the model
+model_pred = []
+error = 0
+for inp in test:
+    prediction = model.predict(inp)
+    model_pred.append(prediction)
+for j, val_pred in enumerate(model_pred):
+    gt = test_out1[j] if first_dim else test_out2[j]
+    error += math.sqrt((gt - float(val_pred))**2)
+    # print(gt, val_pred)
+error = error/len(model_pred)
+pred = [float(model.predict(test[i])) for i in range(test.shape[0])]
+print("LOSS:", model.eps_ins_loss(test_out1 if first_dim else test_out2, pred), " - MEE", error)
