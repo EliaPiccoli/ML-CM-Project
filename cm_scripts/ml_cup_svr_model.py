@@ -78,8 +78,8 @@ def search_linear(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='*')
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='P')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='x')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='.')
     fig.suptitle('TLinear')
     plt.show()
 
@@ -88,8 +88,8 @@ def search_linear(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(val_x.shape[1]):
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='*')
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='P')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='x')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='.')
     fig.suptitle('VLinear')
     plt.show()
     
@@ -133,8 +133,8 @@ def search_rbf(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='*')
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='P')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='x')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='.')
     fig.suptitle('TRBF')
     plt.show()
 
@@ -143,8 +143,8 @@ def search_rbf(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(val_x.shape[1]):
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='*')
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='P')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='x')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='.')
     fig.suptitle('VRBF')
     plt.show()
     
@@ -183,8 +183,8 @@ def search_sigmoid(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='*')
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='P')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='x')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='.')
     fig.suptitle('TSigmoid')
     plt.show()
 
@@ -193,8 +193,8 @@ def search_sigmoid(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(val_x.shape[1]):
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='*')
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='P')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='x')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='.')
     fig.suptitle('VSigmoid')
     plt.show()
     
@@ -233,8 +233,8 @@ def search_poly(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='*')
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='P')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='x')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='.')
     fig.suptitle('TPoly1')
     plt.show()
 
@@ -243,8 +243,8 @@ def search_poly(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(val_x.shape[1]):
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='*')
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='P')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='x')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='.')
     fig.suptitle('VPoly1')
     plt.show()
     
@@ -283,8 +283,8 @@ def search_polydeg3(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(x.shape[1]):
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='*')
-        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='P')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],y,color="red",marker='x')
+        axs[i//(x.shape[1]//2)][i%(x.shape[1]//2)].scatter(x[:,i],pred,color="blue",marker='.')
     fig.suptitle('TPolyD3')
     plt.show()
 
@@ -293,8 +293,8 @@ def search_polydeg3(x, y, val_x, val_y):
 
     fig,axs = plt.subplots(2,5)
     for i in range(val_x.shape[1]):
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='*')
-        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='P')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],val_y,color="red",marker='x')
+        axs[i//(val_x.shape[1]//2)][i%(val_x.shape[1]//2)].scatter(val_x[:,i],pred,color="blue",marker='.')
     fig.suptitle('VPolyD3')
     plt.show()
     
