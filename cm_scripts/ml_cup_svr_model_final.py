@@ -49,6 +49,7 @@ plot_svr_predict(cup_model_1, dev_set, dev_out1, pred_1, text='1st output dim - 
 plot_svr_predict(cup_model_2, dev_set, dev_out2, pred_2, text='2nd output dim - Dev')
 
 # Test the final model
+print("Testing the model")
 testpred_1 = [float(cup_model_1.predict(test[i])) for i in range(test.shape[0])]
 testpred_2 = [float(cup_model_2.predict(test[i])) for i in range(test.shape[0])]
 print("SUM OF eps-LOSS:", cup_model_1.eps_ins_loss(test_out1, testpred_1) + cup_model_2.eps_ins_loss(test_out2, testpred_2))
@@ -57,8 +58,8 @@ fmee = 0
 smee = 0
 for i in range(len(testpred_1)):
     mee += math.sqrt((test_out1[i] - testpred_1[i])**2 + (test_out2[i] - testpred_2[i])**2)
-    fmee += math.sqrt((dev_out1[i] - pred_1[i])**2)
-    smee += math.sqrt((dev_out2[i] - pred_2[i])**2)
+    fmee += math.sqrt((test_out1[i] - pred_1[i])**2)
+    smee += math.sqrt((test_out2[i] - pred_2[i])**2)
 mee = mee/len(testpred_1)
 fmee = fmee/len(pred_1)
 smee = smee/len(pred_1)
