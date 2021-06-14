@@ -5,7 +5,7 @@ from utils.layer import Layer
 from utils.plot import Plot
 import random
 
-MONK_MODEL = 4
+MONK_MODEL = 1
 
 if MONK_MODEL == 1:
     seed = 10
@@ -28,7 +28,7 @@ if MONK_MODEL == 1:
 
     # testing the model
     test_res = model._infer(ohe_test, test_exp)
-    print("Test Accuracy: {:.6f}, Test Loss: {:6f}".format(test_res[0], test_res[1]))
+    print("Test Accuracy: {:.6f}".format(test_res))
 elif MONK_MODEL == 2:
     seed = 123
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_MODEL, split=0.2, seed=seed)
@@ -50,7 +50,7 @@ elif MONK_MODEL == 2:
 
     # testing the model
     test_res = model._infer(ohe_test, test_exp)
-    print("Test Accuracy: {:.6f}, Test Loss: {:6f}".format(test_res[0], test_res[1]))
+    print("Test Accuracy: {:.6f}".format(test_res))
 elif MONK_MODEL == 3: # no-reg
     seed = 70
     train, validation, train_labels, validation_labels = dt._get_train_validation_data(MONK_MODEL, split=0.25, seed=seed)
@@ -72,7 +72,7 @@ elif MONK_MODEL == 3: # no-reg
 
     # testing the model
     test_res = model._infer(ohe_test, test_exp)
-    print("Test Accuracy: {:.6f}, Test Loss: {:6f}".format(test_res[0], test_res[1]))
+    print("Test Accuracy: {:.6f}".format(test_res))
 elif MONK_MODEL == 4: # reg
     MONK_MODEL = 3
     seed = 70
@@ -95,7 +95,7 @@ elif MONK_MODEL == 4: # reg
 
     # testing the model
     test_res = model._infer(ohe_test, test_exp)
-    print("Test Accuracy: {:.6f}, Test Loss: {:6f}".format(test_res[0], test_res[1]))
+    print("Test Accuracy: {:.6f}".format(test_res))
 elif MONK_MODEL == 5: # decay-test
     MONK_MODEL = 2
     seed = 100
@@ -118,5 +118,5 @@ elif MONK_MODEL == 5: # decay-test
 
     # testing the model
     test_res = model._infer(ohe_test, test_exp)
-    print("Test Accuracy: {:.6f}, Test Loss: {:6f}".format(test_res[0], test_res[1]))
+    print("Test Accuracy: {:.6f}".format(test_res))
 Plot._plot_train_stats([stats], epochs=[epoch])
