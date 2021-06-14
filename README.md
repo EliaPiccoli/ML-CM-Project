@@ -4,7 +4,7 @@ Project for the Machine Learning &amp; Computational Mathematics for Learning an
 
 # Machine Learning
 ### Project A+CM
-Implementation of various models for *classification* task on:
+Implementation of various models for *classification*,*regression* task on:
 - [Monk](http://archive.ics.uci.edu/ml/datasets/MONK%27s+Problems) 
 - ML CUP
 
