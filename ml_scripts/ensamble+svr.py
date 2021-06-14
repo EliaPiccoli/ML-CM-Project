@@ -13,13 +13,13 @@ def get_svr_model():
     train, train_labels = dt1._get_cup('train')
     train_labels1, train_labels2 = train_labels[:,0], train_labels[:,1]
 
-    cup_model_1 = SVR('poly',{'gamma':5.1127589863994345, 'degree': 3, 'coef': 0.4675119966970296},box=1, eps=0.1) # values found with grid search results
-    cup_model_2 = SVR('rbf',{'gamma':0.1},box=1, eps=0.1)                                                          # values found with grid search results
+    cup_model_1 = SVR('rbf',{'gamma':0.1}, box=1, eps=0.1) # values found with grid search results
+    cup_model_2 = SVR('rbf',{'gamma':0.1}, box=1, eps=0.1) # values found with grid search results
     beta_init = np.vstack(np.zeros(train.shape[0]))
     print("Fitting first dimension model..")
-    cup_model_1.fit(train, train_labels1,optim_args={'eps': 0.01, 'maxiter': 3000.0}, beta_init=beta_init, verbose_optim=False)
+    cup_model_1.fit(train, train_labels1, optim_args={'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}, beta_init=beta_init, verbose_optim=False)
     print("Fitting second dimension model..")
-    cup_model_2.fit(train, train_labels2,optim_args={'vareps': 0.1, 'maxiter': 3000.0}, beta_init=beta_init, verbose_optim=False)
+    cup_model_2.fit(train, train_labels2, optim_args={'eps': 0.06803885259228548, 'vareps': 0.1, 'maxiter': 3000.0}, beta_init=beta_init, verbose_optim=False)
     return [cup_model_1, cup_model_2]
 
 def ensemblewithSVR_inference(svr_model, plot=False):
@@ -52,7 +52,7 @@ def ensemblewithSVR_inference(svr_model, plot=False):
         out.append(0.5*ens_out+0.5*svr_out)
 
     # save results
-    with open("ff15_ML-CUP-TS.csv", "w") as f:
+    with open("ff15_ML-CUP20-TS.csv", "w") as f:
         f.write("# Elia Piccoli, Nicola Gugole\n")
         f.write("# ff15\n")
         f.write("# ML-CUP20 v1\n")

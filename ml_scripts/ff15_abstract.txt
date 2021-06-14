@@ -1,0 +1,5 @@
+# ff15 Elia Piccoli, Nicola Gugole
+We propose as final model a combination of an ensemble of 5 Neural Network and a Multi-Output Regressor SVR.
+All constituent components are selected through a coarse to fine grid search using Hold Out validation.
+The entire data set is split as follows: 80/20% development and internal test sets, furthermore development set
+is once again split in 80/20% training and validation sets.
