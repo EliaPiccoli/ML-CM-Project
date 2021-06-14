@@ -76,12 +76,5 @@ def solveKP(box, linear_constraint, betas, verbose = False):
     if verbose:
         print("SOLUTION FOUND BY LINEAR INTERPOLATION")
     mu = lin_interp(mu_L, mu_U, betas, box, original_M)
+    
     return np.vstack(generate_betas(mu, betas, box, original_M))
-
-if __name__ == "__main__":
-    C = 3
-    box = C
-    linear_constraint = 0
-    betas = np.random.uniform(-1,1,1337)
-    betas = solveKP(box, linear_constraint, betas)
-    print(f"FINAL BETAS: {betas}\nFINAL SUM OF BETAS: {np.sum(betas)}")

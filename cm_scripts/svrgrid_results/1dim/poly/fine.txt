@@ -1,0 +1,60 @@
+(GS - SVR) - SVR: 0 - TR MEE 3.8492745831922903 - VL MEE 4.111303069233126 - MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.66187384]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 1 - TR MEE 3.7241286573680323 - VL MEE 4.239422586805161 - MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.75381687]\Optim_args: {'eps': 0.05320814127071219, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 2 - TR MEE 3.859715711996909 - VL MEE 4.090177088192907 - MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.63241566]\Optim_args: {'eps': 0.007239601340176783, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 3 - TR MEE 3.7738686913472272 - VL MEE 4.018001125626536 - MODEL:
+Kernel: poly
+Gamma: 4.828545720665277        Degree: 3       Coef: 0.024324219348814236
+Intercept: [47.54750112]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 4 - TR MEE 3.5201186070069745 - VL MEE 3.9621709952875737 - MODEL:
+Kernel: poly
+Gamma: 4.828545720665277        Degree: 3       Coef: 0.024324219348814236
+Intercept: [47.39848996]\Optim_args: {'eps': 0.05320814127071219, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 5 - TR MEE 3.810011976560693 - VL MEE 4.006778016651511 - MODEL:
+Kernel: poly
+Gamma: 4.828545720665277        Degree: 3       Coef: 0.024324219348814236
+Intercept: [47.54018225]\Optim_args: {'eps': 0.007239601340176783, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 6 - TR MEE 4.081342370081497 - VL MEE 4.327594739527213 - MODEL:
+Kernel: poly
+Gamma: 4.851975374252363        Degree: 3       Coef: -0.05392136353295274
+Intercept: [47.95251985]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 7 - TR MEE 8.022735747556279 - VL MEE 9.44502658960781 - MODEL:
+Kernel: poly
+Gamma: 4.851975374252363        Degree: 3       Coef: -0.05392136353295274
+Intercept: [51.92118672]\Optim_args: {'eps': 0.05320814127071219, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 8 - TR MEE 4.030930496633627 - VL MEE 4.2257588089591795 - MODEL:
+Kernel: poly
+Gamma: 4.851975374252363        Degree: 3       Coef: -0.05392136353295274
+Intercept: [47.83763799]\Optim_args: {'eps': 0.007239601340176783, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - Best configuration: 4
+BEST FINE GRID SEARCH MODEL:
+Kernel: poly
+Gamma: 4.828545720665277        Degree: 3       Coef: 0.024324219348814236
+Intercept: [47.39848996]\Optim_args: {'eps': 0.05320814127071219, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1

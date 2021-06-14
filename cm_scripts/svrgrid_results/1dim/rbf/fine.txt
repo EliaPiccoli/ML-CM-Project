@@ -1,0 +1,60 @@
+(GS - SVR) - SVR: 0 - TR MEE 12.792007605252124 - VL MEE 13.58562948459033 - MODEL:
+Kernel: rbf
+Gamma: 0.1
+Intercept: [48.09119145]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 1 - TR MEE 2.286103867221048 - VL MEE 2.6161104884939688 - MODEL:
+Kernel: rbf
+Gamma: 0.1
+Intercept: [49.17056059]\Optim_args: {'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 2 - TR MEE 2.3078661565148253 - VL MEE 2.640345251503482 - MODEL:
+Kernel: rbf
+Gamma: 0.1
+Intercept: [49.17908719]\Optim_args: {'eps': 0.08585087950822848, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 3 - TR MEE 12.788623220513761 - VL MEE 13.582196605501668 - MODEL:
+Kernel: rbf
+Gamma: 0.05181735250424252
+Intercept: [48.09140774]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 4 - TR MEE 2.5620601307164903 - VL MEE 2.9188063780108737 - MODEL:
+Kernel: rbf
+Gamma: 0.05181735250424252
+Intercept: [49.33593259]\Optim_args: {'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 5 - TR MEE 2.598720745249397 - VL MEE 2.9548626538107023 - MODEL:
+Kernel: rbf
+Gamma: 0.05181735250424252
+Intercept: [49.34160043]\Optim_args: {'eps': 0.08585087950822848, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 6 - TR MEE 12.798935629955388 - VL MEE 13.592750583957224 - MODEL:
+Kernel: rbf
+Gamma: 0.16093590780821612
+Intercept: [48.09056641]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 7 - TR MEE 2.330053394293646 - VL MEE 2.6319175844390834 - MODEL:
+Kernel: rbf
+Gamma: 0.16093590780821612
+Intercept: [49.03596813]\Optim_args: {'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 8 - TR MEE 2.3473415163405056 - VL MEE 2.6519062943586174 - MODEL:
+Kernel: rbf
+Gamma: 0.16093590780821612
+Intercept: [49.04736678]\Optim_args: {'eps': 0.08585087950822848, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - Best configuration: 1
+BEST FINE GRID SEARCH MODEL:
+Kernel: rbf
+Gamma: 0.1
+Intercept: [49.17056059]\Optim_args: {'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1

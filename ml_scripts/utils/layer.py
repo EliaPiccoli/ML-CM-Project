@@ -4,21 +4,6 @@ from .activation_function import AF
 class Layer:
 
     def __init__(self, nodes, activation_function_type, bias_range=(0, 0), weights_range=(-0.69,0.69), _input=None):
-        """
-        Contructor of Layer class
-
-        Parameters:
-        nodes (int) : number of nodes in the layer
-
-        activation_function_type (str) : type of activation function
-        
-        bias_range (tuple) : range of values for node bais (min, max)
-        
-        weights_range (tuple) : range of values for weights (min, max)
-        
-        _input (tuple) : number of input nodes
-        
-        """
         self.nodes = nodes
         self.activation_function_type = activation_function_type
         self.weights_range = weights_range
@@ -29,11 +14,13 @@ class Layer:
         self.bias_delta = None
         self.weight_delta = None
 
-    def _init_layer(self, inp=None, weigths=None, bias=None, w_range=None):
+    def _init_layer(self, inp=None, weigths=None, bias=None, w_range=None, seed=None):
         if inp is not None:
             self.input = inp
         if w_range is not None:
             self.weights_range = w_range
+        if seed is not None:
+            np.random.seed(seed)
         self.weights = np.random.uniform(self.weights_range[0], self.weights_range[1], (self.nodes, self.input[0])) if weigths is None else weigths
         self.bias = np.random.uniform(self.bias_range[0], self.bias_range[1], self.nodes) if bias is None else bias
         self.activation_function = AF[self.activation_function_type]
@@ -63,8 +50,7 @@ class Layer:
                 delta.append(np.dot(weights_next_layer_j, deltas_next_layer)*self.activation_function._gradient(self.net[i]))
                 for j in range(len(self.weights[i])):
                     weight_delta[i].append(output_prev_layer[j] * delta[-1])
-        # print(f"delta: {delta}\nweight_delta: {weight_delta}")
         return delta, weight_delta
 
     def __str__(self):
-        return f'Layer (input: {self.input[0]}, nodes: {self.nodes}, activation_function: {self.activation_function})'
+        return f'Layer (nodes: {self.nodes}, activation_function: {self.activation_function_type})'
