@@ -42,13 +42,14 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
     dprev = np.zeros((x.size,1))
     i = 0
     prevnormg = math.inf
-    history = []
+    history = {'x': [], 'f': []}
     while True:
         if i > maxiter:
             # stopped condition reached
             if return_history:
-                return x, 'stopped', np.array(history)
-            return xref, 'stopped'
+                history['fstar'] = fref
+                return x, 'stopped', history
+            return xref, 'stopped', None
         v = (0.5 * np.dot(np.dot(np.transpose(x), K), x) 
             + np.repeat(vareps,x.size).dot(np.abs(x)) 
             - np.transpose(y).dot(x))[0,0] # would return a matrix otherwise
@@ -59,8 +60,9 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
         if norm_g < 1e-10:
             # optimal condition reached
             if return_history:
-                return x, 'optimal', np.array(history)
-            return x, 'optimal'
+                history['fstar'] = fref
+                return x, 'optimal', history
+            return x, 'optimal', None
         # reset delta if v is good or decrease it otherwise
         if v <= fref - delta:
             delta = deltares * max(abs(v),1)
@@ -77,4 +79,5 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
         x = x - nu*dproj
         x = solveKP(box, 0, x, False)
         i += 1
-        history.append(x)
+        history['x'].append(x)
+        history['f'].append(v)

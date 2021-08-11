@@ -27,7 +27,7 @@ class Gridsearch():
         if "optiargs" in param:
             self.opti_args = param["optiargs"]
 
-    def run(self, train_x, train_output, val_x, val_output):
+    def run(self, train_x, train_output, val_x, val_output, convergence_verbose=False):
         # declare all SVR
         print("(GS - SVR) - Creating models")        
         models_conf = []
@@ -50,7 +50,7 @@ class Gridsearch():
         start_fit = time.time()
         for i, model in enumerate(models_conf):
             print(f"(GS - SVR) - model {i+1}/{len(models_conf)}", sep=" ")
-            model.fit(train_x, train_output, self.opti_args[i%len(self.opti_args)], verbose_optim=False, precomp_kernel=precomp_kernels[kernel_conf[i]])
+            model.fit(train_x, train_output, self.opti_args[i%len(self.opti_args)], verbose_optim=False, precomp_kernel=precomp_kernels[kernel_conf[i]], convergence_verbose=convergence_verbose)
             print(f"\t(GS - SVR) - Time taken: {time.time() - start_fit} - Remaining: {(time.time() - start_fit) / (i+1) * (len(models_conf)-i-1)}")
         
         print("(GS - SVR) - Evaluating models")
@@ -93,21 +93,25 @@ class Gridsearch():
         print("(GS - SVR) - Best configuration:", index)
         return models_conf[index]
 
-    def get_model_perturbations(self, model, n_perturbations, n_optimargs):
+    def get_model_perturbations(self, model, n_perturbations, n_optimargs, n_box_perturb=1):
         kernel = []
         kparam = []
         optiargs = []
+        eps=[]
+        box=[]
 
         # keep original model
         kernel.append(model.kernel)
         kparam.append({"gamma": model.gamma_value, "degree": model.degree, "coef": model.coef})
         optiargs.append(model.optim_args)
+        eps.append(model.eps)
+        box.append(model.box)
 
         # create perturbations of original
         gamma_perturbation = 0.2
         coef_perturbation = 1.0
         eps_perturbation = 10
-        vareps_perturbation = 0.1
+        box_perturbation = 10
         for i in range(n_perturbations-1):
             if model.kernel == 'rbf':
                 kernel.append('rbf')
@@ -125,10 +129,12 @@ class Gridsearch():
             temp_optiargs = {}
             if 'eps' in model.optim_args:
                 temp_optiargs['eps'] = np.random.uniform(model.optim_args['eps'] / eps_perturbation, model.optim_args['eps'] * eps_perturbation)
-            if 'vareps' in model.optim_args:
-                temp_optiargs['vareps'] = np.random.uniform(model.optim_args['vareps'] - vareps_perturbation, model.optim_args['vareps'] + vareps_perturbation)
             if 'maxiter' in model.optim_args:
                 temp_optiargs['maxiter'] = model.optim_args['maxiter']
+            temp_optiargs['vareps'] = model.eps
             optiargs.append(temp_optiargs)
 
-        return kernel, kparam, optiargs
+        for i in range(n_box_perturb-1):
+            box.append(model.box + np.random.uniform(-model.box/box_perturbation, model.box/box_perturbation))
+
+        return kernel, kparam, optiargs, eps, box

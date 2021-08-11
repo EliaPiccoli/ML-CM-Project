@@ -1,0 +1,885 @@
+(GS - SVR) - Evaluating models
+(GS - SVR) - SVR: 0 - TR MEE 12.502269503566847 - VL MEE 12.791277971112589 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.56220765]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 1 - TR MEE 12.662008000113639 - VL MEE 12.955265665629149 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.79551947]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 2 - TR MEE 13.163584325548877 - VL MEE 13.477390560232005 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.50877851]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 3 - TR MEE 12.502097297917707 - VL MEE 12.789581196705914 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.51993629]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 4 - TR MEE 12.659927430595713 - VL MEE 12.951455387186105 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.74991625]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 5 - TR MEE 13.157509999412955 - VL MEE 13.469263966774411 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.45896594]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 6 - TR MEE 12.499751632659427 - VL MEE 12.774532469416199 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.17262463]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 7 - TR MEE 12.643100051346847 - VL MEE 12.922282060546399 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.38125813]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 8 - TR MEE 13.110549852919618 - VL MEE 13.40764270462875 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.06515585]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 9 - TR MEE 12.502269503567613 - VL MEE 12.791277971113193 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.56220765]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 10 - TR MEE 12.662008000114128 - VL MEE 12.955265665629582 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.79551947]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 11 - TR MEE 13.163584325549786 - VL MEE 13.477390560232806 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.50877851]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 12 - TR MEE 12.50209729791748 - VL MEE 12.789581196705774 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.51993629]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 13 - TR MEE 12.659927430595319 - VL MEE 12.951455387185819 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.74991625]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 14 - TR MEE 13.157509999413731 - VL MEE 13.469263966775099 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.45896594]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 15 - TR MEE 12.499751632659779 - VL MEE 12.774532469416476 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.17262463]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 16 - TR MEE 12.643100051347881 - VL MEE 12.922282060547225 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.38125813]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 17 - TR MEE 13.110549852920002 - VL MEE 13.407642704629072 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.06515585]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 18 - TR MEE 12.502269503574134 - VL MEE 12.791277971118406 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.56220765]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 19 - TR MEE 12.662008000112634 - VL MEE 12.955265665628309 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.79551947]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 20 - TR MEE 13.163584325556958 - VL MEE 13.477390560239147 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.50877851]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 21 - TR MEE 12.502097297907493 - VL MEE 12.78958119669823 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.51993629]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 22 - TR MEE 12.65992743059064 - VL MEE 12.95145538718211 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.74991625]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 23 - TR MEE 13.157509999422043 - VL MEE 13.4692639667825 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.45896594]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 24 - TR MEE 12.499751632683376 - VL MEE 12.774532469434446 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.17262464]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 25 - TR MEE 12.643100051343671 - VL MEE 12.922282060543973 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [47.38125813]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 26 - TR MEE 13.110549852929863 - VL MEE 13.40764270463758 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 2       Coef: 0
+Intercept: [48.06515585]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 27 - TR MEE 4.354672174591571 - VL MEE 4.4822252165314875 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.09757217]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 28 - TR MEE 4.403103438749254 - VL MEE 4.524802676277374 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.10898104]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 29 - TR MEE 10.18371088434307 - VL MEE 10.473672621919563 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [48.16560092]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 30 - TR MEE 4.352912330739533 - VL MEE 4.48096014853292 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.04879072]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 31 - TR MEE 4.400819772907333 - VL MEE 4.523258969065558 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.06162007]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 32 - TR MEE 10.186940496841647 - VL MEE 10.474501765637537 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [48.12157065]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 33 - TR MEE 4.348674261280012 - VL MEE 4.478772373206496 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65768491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 34 - TR MEE 4.3955307129598316 - VL MEE 4.5196998589398385 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65775206]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 35 - TR MEE 10.214345623950525 - VL MEE 10.484664188431601 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.73923747]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 36 - TR MEE 4.354672174591095 - VL MEE 4.48222521653153 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.09757217]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 37 - TR MEE 4.4031034387492305 - VL MEE 4.524802676277372 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.10898104]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 38 - TR MEE 10.183710884330786 - VL MEE 10.473672621906822 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [48.16560092]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 39 - TR MEE 4.352912330738435 - VL MEE 4.480960148532978 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.04879072]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 40 - TR MEE 4.400819772907253 - VL MEE 4.523258969065564 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.06162007]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 41 - TR MEE 10.186940496841574 - VL MEE 10.474501765637457 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [48.12157065]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 42 - TR MEE 4.348674261279889 - VL MEE 4.478772373206591 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65768491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 43 - TR MEE 4.395530712959802 - VL MEE 4.519699858939851 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65775206]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 44 - TR MEE 10.214345623955785 - VL MEE 10.484664188436875 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.73923747]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 45 - TR MEE 4.354672174587513 - VL MEE 4.482225216531952 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.09757217]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 46 - TR MEE 4.4031034387482055 - VL MEE 4.524802676277382 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.10898104]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 47 - TR MEE 10.183710884453285 - VL MEE 10.473672622033616 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [48.16560092]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 48 - TR MEE 4.352912330741542 - VL MEE 4.480960148532911 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.04879072]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 49 - TR MEE 4.400819772905641 - VL MEE 4.523258969065562 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.06162007]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 50 - TR MEE 10.186940496932495 - VL MEE 10.474501765731702 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [48.12157065]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 51 - TR MEE 4.3486742612765115 - VL MEE 4.478772373210246 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65768491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 52 - TR MEE 4.3955307129604 - VL MEE 4.519699858939476 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65775206]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 53 - TR MEE 10.214345623955875 - VL MEE 10.484664188436964 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.73923747]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 54 - TR MEE 7.616039988410213 - VL MEE 7.866296637184969 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.87351371]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 55 - TR MEE 7.686884752432799 - VL MEE 7.940640890817723 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.86581651]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 56 - TR MEE 9.466850125173774 - VL MEE 9.568070792197366 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [45.03184632]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 57 - TR MEE 7.621002944528354 - VL MEE 7.864789661061573 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.82499822]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 58 - TR MEE 7.6916047153686815 - VL MEE 7.942343476463956 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.81766626]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 59 - TR MEE 9.471166088190937 - VL MEE 9.568294966093005 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.99363784]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 60 - TR MEE 7.663327703856143 - VL MEE 7.869635710192467 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.4384956]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 61 - TR MEE 7.738517263691333 - VL MEE 7.946952150318903 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.42873793]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 62 - TR MEE 9.507646842824737 - VL MEE 9.57230426542057 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.67829925]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 63 - TR MEE 7.616039988391244 - VL MEE 7.866296637196093 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.87351371]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 64 - TR MEE 7.686884752441747 - VL MEE 7.94064089081587 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.86581651]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 65 - TR MEE 9.466850125159452 - VL MEE 9.568070792189989 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [45.03184632]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 66 - TR MEE 7.6210029445366425 - VL MEE 7.864789661055452 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.82499822]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 67 - TR MEE 7.691604715366008 - VL MEE 7.942343476467166 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.81766626]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 68 - TR MEE 9.47116608820058 - VL MEE 9.5682949660977 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.99363784]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 69 - TR MEE 7.663327703857701 - VL MEE 7.869635710179725 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.4384956]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 70 - TR MEE 7.7385172636914765 - VL MEE 7.946952150317314 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.42873793]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 71 - TR MEE 9.507646842775411 - VL MEE 9.572304265410697 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.67829925]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 72 - TR MEE 7.616039988597053 - VL MEE 7.866296637074448 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.87351372]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 73 - TR MEE 7.68688475256975 - VL MEE 7.940640890787466 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.86581652]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 74 - TR MEE 9.466850125215226 - VL MEE 9.568070792220128 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [45.03184632]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 75 - TR MEE 7.6210029445726795 - VL MEE 7.8647896610266015 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.82499823]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 76 - TR MEE 7.691604715341012 - VL MEE 7.9423434764982455 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.81766626]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 77 - TR MEE 9.471166088354952 - VL MEE 9.568294966174827 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.99363784]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 78 - TR MEE 7.663327703831776 - VL MEE 7.869635710389869 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.43849559]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 79 - TR MEE 7.738517263743155 - VL MEE 7.946952149990866 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.42873795]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 80 - TR MEE 9.507646841962439 - VL MEE 9.572304265247759 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 4       Coef: 0
+Intercept: [44.67829924]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 81 - TR MEE 4.815177450324472 - VL MEE 5.244078995040148 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.83425491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 82 - TR MEE 4.8724600121501425 - VL MEE 5.229234169946005 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.84029783]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 83 - TR MEE 6.120905095442092 - VL MEE 5.981989710129931 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.94038828]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 84 - TR MEE 4.819008023912087 - VL MEE 5.2355077481436485 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.78638143]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 85 - TR MEE 4.879072769259751 - VL MEE 5.2291527115581715 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.79323193]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 86 - TR MEE 6.07993695286268 - VL MEE 5.955397723857285 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.89051503]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 87 - TR MEE 4.850211885117346 - VL MEE 5.199668344084355 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.39921173]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 88 - TR MEE 4.900583853193879 - VL MEE 5.16447350276734 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.40415661]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 89 - TR MEE 5.897214252020325 - VL MEE 5.753783510150379 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.51160074]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 90 - TR MEE 4.815177450318227 - VL MEE 5.244078995061916 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.83425491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 91 - TR MEE 4.8724600121508095 - VL MEE 5.229234169938125 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.84029783]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 92 - TR MEE 6.120905095874471 - VL MEE 5.981989710431587 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.94038828]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 93 - TR MEE 4.819008023914246 - VL MEE 5.235507748187598 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.78638143]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 94 - TR MEE 4.879072769222512 - VL MEE 5.22915271136092 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.79323193]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 95 - TR MEE 6.079936952359544 - VL MEE 5.955397723559789 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.89051503]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 96 - TR MEE 4.850211885120541 - VL MEE 5.199668343978795 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.39921173]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 97 - TR MEE 4.900583853170461 - VL MEE 5.164473503106042 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.40415661]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 98 - TR MEE 5.897214252154749 - VL MEE 5.753783510223563 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.51160074]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 99 - TR MEE 4.81517745026216 - VL MEE 5.244078995239927 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.83425491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 100 - TR MEE 4.872460012093147 - VL MEE 5.229234170253744 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.84029783]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 101 - TR MEE 6.120905101010745 - VL MEE 5.98198971400363 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.9403883]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 102 - TR MEE 4.819008023625204 - VL MEE 5.235507749980876 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.78638142]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 103 - TR MEE 4.879072769040581 - VL MEE 5.229152710833547 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.79323193]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 104 - TR MEE 6.07993695449664 - VL MEE 5.9553977248276135 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.89051504]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 105 - TR MEE 4.850211885027251 - VL MEE 5.199668343039317 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.39921174]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 106 - TR MEE 4.900583853127168 - VL MEE 5.164473501673769 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.40415662]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 107 - TR MEE 5.897214260295851 - VL MEE 5.753783514992873 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 5       Coef: 0
+Intercept: [46.51160077]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - Best configuration: 33
+BEST COARSE GRID SEARCH MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65768491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+['poly', 'poly', 'poly'] [{'gamma': 1, 'degree': 3, 'coef': 0}, {'gamma': 0.8066569655444558, 'degree': 3, 'coef': 0.26341362675414626}, {'gamma': 1.1028680261289994, 'degree': 3, 'coef': 0.4204686095646002}] [{'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}, {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}, {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}]
+(GS - SVR) - Creating models
+(GS - SVR) - Fitting 27 models
+(GS - SVR) - model 1/27
+        (GS - SVR) - Time taken: 78.4072937965393 - Remaining: 2038.589638710022
+(GS - SVR) - model 2/27
+        (GS - SVR) - Time taken: 170.76948189735413 - Remaining: 2134.6185237169266
+(GS - SVR) - model 3/27
+        (GS - SVR) - Time taken: 250.87448239326477 - Remaining: 2006.9958591461182
+(GS - SVR) - model 4/27
+        (GS - SVR) - Time taken: 332.63097953796387 - Remaining: 1912.6281323432922
+(GS - SVR) - model 5/27
+        (GS - SVR) - Time taken: 416.9484980106354 - Remaining: 1834.5733912467958
+(GS - SVR) - model 6/27
+        (GS - SVR) - Time taken: 500.947961807251 - Remaining: 1753.3178663253784
+(GS - SVR) - model 7/27
+        (GS - SVR) - Time taken: 580.7444396018982 - Remaining: 1659.269827433995
+(GS - SVR) - model 8/27
+        (GS - SVR) - Time taken: 661.3064815998077 - Remaining: 1570.6028937995434
+(GS - SVR) - model 9/27
+        (GS - SVR) - Time taken: 752.0181412696838 - Remaining: 1504.0362825393677
+(GS - SVR) - model 10/27
+        (GS - SVR) - Time taken: 850.928943157196 - Remaining: 1446.5792033672333
+(GS - SVR) - model 11/27
+        (GS - SVR) - Time taken: 949.3581488132477 - Remaining: 1380.8845800919967
+(GS - SVR) - model 12/27
+        (GS - SVR) - Time taken: 1052.4977786540985 - Remaining: 1315.6222233176231
+(GS - SVR) - model 13/27
+        (GS - SVR) - Time taken: 1159.3554100990295 - Remaining: 1248.5365954912627
+(GS - SVR) - model 14/27
+        (GS - SVR) - Time taken: 1260.355200767517 - Remaining: 1170.329829284123
+(GS - SVR) - model 15/27
+        (GS - SVR) - Time taken: 1366.481313943863 - Remaining: 1093.1850511550902
+(GS - SVR) - model 16/27
+        (GS - SVR) - Time taken: 1461.6937129497528 - Remaining: 1004.914427652955
+(GS - SVR) - model 17/27
+        (GS - SVR) - Time taken: 1552.117927312851 - Remaining: 913.0105454781476
+(GS - SVR) - model 18/27
+        (GS - SVR) - Time taken: 1644.0259928703308 - Remaining: 822.0129964351654
+(GS - SVR) - model 19/27
+        (GS - SVR) - Time taken: 1736.3590304851532 - Remaining: 731.0985391516434
+(GS - SVR) - model 20/27
+        (GS - SVR) - Time taken: 1832.203438282013 - Remaining: 641.2712033987045
+(GS - SVR) - model 21/27
+        (GS - SVR) - Time taken: 1930.500197649002 - Remaining: 551.571485042572
+(GS - SVR) - model 22/27
+        (GS - SVR) - Time taken: 2031.0084300041199 - Remaining: 461.59282500093633
+(GS - SVR) - model 23/27
+        (GS - SVR) - Time taken: 2132.3770747184753 - Remaining: 370.84818690756094
+(GS - SVR) - model 24/27
+        (GS - SVR) - Time taken: 2232.2102057933807 - Remaining: 279.0262757241726
+(GS - SVR) - model 25/27
+        (GS - SVR) - Time taken: 2336.961741924286 - Remaining: 186.95693935394286
+(GS - SVR) - model 26/27
+        (GS - SVR) - Time taken: 2443.2797470092773 - Remaining: 93.97229796189528
+(GS - SVR) - model 27/27
+        (GS - SVR) - Time taken: 2550.601102590561 - Remaining: 0.0
+(GS - SVR) - Evaluating models
+(GS - SVR) - SVR: 0 - TR MEE 4.348674261280012 - VL MEE 4.478772373206496 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65768491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 1 - TR MEE 3.9735352335422296 - VL MEE 3.939464852779905 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.81719127]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 2 - TR MEE 3.985379198881485 - VL MEE 3.9616764833994225 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.81186748]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 3 - TR MEE 4.348674261280049 - VL MEE 4.478772373206447 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65768491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 4 - TR MEE 3.973535233542175 - VL MEE 3.939464852779924 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.81719127]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 5 - TR MEE 3.9853791988815312 - VL MEE 3.9616764833994162 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.81186748]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 6 - TR MEE 4.348674261279933 - VL MEE 4.478772373206585 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.65768491]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - SVR: 7 - TR MEE 3.9735352335422247 - VL MEE 3.9394648527799085 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.81719127]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - SVR: 8 - TR MEE 3.9853791988816 - VL MEE 3.9616764833994087 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [46.81186748]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - SVR: 9 - TR MEE 4.456600612185795 - VL MEE 4.562873320802795 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.56939823]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 10 - TR MEE 3.802984204854321 - VL MEE 3.7876453666289547 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.37359364]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 11 - TR MEE 3.8273320771008774 - VL MEE 3.819368739920933 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.3957175]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 12 - TR MEE 4.456600612185929 - VL MEE 4.562873320802962 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.56939823]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 13 - TR MEE 3.802984204854317 - VL MEE 3.787645366628952 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.37359364]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 14 - TR MEE 3.827332077100864 - VL MEE 3.8193687399209275 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.3957175]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 15 - TR MEE 4.456600612185796 - VL MEE 4.562873320802796 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.56939823]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - SVR: 16 - TR MEE 3.802984204854336 - VL MEE 3.7876453666289693 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.37359364]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - SVR: 17 - TR MEE 3.8273320771008557 - VL MEE 3.8193687399209253 - MODEL:
+Kernel: poly
+Gamma: 0.8066569655444558       Degree: 3       Coef: 0.26341362675414626
+Intercept: [46.3957175]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - SVR: 18 - TR MEE 4.158870571213642 - VL MEE 4.276160165071401 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.54789501]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 19 - TR MEE 3.6173201402511674 - VL MEE 3.5558460904591302 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.24980554]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 20 - TR MEE 3.643084314964409 - VL MEE 3.592129174907007 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.26380829]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 21 - TR MEE 4.158870571213439 - VL MEE 4.276160165071298 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.54789501]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 22 - TR MEE 3.6173201402512243 - VL MEE 3.555846090459092 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.24980554]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 23 - TR MEE 3.6430843149644363 - VL MEE 3.592129174907029 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.26380829]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.09635490277448751
+
+(GS - SVR) - SVR: 24 - TR MEE 4.158870571213537 - VL MEE 4.276160165071345 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.54789501]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - SVR: 25 - TR MEE 3.617320140251249 - VL MEE 3.555846090459074 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.24980554]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - SVR: 26 - TR MEE 3.6430843149644763 - VL MEE 3.59212917490704 - MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.26380829]\Optim_args: {'eps': 0.08973669034081806, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+
+(GS - SVR) - Best configuration: 25
+BEST FINE GRID SEARCH MODEL:
+Kernel: poly
+Gamma: 1.1028680261289994       Degree: 3       Coef: 0.4204686095646002
+Intercept: [46.24980554]\Optim_args: {'eps': 0.09431138419957512, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.10938035738441051
+T LOSS: 20653.777256320427
+V LOSS: 4832.374914730351
+Time taken: 14638.77162528038
+LOSS: 6355.323888996524  - MEE 3.657472511494915

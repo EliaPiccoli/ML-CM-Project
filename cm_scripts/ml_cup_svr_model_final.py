@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.core.numeric import True_
 import get_cup_dataset as dt
 from SVR import SVR
 import time
@@ -28,9 +29,9 @@ cup_model_2 = SVR('rbf',{'gamma':0.1}, box=1, eps=0.1) # values found with grid 
 beta_init = np.vstack(np.zeros(dev_set.shape[0]))
 # Train over the entire dev_set
 print("Training first model ... ")
-cup_model_1.fit(dev_set, dev_out1, optim_args={'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}, beta_init=beta_init, verbose_optim=False)
+cup_model_1.fit(dev_set, dev_out1, optim_args={'eps': 0.08737368906085892, 'vareps': 0.1, 'maxiter': 3000.0}, beta_init=beta_init, verbose_optim=False, convergence_verbose=True)
 print("Training second model ... ")
-cup_model_2.fit(dev_set, dev_out2, optim_args={'eps': 0.06803885259228548, 'vareps': 0.1, 'maxiter': 3000.0}, beta_init=beta_init, verbose_optim=False)
+cup_model_2.fit(dev_set, dev_out2, optim_args={'eps': 0.06803885259228548, 'vareps': 0.1, 'maxiter': 5000.0}, beta_init=beta_init, verbose_optim=False, convergence_verbose=True)
 pred_1 = [float(cup_model_1.predict(dev_set[i])) for i in range(dev_set.shape[0])]
 pred_2 = [float(cup_model_2.predict(dev_set[i])) for i in range(dev_set.shape[0])]
 print("SUM OF eps-LOSS:", cup_model_1.eps_ins_loss(dev_out1, pred_1) + cup_model_2.eps_ins_loss(dev_out2, pred_2))

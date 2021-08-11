@@ -1,0 +1,740 @@
+(GS - SVR) - SVR: 0 - TR MEE 13.117500652850087 - VL MEE 13.431795071910837 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.53194987]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 1 - TR MEE 13.137429537693759 - VL MEE 13.451796401841925 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.53176094]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 2 - TR MEE 13.192858127344708 - VL MEE 13.508406760987603 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.55674837]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 3 - TR MEE 13.11182546723385 - VL MEE 13.424174738845743 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.48194503]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 4 - TR MEE 13.131510202207068 - VL MEE 13.443931167260947 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.48175825]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 5 - TR MEE 13.186279813316895 - VL MEE 13.499771498457415 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.50401602]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 6 - TR MEE 13.067504033792213 - VL MEE 13.364151550664863 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.08199343]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 7 - TR MEE 13.085468773415865 - VL MEE 13.382222913601897 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.08234288]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 8 - TR MEE 13.137944148131115 - VL MEE 13.4358830192175 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.1061929]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 9 - TR MEE 13.117500652850103 - VL MEE 13.431795071910853 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.53194987]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 10 - TR MEE 13.137429537693764 - VL MEE 13.451796401841937 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.53176094]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 11 - TR MEE 13.192858127344707 - VL MEE 13.508406760987603 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.55674837]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 12 - TR MEE 13.11182546723387 - VL MEE 13.424174738845757 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.48194503]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 13 - TR MEE 13.131510202207075 - VL MEE 13.443931167260954 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.48175825]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 14 - TR MEE 13.186279813316895 - VL MEE 13.499771498457415 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.50401602]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 15 - TR MEE 13.067504033792227 - VL MEE 13.364151550664868 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.08199343]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 16 - TR MEE 13.08546877341587 - VL MEE 13.382222913601899 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.08234288]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 17 - TR MEE 13.137944148131117 - VL MEE 13.4358830192175 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.1061929]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 18 - TR MEE 13.117500652850016 - VL MEE 13.431795071910765 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.53194987]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 19 - TR MEE 13.137429537693679 - VL MEE 13.451796401841849 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.53176094]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 20 - TR MEE 13.192858127344694 - VL MEE 13.508406760987594 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.55674837]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 21 - TR MEE 13.11182546723388 - VL MEE 13.42417473884576 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.48194503]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 22 - TR MEE 13.131510202207057 - VL MEE 13.443931167260937 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.48175825]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 23 - TR MEE 13.186279813316938 - VL MEE 13.499771498457452 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.50401602]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 24 - TR MEE 13.067504033792247 - VL MEE 13.364151550664891 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.08199343]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 25 - TR MEE 13.085468773415894 - VL MEE 13.382222913601924 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.08234288]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 26 - TR MEE 13.137944148131107 - VL MEE 13.43588301921749 - MODEL:
+Kernel: sigmoid
+Gamma: 0.1      Coef: 0
+Intercept: [48.1061929]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 27 - TR MEE 13.07608307004267 - VL MEE 13.389593708848912 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.5362204]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 28 - TR MEE 13.10681536303026 - VL MEE 13.420700044856636 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.53490204]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 29 - TR MEE 13.191215964241506 - VL MEE 13.506746084442815 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.55702132]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 30 - TR MEE 13.070522542589726 - VL MEE 13.382307415244366 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.48618409]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 31 - TR MEE 13.101016577785995 - VL MEE 13.413029964579133 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.48488142]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 32 - TR MEE 13.184639875864079 - VL MEE 13.49811707357595 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.50429097]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 33 - TR MEE 13.02836717449292 - VL MEE 13.32435410812877 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.08638269]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 34 - TR MEE 13.05620842755912 - VL MEE 13.352471033319906 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.08565896]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 35 - TR MEE 13.136339932584399 - VL MEE 13.43425568989412 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.10647844]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 36 - TR MEE 13.076083070042685 - VL MEE 13.389593708848935 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.5362204]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 37 - TR MEE 13.106815363030275 - VL MEE 13.420700044856655 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.53490204]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 38 - TR MEE 13.191215964241506 - VL MEE 13.50674608444282 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.55702132]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 39 - TR MEE 13.07052254258974 - VL MEE 13.382307415244385 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.48618409]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 40 - TR MEE 13.101016577786012 - VL MEE 13.413029964579147 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.48488142]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 41 - TR MEE 13.184639875864079 - VL MEE 13.498117073575948 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.50429097]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 42 - TR MEE 13.028367174492946 - VL MEE 13.324354108128789 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.08638269]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 43 - TR MEE 13.05620842755914 - VL MEE 13.352471033319919 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.08565896]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 44 - TR MEE 13.136339932584399 - VL MEE 13.43425568989412 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.10647844]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 45 - TR MEE 13.076083070042767 - VL MEE 13.389593708849024 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.5362204]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 46 - TR MEE 13.106815363030154 - VL MEE 13.42070004485653 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.53490204]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 47 - TR MEE 13.191215964241552 - VL MEE 13.506746084442874 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.55702132]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 48 - TR MEE 13.070522542589664 - VL MEE 13.382307415244314 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.48618409]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 49 - TR MEE 13.101016577785876 - VL MEE 13.41302996457904 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.48488142]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 50 - TR MEE 13.18463987586416 - VL MEE 13.498117073576017 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.50429097]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 51 - TR MEE 13.028367174492912 - VL MEE 13.324354108128768 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.08638269]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 52 - TR MEE 13.056208427559076 - VL MEE 13.352471033319855 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.08565896]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 53 - TR MEE 13.136339932584491 - VL MEE 13.434255689894199 - MODEL:
+Kernel: sigmoid
+Gamma: 1        Coef: 0
+Intercept: [48.10647844]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 54 - TR MEE 13.075737166951614 - VL MEE 13.389173775271557 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.53626429]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 55 - TR MEE 13.106553369460158 - VL MEE 13.420390443438027 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.53493435]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 56 - TR MEE 13.191201859844648 - VL MEE 13.506730059877064 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.55702696]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 57 - TR MEE 13.07016396943253 - VL MEE 13.381891182865598 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.48622766]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 58 - TR MEE 13.100746753336525 - VL MEE 13.412722581113398 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.48491355]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 59 - TR MEE 13.184625836931657 - VL MEE 13.498101127230116 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.50429662]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 60 - TR MEE 13.028021482113617 - VL MEE 13.323939503185999 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.08644084]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 61 - TR MEE 13.055949928126905 - VL MEE 13.352161181842183 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.08570432]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 62 - TR MEE 13.136325946602458 - VL MEE 13.434239195236877 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.10648424]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 63 - TR MEE 13.075737166951658 - VL MEE 13.3891737752716 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.53626429]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 64 - TR MEE 13.106553369460162 - VL MEE 13.420390443438034 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.53493435]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 65 - TR MEE 13.19120185984465 - VL MEE 13.506730059877055 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.55702696]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 66 - TR MEE 13.070163969432574 - VL MEE 13.381891182865637 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.48622766]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 67 - TR MEE 13.100746753336534 - VL MEE 13.412722581113409 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.48491355]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 68 - TR MEE 13.184625836931659 - VL MEE 13.498101127230118 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.50429662]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 69 - TR MEE 13.028021482113658 - VL MEE 13.323939503186034 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.08644084]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 70 - TR MEE 13.055949928126905 - VL MEE 13.352161181842193 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.08570432]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 71 - TR MEE 13.136325946602458 - VL MEE 13.434239195236886 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.10648424]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 72 - TR MEE 13.075737166951487 - VL MEE 13.389173775271457 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.53626429]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 73 - TR MEE 13.106553369460135 - VL MEE 13.420390443438007 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.53493435]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 74 - TR MEE 13.191201859844657 - VL MEE 13.506730059877063 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.55702696]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 75 - TR MEE 13.07016396943264 - VL MEE 13.381891182865711 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.48622766]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 76 - TR MEE 13.100746753336495 - VL MEE 13.412722581113373 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.48491355]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 77 - TR MEE 13.18462583693152 - VL MEE 13.498101127229988 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.50429662]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 78 - TR MEE 13.028021482113674 - VL MEE 13.323939503186047 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.08644084]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 79 - TR MEE 13.055949928126914 - VL MEE 13.352161181842197 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.08570432]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 80 - TR MEE 13.136325946602177 - VL MEE 13.434239195236591 - MODEL:
+Kernel: sigmoid
+Gamma: 2        Coef: 0
+Intercept: [48.10648424]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 81 - TR MEE 13.07564735562328 - VL MEE 13.389069980081887 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.53627551]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 82 - TR MEE 13.106485683741834 - VL MEE 13.420313890770041 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.53494262]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 83 - TR MEE 13.191198116624598 - VL MEE 13.506726128127616 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.55702854]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 84 - TR MEE 13.070069097668412 - VL MEE 13.381788301295064 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.48623879]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 85 - TR MEE 13.100675065063701 - VL MEE 13.412646575422459 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.48492176]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 86 - TR MEE 13.184622112430775 - VL MEE 13.498097215109016 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.5042982]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 87 - TR MEE 13.02792933464879 - VL MEE 13.323831747937978 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.08645729]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 88 - TR MEE 13.05588099966287 - VL MEE 13.352080612376799 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.085717]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 89 - TR MEE 13.136322238609335 - VL MEE 13.434234892735528 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.10648589]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 0.1
+
+(GS - SVR) - SVR: 90 - TR MEE 13.075647355623294 - VL MEE 13.389069980081914 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.53627551]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 91 - TR MEE 13.106485683741852 - VL MEE 13.420313890770062 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.53494262]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 92 - TR MEE 13.191198116624593 - VL MEE 13.506726128127612 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.55702854]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 93 - TR MEE 13.070069097668451 - VL MEE 13.381788301295094 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.48623879]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 94 - TR MEE 13.100675065063715 - VL MEE 13.412646575422471 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.48492176]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 95 - TR MEE 13.184622112430784 - VL MEE 13.49809721510902 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.5042982]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 96 - TR MEE 13.027929334648833 - VL MEE 13.323831747938009 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.08645729]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 97 - TR MEE 13.055880999662877 - VL MEE 13.35208061237681 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.085717]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 98 - TR MEE 13.13632223860933 - VL MEE 13.434234892735518 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.10648589]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 1
+
+(GS - SVR) - SVR: 99 - TR MEE 13.075647355623413 - VL MEE 13.389069980082017 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.53627551]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 100 - TR MEE 13.106485683741884 - VL MEE 13.420313890770103 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.53494262]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 101 - TR MEE 13.191198116624708 - VL MEE 13.506726128127708 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.55702854]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 102 - TR MEE 13.070069097668298 - VL MEE 13.381788301294923 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.48623879]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 103 - TR MEE 13.100675065063685 - VL MEE 13.412646575422421 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.48492176]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 104 - TR MEE 13.18462211243076 - VL MEE 13.498097215109004 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.5042982]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 105 - TR MEE 13.027929334648693 - VL MEE 13.323831747937872 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.08645729]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 106 - TR MEE 13.055880999662941 - VL MEE 13.352080612376868 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.085717]\Optim_args: {'eps': 0.005, 'maxiter': 5000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 107 - TR MEE 13.136322238609361 - VL MEE 13.434234892735544 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.10648589]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - Best configuration: 105
+BEST COARSE GRID SEARCH MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.08645729]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+['sigmoid'] [{'gamma': 5, 'degree': 1, 'coef': 0}, {'gamma': 5.092383440216307, 'coef': -0.9666297753925015}, {'gamma': 5.018581975156499, 'coef': 0.7531164679919913}] [{'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}, {'eps': 0.02988343350984069, 'maxiter': 3000.0, 'vareps': 0.5}, {'eps': 0.03587317958946116, 'maxiter': 3000.0, 'vareps': 0.5}]
+(GS - SVR) - Creating models
+(GS - SVR) - Fitting 9 models
+(GS - SVR) - model 1/9
+        (GS - SVR) - Time taken: 74.91495323181152 - Remaining: 599.3196258544922
+(GS - SVR) - model 2/9
+        (GS - SVR) - Time taken: 149.807959318161 - Remaining: 524.3278576135635
+(GS - SVR) - model 3/9
+        (GS - SVR) - Time taken: 224.23695993423462 - Remaining: 448.47391986846924
+(GS - SVR) - model 4/9
+        (GS - SVR) - Time taken: 296.858993768692 - Remaining: 371.073742210865
+(GS - SVR) - model 5/9
+        (GS - SVR) - Time taken: 369.1359930038452 - Remaining: 295.30879440307615
+(GS - SVR) - model 6/9
+        (GS - SVR) - Time taken: 441.6119954586029 - Remaining: 220.80599772930145
+(GS - SVR) - model 7/9
+        (GS - SVR) - Time taken: 513.5760242938995 - Remaining: 146.73600694111414
+(GS - SVR) - model 8/9
+        (GS - SVR) - Time taken: 587.4670243263245 - Remaining: 73.43337804079056
+(GS - SVR) - model 9/9
+        (GS - SVR) - Time taken: 661.3591196537018 - Remaining: 0.0
+(GS - SVR) - Evaluating models
+(GS - SVR) - SVR: 0 - TR MEE 13.027929334648693 - VL MEE 13.323831747937872 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.08645729]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 1 - TR MEE 10.431894040012054 - VL MEE 10.75197747394787 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.18925903]\Optim_args: {'eps': 0.02988343350984069, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 2 - TR MEE 8.241464433321187 - VL MEE 8.572325873106996 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.29694294]\Optim_args: {'eps': 0.03587317958946116, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+
+(GS - SVR) - SVR: 3 - TR MEE 13.027929334648807 - VL MEE 13.323831747937998 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.08645729]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 9.081822904946517
+
+(GS - SVR) - SVR: 4 - TR MEE 10.431894040008215 - VL MEE 10.751977473944025 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.18925903]\Optim_args: {'eps': 0.02988343350984069, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 9.081822904946517
+
+(GS - SVR) - SVR: 5 - TR MEE 8.241464433322598 - VL MEE 8.572325873108413 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.29694294]\Optim_args: {'eps': 0.03587317958946116, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 9.081822904946517
+
+(GS - SVR) - SVR: 6 - TR MEE 13.027929334648867 - VL MEE 13.323831747938051 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.08645729]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10.959158050336736
+
+(GS - SVR) - SVR: 7 - TR MEE 10.431894040007457 - VL MEE 10.751977473943276 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.18925903]\Optim_args: {'eps': 0.02988343350984069, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10.959158050336736
+
+(GS - SVR) - SVR: 8 - TR MEE 8.241464433324182 - VL MEE 8.57232587310995 - MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.29694294]\Optim_args: {'eps': 0.03587317958946116, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10.959158050336736
+
+(GS - SVR) - Best configuration: 2
+BEST FINE GRID SEARCH MODEL:
+Kernel: sigmoid
+Gamma: 5        Coef: 0
+Intercept: [48.29694294]\Optim_args: {'eps': 0.03587317958946116, 'maxiter': 3000.0, 'vareps': 0.5}
+Box: 10
+T LOSS: 96407.53693466571
+V LOSS: 26720.66062324502
+Time taken: 37952.298640728
+LOSS: 28942.334824201364  - MEE 8.021660571596481

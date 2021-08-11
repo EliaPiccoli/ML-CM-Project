@@ -35,30 +35,31 @@ class SVR:
         model_as_string += "\nBox: "+str(self.box)
         return model_as_string
 
-    def fit(self, x, y, optim_args, scaled=False, beta_init=None, verbose_optim=True, precomp_kernel=None):
-        self.x = x
-        self.y = y
+    def fit(self, x, y, optim_args, beta_init=None, verbose_optim=True, precomp_kernel=None, convergence_verbose=False):
+        self.xs = x
+        self.ys = y
         self.optim_args = optim_args
-        
-        self.scaled = scaled
-        if scaled:
-            sc_X = StandardScaler()
-            sc_Y = StandardScaler()
-            self.xs = sc_X.fit_transform(self.x)
-            self.ys = sc_Y.fit_transform(self.y)
-            self.x_scaler = sc_X
-            self.y_scaler = sc_Y
-        else:
-            self.xs = x
-            self.ys = y
 
         if precomp_kernel is None:
             self.K, self.gamma_value = kernel.get_kernel(self)
         else:
             self.K, self.gamma_value = precomp_kernel[0], precomp_kernel[1]
-        beta_init = np.vstack(np.zeros(self.x.shape[0])) if beta_init is None else beta_init
+        beta_init = np.vstack(np.zeros(self.xs.shape[0])) if beta_init is None else beta_init
         optim_args['vareps'] = self.eps
-        self.beta, self.status, self.betas_history = solveDeflected(beta_init, self.ys, self.K, self.box, optim_args=optim_args, verbose=verbose_optim)
+        self.beta, self.status, self.history = solveDeflected(beta_init, self.ys, self.K, self.box, optim_args=optim_args, verbose=verbose_optim)
+        self.betas_history = np.array(self.history['x'])
+        if convergence_verbose:
+            _, axs = plt.subplots(2)
+            plot_conv_rate = []
+            log_residual_error = []
+            for i in range(len(self.history['f']) - 1):
+                plot_conv_rate.append((self.history['f'][i+1] - self.history['fstar']) / (self.history['f'][i] - self.history['fstar']))
+                log_residual_error.append(np.log(np.abs(self.history['f'][i] - self.history['fstar']) / np.abs(self.history['fstar'])))
+            axs[0].plot(range(len(plot_conv_rate)), plot_conv_rate)
+            axs[0].set_ylabel("CONV_RATE")
+            axs[1].plot(range(len(log_residual_error)), log_residual_error)
+            axs[1].set_ylabel("LOG_RESIDUAL_ERROR")
+            plt.show()
         self.compute_sv()
         if self.kernel == "linear":
             self.W = np.dot(self.betasv.T, self.sv)
@@ -71,8 +72,8 @@ class SVR:
             flag = self.compute_sv(plotting=True)
             if not flag:
                 continue
-            y_pred = [float(self.predict(self.x[i].reshape(1,-1))) for i in range(self.x.size)]
-            loss_vect.append(self.eps_ins_loss(y_pred))
+            y_pred = [float(self.predict(self.xs[i])) for i in range(len(self.xs))]
+            loss_vect.append(self.eps_ins_loss(y_pred, self.ys))
         plt.plot(range(len(loss_vect)),loss_vect)
         plt.show()
         self.beta, self.sv, self.betasv, self.intercept = temp_beta, temp_sv, temp_betasv, temp_intercept
@@ -100,11 +101,9 @@ class SVR:
     
     def predict(self, x):
         x = np.array([x])
-        if self.scaled:
-            x = self.x_scaler.transform(x.reshape(-1,1))
         if self.kernel == 'linear':
             prediction = np.dot(self.W, x.T) + self.intercept
-            return prediction if not self.scaled else self.y_scaler.inverse_transform(prediction)
+            return prediction
 
         if isinstance(self.gamma, str):
             gamma = 1/(self.sv.shape[1]*self.sv.var()) if self.gamma == "scale" else 1/(self.sv.shape[1])
@@ -117,7 +116,7 @@ class SVR:
         elif self.kernel == 'sigmoid':
             K, _ = kernel.sigmoid(self.sv, x, gamma, self.coef)
         prediction = np.dot(self.betasv.T, K) + self.intercept
-        return prediction if not self.scaled else self.y_scaler.inverse_transform(prediction)
+        return prediction
 
     def eps_ins_loss(self, y, y_pred):
         loss = 0
