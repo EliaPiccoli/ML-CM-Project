@@ -53,8 +53,8 @@ def search_linear(x, y, val_x, val_y):
         kernel=["linear"],
         kparam=[{}],
         box=[0.1,1,10],
-        eps=[0.05,0.1,0.5],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-3, 'maxiter':5e3}, {'eps':5e-4, 'maxiter':3e3}]
+        eps=[0.1,0.5],
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}, {'eps':5e-4}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -108,7 +108,7 @@ def search_rbf(x, y, val_x, val_y):
         kparam=[{"gamma":'auto'},{"gamma":0.1},{"gamma":1},{"gamma":2}],
         box=[0.1,1,10],
         eps=[0.05,0.1,0.5],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-3, 'maxiter':5e3}, {'eps':5e-4, 'maxiter':3e3}]
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -158,11 +158,11 @@ def search_rbf(x, y, val_x, val_y):
 def search_sigmoid(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
-        kernel=["sigmoid", "sigmoid", "sigmoid", "sigmoid"],
-        kparam=[{"gamma":'auto'},{"gamma":1},{"gamma":2},{"gamma":5}],
+        kernel=["sigmoid", "sigmoid", "sigmoid"],
+        kparam=[{"gamma":'auto'},{"gamma":1},{"gamma":2}],
         box=[0.1,1,10],
         eps=[0.05,0.1,0.5],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-3, 'maxiter':5e3}, {'eps':5e-4, 'maxiter':3e3}]
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -216,7 +216,7 @@ def search_poly(x, y, val_x, val_y):
         kparam=[{"degree":2, "gamma":1},{"degree":3, "gamma":1},{"degree":4, "gamma":1},{"degree":5, "gamma":1}],
         box=[0.1,1,10],
         eps=[0.05,0.1,0.5],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-3, 'maxiter':5e3}, {'eps':5e-4, 'maxiter':3e3}]
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}, {'eps':5e-4}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -270,7 +270,7 @@ def search_polydeg3(x, y, val_x, val_y):
         kparam=[{"degree":3, "gamma":'auto'},{"degree":3, "gamma":1},{"degree":3, "gamma":2},{"degree":3, "gamma":5}],
         box=[0.1,1,10],
         eps=[0.05,0.1,0.5],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-3, 'maxiter':5e3}, {'eps':5e-4, 'maxiter':3e3}]
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}, {'eps':5e-4}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y

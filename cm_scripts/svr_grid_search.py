@@ -50,7 +50,7 @@ class Gridsearch():
         start_fit = time.time()
         for i, model in enumerate(models_conf):
             print(f"(GS - SVR) - model {i+1}/{len(models_conf)}", sep=" ")
-            model.fit(train_x, train_output, self.opti_args[i%len(self.opti_args)], verbose_optim=False, precomp_kernel=precomp_kernels[kernel_conf[i]], convergence_verbose=convergence_verbose)
+            model.fit(train_x, train_output, self.opti_args[i%len(self.opti_args)], optim_verbose=False, precomp_kernel=precomp_kernels[kernel_conf[i]], convergence_verbose=convergence_verbose)
             print(f"\t(GS - SVR) - Time taken: {time.time() - start_fit} - Remaining: {(time.time() - start_fit) / (i+1) * (len(models_conf)-i-1)}")
         
         print("(GS - SVR) - Evaluating models")
@@ -82,7 +82,6 @@ class Gridsearch():
         for i, pred in enumerate(models_pred):
             error = 0
             for j, val_pred in enumerate(pred):
-                # print(val_output[j], val_pred)
                 error += math.sqrt((val_output[j] - val_pred)**2)
             models_mee.append(error/len(val_output))
 

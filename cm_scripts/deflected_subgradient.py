@@ -23,9 +23,10 @@ def unrollArgs(optim_args):
     return vareps, maxiter, deltares, rho, eps, alpha, psi
 
 def projectDirection(x, d, box, eps=1e-10):
+    # to avoid reaching a set of coordinates out of the constrained box
     for i in range(len(d)):
         if (abs(-box-x[i]) < eps and d[i] < 0) or (box - x[i] < eps and d[i] > 0):
-            d[i] = 0
+            d[i] = 0 # zero out the direction dims leading out of constrained box
     return d
 
 def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False):
@@ -35,26 +36,26 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
         K   : kernel matrix
         box : value for box contraint      [ x in (-box, box) ]
     """
-    vareps, maxiter, deltares, rho, eps, alpha, psi = unrollArgs(optim_args)
-    xref = copy.deepcopy(x)
-    fref = math.inf
-    delta = 0
-    dprev = np.zeros((x.size,1))
-    i = 0
-    prevnormg = math.inf
-    history = {'x': [], 'f': []}
+    vareps, maxiter, deltares, rho, eps, alpha, psi = unrollArgs(optim_args) # get all parameters needed for the algorithm
+    xref = copy.deepcopy(x) # set reference point
+    fref = math.inf # set reference function value
+    delta = 0 # initial value for vanishing threshold parameter
+    dprev = np.zeros((x.size,1)) # previous direction needed for deflection
+    i = 0 # iteration count
+    prevnormg = math.inf # gradient norm at previous step
+    history = {'lagrangian': [], 'f': []} # dictionary needed for plotting after computation
     while True:
         if i > maxiter:
             # stopped condition reached
             if return_history:
-                history['fstar'] = fref
+                history['fstar'] = fref # save minimum function value
                 return x, 'stopped', history
             return xref, 'stopped', None
         v = (0.5 * np.dot(np.dot(np.transpose(x), K), x) 
-            + np.repeat(vareps,x.size).dot(np.abs(x)) 
+            + vareps * np.sum(np.abs(x))
             - np.transpose(y).dot(x))[0,0] # would return a matrix otherwise
-        g = K.dot(x) + vareps*np.sign(x) - y.reshape(-1,1) # magic stands in reshaping
-        norm_g = np.linalg.norm(g)
+        g = K.dot(x) + vareps*np.sign(x) - y.reshape(-1,1) # reshape to transform y from horizontal to vertical array
+        norm_g = np.linalg.norm(g) # get norm of descent direction gradient
         if verbose: print("i: {:4d} - v: {:4f} - fref: {:4f} - ||g||: {:4f} - delta: {:e} - ||gdiff||: {:4f} - eps: {:e}".format(i, v, fref, norm_g, delta, prevnormg-norm_g, eps))
         prevnormg = norm_g
         if norm_g < 1e-10:
@@ -72,12 +73,12 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
         if v < fref:
             fref = copy.deepcopy(v)
             xref = copy.deepcopy(x)
-        d = alpha*g + (1-alpha)*dprev
-        dproj = projectDirection(x, d, box)
-        dprev = dproj
-        nu = psi*(v-fref+delta)/(np.linalg.norm(dproj)**2)
-        x = x - nu*dproj
-        x = solveKP(box, 0, x, False)
-        i += 1
-        history['x'].append(x)
+        d = alpha*g + (1-alpha)*dprev # get deflected direction
+        dproj = projectDirection(x, d, box) # constrain direction accordingly
+        dprev = dproj 
+        nu = psi*(v-fref+delta)/(np.linalg.norm(dproj)**2) # get stepsize following Target Value
+        x = x - nu*dproj # get new point coordinates
+        x = solveKP(box, 0, x, False) # project new point to follow constraints
+        i += 1 # next iteration
+        history['lagrangian'].append(x)
         history['f'].append(v)

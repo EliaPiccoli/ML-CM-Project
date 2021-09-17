@@ -1,9 +1,11 @@
 import numpy as np
 
 def compute_gamma(x, gamma):
-    return 1/(x.shape[1]*x.var()) if gamma == 'scale' else 1/x.shape[1] # scale - auto
+    # function to handle special string input values for gamma parameter
+    return 1/(x.shape[1]*x.var()) if gamma == 'scale' else 1/x.shape[1] # if(scale) else(auto)
 
 def rbf(v1, v2, gamma='scale'):
+    # compute rbf kernel
     if isinstance(gamma, str):
         gamma = compute_gamma(v1, gamma)
     K = np.zeros((v1.shape[0], v2.shape[0]))
@@ -13,6 +15,7 @@ def rbf(v1, v2, gamma='scale'):
     return K, gamma
 
 def linear(v1, v2):
+    # compute linear kernel
     K = np.zeros((v1.shape[0], v2.shape[0]))
     for i in range(len(K)):
         for j in range(len(K[0])):
@@ -20,6 +23,7 @@ def linear(v1, v2):
     return K, None
 
 def poly(v1, v2, gamma='scale', deg=3, coef=0.0):
+    # compute poly kernel
     if isinstance(gamma, str):
         gamma = compute_gamma(v1, gamma)
     K = np.zeros((v1.shape[0], v2.shape[0]))
@@ -29,6 +33,7 @@ def poly(v1, v2, gamma='scale', deg=3, coef=0.0):
     return K, gamma
 
 def sigmoid(v1, v2, gamma='scale', coef=0.0):
+    # compute sigmoid kernel
     if isinstance(gamma, str):
         gamma = compute_gamma(v1, gamma)
     K = np.zeros((v1.shape[0], v2.shape[0]))
@@ -38,6 +43,7 @@ def sigmoid(v1, v2, gamma='scale', coef=0.0):
     return K, gamma
 
 def get_kernel(model):
+    # interface function to get the desired kernel output
     if model.kernel == 'linear':
         return linear(model.xs, model.xs)
     elif model.kernel == 'rbf':
