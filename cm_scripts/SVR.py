@@ -1,4 +1,5 @@
 import numpy as np
+import time
 import kernel
 from deflected_subgradient import solveDeflected
 import matplotlib.pyplot as plt
@@ -41,7 +42,8 @@ class SVR:
         model_as_string += "\nBox: "+str(self.box)
         return model_as_string
 
-    def fit(self, x, y, optim_args, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False):
+    def fit(self, x, y, optim_args, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False, fit_time=True):
+        start = time.time()
         # save input, output and optimization arguments
         self.xs = x
         self.ys = y
@@ -73,6 +75,8 @@ class SVR:
         self.compute_sv() # compute support vectors given the final lagrangian values
         if self.kernel == "linear": # 'linear' kernel prediction method is different from the other kernels
             self.W = np.dot(self.betasv.T, self.sv)
+        if fit_time:
+            print(f"Fit time: {time.time() - start}, #SV: {len(self.betasv)}")
 
     # really slow process..
     def plot_loss(self): 
