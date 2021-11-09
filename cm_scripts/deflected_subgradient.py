@@ -19,7 +19,7 @@ def unrollArgs(optim_args):
     rho = optim_args['rho'] if 'rho' in optim_args else 0.95
     eps = optim_args['eps'] if 'eps' in optim_args else 0.1
     alpha = optim_args['alpha'] if 'alpha' in optim_args else 0.7
-    psi = optim_args['psi'] if 'psi' in optim_args else 0.7
+    psi = min(optim_args['psi'], alpha) if 'psi' in optim_args else alpha
     return vareps, maxiter, deltares, rho, eps, alpha, psi
 
 def projectDirection(x, d, box, eps=1e-10):
