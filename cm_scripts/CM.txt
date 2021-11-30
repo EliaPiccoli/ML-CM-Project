@@ -1,0 +1,10 @@
+1. SVR: Add stop once fixed error is reached
+
+2. SVR linear find couple of models
+
+3. Deflected parameters:
+alpha: 		0.3 0.5 0.7		(deflection)
+psi: 		alpha/4 alpha/2 alpha	(stepsize)
+eps: 		0.1 0.01 0.005		(min relative val for displacement of delta)
+rho: 		0.6 0.8 0.9		(decreasing factor of delta)
+deltares: 	1e-3 1e-4 1e-5		(new min, how should delta restart, big/small)
