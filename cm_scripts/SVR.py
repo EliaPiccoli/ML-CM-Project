@@ -42,7 +42,7 @@ class SVR:
         model_as_string += "\nBox: "+str(self.box)
         return model_as_string
 
-    def fit(self, x, y, optim_args, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False, fit_time=True):
+    def fit(self, x, y, optim_args, target_func_value, max_error_target_func_value, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False, fit_time=True):
         start = time.time()
         # save input, output and optimization arguments
         self.xs = x
@@ -58,7 +58,7 @@ class SVR:
         # it is possible to initialize betas beforehand if one desires (beta is lagrangian variable ensemble, explained in report section 2) 
         beta_init = np.vstack(np.zeros(self.xs.shape[0])) if beta_init is None else beta_init
         optim_args['vareps'] = self.eps if 'vareps' not in optim_args else optim_args['vareps']
-        self.beta, self.status, self.history = solveDeflected(beta_init, self.ys, self.K, self.box, optim_args=optim_args, verbose=optim_verbose) # train the model
+        self.beta, self.status, self.history = solveDeflected(beta_init, self.ys, self.K, self.box, target_func_value=target_func_value, max_error_target_func_value=max_error_target_func_value, optim_args=optim_args, verbose=optim_verbose) # train the model
         self.betas_history = np.array(self.history['lagrangian']) # save the development of betas for optional eps_ins_loss plot
         if convergence_verbose: # plot convergence rate - logaritmic residual error
             _, axs = plt.subplots(2)

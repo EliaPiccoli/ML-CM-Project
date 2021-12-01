@@ -14,7 +14,7 @@ def unrollArgs(optim_args):
         psi         : discount factor for the stepsize                      [ psi <= alpha]
     """
     vareps = optim_args['vareps'] if 'vareps' in optim_args else 0.1
-    maxiter = optim_args['maxiter'] if 'maxiter' in optim_args else 10000
+    maxiter = optim_args['maxiter'] if 'maxiter' in optim_args else 1e6  # exagerated to avoid early finish
     deltares = optim_args['deltares'] if 'deltares' in optim_args else 1e-4
     rho = optim_args['rho'] if 'rho' in optim_args else 0.95
     eps = optim_args['eps'] if 'eps' in optim_args else 0.1
@@ -29,7 +29,7 @@ def projectDirection(x, d, box, eps=1e-10):
             d[i] = 0 # zero out the direction dims leading out of constrained box
     return d
 
-def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False):
+def solveDeflected(x, y, K, box, optim_args, target_func_value, max_error_target_func_value, return_history=True, verbose=False):
     """
         x   : initial values of betas      [ vector of zero -> linear and box constraints satisfied ]
         y   : output vector
@@ -45,11 +45,17 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
     prevnormg = math.inf # gradient norm at previous step
     history = {'lagrangian': [], 'f': []} # dictionary needed for plotting after computation
     while True:
+        if abs(fref - target_func_value) <= max_error_target_func_value:
+            # acceptable condition reached
+            if return_history:
+                history['fstar'] = fref # save minimum function value
+                return xref, 'acceptable', history
+            return xref, 'acceptable', None
         if i > maxiter:
             # stopped condition reached
             if return_history:
                 history['fstar'] = fref # save minimum function value
-                return x, 'stopped', history
+                return xref, 'stopped', history
             return xref, 'stopped', None
         v = (0.5 * np.dot(np.dot(np.transpose(x), K), x) 
             + vareps * np.sum(np.abs(x))
@@ -61,7 +67,7 @@ def solveDeflected(x, y, K, box, optim_args, return_history=True, verbose=False)
         if norm_g < 1e-10:
             # optimal condition reached
             if return_history:
-                history['fstar'] = fref
+                history['fstar'] = v
                 return x, 'optimal', history
             return x, 'optimal', None
         # reset delta if v is good or decrease it otherwise
