@@ -43,7 +43,7 @@ def solveDeflected(x, y, K, box, optim_args, target_func_value, max_error_target
     dprev = np.zeros((x.size,1)) # previous direction needed for deflection
     i = 0 # iteration count
     prevnormg = math.inf # gradient norm at previous step
-    history = {'lagrangian': [], 'f': []} # dictionary needed for plotting after computation
+    history = {'f': []} # dictionary needed for plotting after computation
     while True:
         if abs(fref - target_func_value) <= max_error_target_func_value:
             # acceptable condition reached
@@ -86,5 +86,4 @@ def solveDeflected(x, y, K, box, optim_args, target_func_value, max_error_target
         x = x - nu*dproj # get new point coordinates
         x = solveKP(box, 0, x, False) # project new point to follow constraints
         i += 1 # next iteration
-        history['lagrangian'].append(x)
         history['f'].append(v)

@@ -1,5 +1,6 @@
 import numpy as np
 import time
+import math
 import kernel
 from deflected_subgradient import solveDeflected
 import matplotlib.pyplot as plt
@@ -42,7 +43,7 @@ class SVR:
         model_as_string += "\nBox: "+str(self.box)
         return model_as_string
 
-    def fit(self, x, y, optim_args, target_func_value, max_error_target_func_value, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False, fit_time=True):
+    def fit(self, x, y, optim_args, target_func_value=None, max_error_target_func_value=None, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False, fit_time=True):
         start = time.time()
         # save input, output and optimization arguments
         self.xs = x
@@ -54,12 +55,16 @@ class SVR:
             self.K, self.gamma_value = kernel.get_kernel(self)
         else:
             self.K, self.gamma_value = precomp_kernel[0], precomp_kernel[1]
+
+        # initialize target goal and error if not present (means it is not needed for this run)
+        if target_func_value is None:
+            target_func_value = math.inf
+            max_error_target_func_value = 1e-12
         
         # it is possible to initialize betas beforehand if one desires (beta is lagrangian variable ensemble, explained in report section 2) 
         beta_init = np.vstack(np.zeros(self.xs.shape[0])) if beta_init is None else beta_init
         optim_args['vareps'] = self.eps if 'vareps' not in optim_args else optim_args['vareps']
         self.beta, self.status, self.history = solveDeflected(beta_init, self.ys, self.K, self.box, target_func_value=target_func_value, max_error_target_func_value=max_error_target_func_value, optim_args=optim_args, verbose=optim_verbose) # train the model
-        self.betas_history = np.array(self.history['lagrangian']) # save the development of betas for optional eps_ins_loss plot
         if convergence_verbose: # plot convergence rate - logaritmic residual error
             _, axs = plt.subplots(2)
             plot_conv_rate = []
@@ -77,21 +82,6 @@ class SVR:
             self.W = np.dot(self.betasv.T, self.sv)
         if fit_time:
             print(f"Fit time: {time.time() - start}, #SV: {len(self.betasv)}")
-
-    # really slow process..
-    def plot_loss(self): 
-        temp_beta, temp_sv, temp_betasv, temp_intercept = self.beta, self.sv, self.betasv, self.intercept
-        loss_vect = []
-        for betas in self.betas_history:
-            self.beta = betas
-            flag = self.compute_sv(plotting=True)
-            if not flag:
-                continue
-            y_pred = [float(self.predict(self.xs[i])) for i in range(len(self.xs))]
-            loss_vect.append(self.eps_ins_loss(y_pred, self.ys))
-        plt.plot(range(len(loss_vect)),loss_vect)
-        plt.show()
-        self.beta, self.sv, self.betasv, self.intercept = temp_beta, temp_sv, temp_betasv, temp_intercept
 
     def compute_sv(self, plotting=False):
         mask = np.logical_or(self.beta > 1e-6, self.beta < -1e-6)
