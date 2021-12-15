@@ -4,6 +4,7 @@ import math
 import time
 import get_cup_dataset as dt
 import pickle
+import copy
 
 from SVR import SVR
 import kernel as k
@@ -71,19 +72,16 @@ class Gridsearch():
         
         print(f"(GS - SVR) - Fitting {len(models_conf)} models")
         start_fit = time.time()
+        f_bests = np.zeros(len(models_conf))
         for i, model in enumerate(models_conf):
             print(f"(GS - SVR) - model {i+1}/{len(models_conf)}", sep=" ")
-            model.fit(inp, out, self.opti_args[i%len(self.opti_args)], target_func_value=target_func_value[model.kernel], max_error_target_func_value=max_error_target_func_value, optim_verbose=False, convergence_verbose=convergence_verbose)
-            print(f"\n\t(GS - SVR) - Time taken: {time.time() - start_fit} - Remaining: {(time.time() - start_fit) / (i+1) * (len(models_conf)-i-1)}")
-            model = SVR(kernel='linear')  # make it blank once again, free memory 
-        print("(GS - SVR) - Evaluating models")
-
-        # create an array to store the f_best of the various model as they are the mean of comparison
-        f_bests = np.zeros(len(models_conf))
-        for i in range(len(models_conf)):
+            copied_model = copy.deepcopy(model)
+            copied_model.fit(inp, out, self.opti_args[i%len(self.opti_args)], target_func_value=target_func_value[model.kernel], max_error_target_func_value=max_error_target_func_value, optim_verbose=False, convergence_verbose=convergence_verbose)
             print("_"*100)
-            print(f"(GS - SVR) - SVR: {i} \nEXIT_STATUS: {models_conf[i].status} - F_BEST: {models_conf[i].history['fstar']} \nMODEL_OPTIM_ARGS: {models_conf[i].optim_args} \nMODEL_KERNEL(name/gamma/degree/coef0): {models_conf[i].kernel} {models_conf[i].gamma_value}/{models_conf[i].degree}/{models_conf[i].coef} \nMODEL_BOX: {models_conf[i].box}\n")
-            f_bests[i] = models_conf[i].history['fstar']
+            print(f"\n\t(GS - SVR) - Time taken: {time.time() - start_fit} - Remaining: {(time.time() - start_fit) / (i+1) * (len(models_conf)-i-1)}")
+            print(f"(GS - SVR) - SVR: {i} \nEXIT_STATUS: {copied_model.status} - F_BEST: {copied_model.history['fstar']} \nMODEL_OPTIM_ARGS: {copied_model.optim_args} \nMODEL_KERNEL(name/gamma/degree/coef0): {copied_model.kernel} {copied_model.gamma_value}/{copied_model.degree}/{copied_model.coef} \nMODEL_BOX: {copied_model.box}\n")
+            f_bests[i] = copied_model.history['fstar']
+            del copied_model
         
         # check if the number of requested models is valid
         n_best = n_best if n_best <= len(models_conf) else len(models_conf)
@@ -184,7 +182,6 @@ if __name__ == '__main__':
                 {'alpha': 0.7, 'psi': 0.7, 'eps': 0.01, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
                 {'alpha': 0.7, 'psi': 0.15, 'eps': 0.005, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
                 {'alpha': 0.7, 'psi': 0.7, 'eps': 0.005, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter}]
-    print(optiargs)
     gs.set_parameters(
         kernel=["linear"],
         kparam=[{}],
