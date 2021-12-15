@@ -75,7 +75,7 @@ class Gridsearch():
             print(f"(GS - SVR) - model {i+1}/{len(models_conf)}", sep=" ")
             model.fit(inp, out, self.opti_args[i%len(self.opti_args)], target_func_value=target_func_value[model.kernel], max_error_target_func_value=max_error_target_func_value, optim_verbose=False, convergence_verbose=convergence_verbose)
             print(f"\n\t(GS - SVR) - Time taken: {time.time() - start_fit} - Remaining: {(time.time() - start_fit) / (i+1) * (len(models_conf)-i-1)}")
-        
+            model = SVR(kernel='linear')  # make it blank once again, free memory 
         print("(GS - SVR) - Evaluating models")
 
         # create an array to store the f_best of the various model as they are the mean of comparison
@@ -129,11 +129,13 @@ if __name__ == '__main__':
 
     # setting the objective targets, divided by kernel, gotten with sklearn
     target_func_value = {'linear':-3138.9592, 'poly':-22463.8118, 'rbf':-18917.8941}
-
+    """
+    # the old way
     gs = Gridsearch()
     # create all the combinations using the requested algorithmic parameters
     optiargs = create_algorithmic_configurations(alphas=[0.3, 0.5, 0.7], epses=[0.1, 0.01, 0.005], rhos=[0.6, 0.8, 0.9], deltareses=[1e-3, 1e-4, 1e-5])
     # optiargs = create_algorithmic_configurations(alphas=[0.3], epses=[0.1], rhos=[0.6], deltareses=[1e-3])  # for testing everything works
+    print(optiargs)
     gs.set_parameters(
         kernel=["linear"],
         kparam=[{}],
@@ -150,3 +152,53 @@ if __name__ == '__main__':
     with open(save_path, "wb") as f:
         pickle.dump({"models": best_models}, f, protocol=pickle.HIGHEST_PROTOCOL)
         print(f"GridSearch output succesfully saved to {save_path}")
+    """
+
+    # the new, beautiful, fast, ep no rabia way
+    gs = Gridsearch() 
+    maxiter = 3 # 100000
+    # get all the combinations using the requested algorithmic parameters
+    optiargs = [{'alpha': 0.3, 'psi': 0.075, 'eps': 0.01, 'rho': 0.6, 'deltares': 0.001, 'maxiter': maxiter},
+                {'alpha': 0.3, 'psi': 0.15, 'eps': 0.1, 'rho': 0.8, 'deltares': 0.0001, 'maxiter': maxiter},
+                {'alpha': 0.3, 'psi': 0.15, 'eps': 0.01, 'rho': 0.9, 'deltares': 0.00001, 'maxiter': maxiter},
+                {'alpha': 0.3, 'psi': 0.3, 'eps': 0.005, 'rho': 0.99, 'deltares': 0.000001, 'maxiter': maxiter},
+
+                {'alpha': 0.5, 'psi': 0.075, 'eps': 0.1, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.15, 'eps': 0.1, 'rho': 0.8, 'deltares': 0.00005, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.3, 'eps': 0.1, 'rho': 0.9, 'deltares': 0.0001, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.5, 'eps': 0.1, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.075, 'eps': 0.01, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.15, 'eps': 0.01, 'rho': 0.8, 'deltares': 0.00005, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.3, 'eps': 0.01, 'rho': 0.9, 'deltares': 0.0001, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.5, 'eps': 0.01, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.15, 'eps': 0.005, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
+                {'alpha': 0.5, 'psi': 0.3, 'eps': 0.005, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
+
+                {'alpha': 0.7, 'psi': 0.15, 'eps': 0.1, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.3, 'eps': 0.1, 'rho': 0.8, 'deltares': 0.00005, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.5, 'eps': 0.1, 'rho': 0.9, 'deltares': 0.0001, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.7, 'eps': 0.1, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.15, 'eps': 0.01, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.3, 'eps': 0.01, 'rho': 0.8, 'deltares': 0.00005, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.5, 'eps': 0.01, 'rho': 0.9, 'deltares': 0.0001, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.7, 'eps': 0.01, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.15, 'eps': 0.005, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
+                {'alpha': 0.7, 'psi': 0.7, 'eps': 0.005, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter}]
+    print(optiargs)
+    gs.set_parameters(
+        kernel=["linear"],
+        kparam=[{}],
+        box=[1], # taken from champion of previous analysis
+        eps=[1], # taken from champion of previous analysis
+        optiargs=optiargs
+    )
+    best_models = gs.run(
+        data, data_out, target_func_value=target_func_value, n_best=5
+    )
+
+    # save best models to output file
+    save_path = os.path.dirname(__file__) + "/gs_models/gs_out"
+    with open(save_path, "wb") as f:
+        pickle.dump({"models": best_models}, f, protocol=pickle.HIGHEST_PROTOCOL)
+        print(f"GridSearch output succesfully saved to {save_path}")
+    
