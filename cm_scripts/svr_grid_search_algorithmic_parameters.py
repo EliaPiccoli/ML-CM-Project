@@ -162,8 +162,10 @@ if __name__ == '__main__':
                 {'alpha': 0.3, 'psi': 0.3, 'eps': 0.005, 'rho': 0.99, 'deltares': 0.000001, 'maxiter': maxiter},
 
                 {'alpha': 0.5, 'psi': 0.075, 'eps': 0.1, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
+                # top 
                 {'alpha': 0.5, 'psi': 0.15, 'eps': 0.1, 'rho': 0.8, 'deltares': 0.00005, 'maxiter': maxiter},
                 {'alpha': 0.5, 'psi': 0.3, 'eps': 0.1, 'rho': 0.9, 'deltares': 0.0001, 'maxiter': maxiter},
+                
                 {'alpha': 0.5, 'psi': 0.5, 'eps': 0.1, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
                 {'alpha': 0.5, 'psi': 0.075, 'eps': 0.01, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
                 {'alpha': 0.5, 'psi': 0.15, 'eps': 0.01, 'rho': 0.8, 'deltares': 0.00005, 'maxiter': maxiter},
@@ -172,9 +174,11 @@ if __name__ == '__main__':
                 {'alpha': 0.5, 'psi': 0.15, 'eps': 0.005, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
                 {'alpha': 0.5, 'psi': 0.3, 'eps': 0.005, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
 
+                # top
                 {'alpha': 0.7, 'psi': 0.15, 'eps': 0.1, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
                 {'alpha': 0.7, 'psi': 0.3, 'eps': 0.1, 'rho': 0.8, 'deltares': 0.00005, 'maxiter': maxiter},
                 {'alpha': 0.7, 'psi': 0.5, 'eps': 0.1, 'rho': 0.9, 'deltares': 0.0001, 'maxiter': maxiter},
+                
                 {'alpha': 0.7, 'psi': 0.7, 'eps': 0.1, 'rho': 0.99, 'deltares': 0.001, 'maxiter': maxiter},
                 {'alpha': 0.7, 'psi': 0.15, 'eps': 0.01, 'rho': 0.6, 'deltares': 0.00001, 'maxiter': maxiter},
                 {'alpha': 0.7, 'psi': 0.3, 'eps': 0.01, 'rho': 0.8, 'deltares': 0.00005, 'maxiter': maxiter},
