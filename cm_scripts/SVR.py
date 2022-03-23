@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 class SVR:
     """
-    class objective is to fully and intuitively handle the functioning of a Support Vector Regression model through few main function calls:
+    Class objective is to fully and intuitively handle the functioning of a Support Vector Regression model through few main function calls:
         'constructor' to initialize
         'fit' to train the model
         'predict' to test the model
@@ -44,6 +44,20 @@ class SVR:
         return model_as_string
 
     def fit(self, x, y, optim_args, target_func_value=None, max_error_target_func_value=None, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False, fit_time=True):
+        """_summary_
+
+        Args:
+            x (_type_): _description_
+            y (_type_): _description_
+            optim_args (_type_): _description_
+            target_func_value (_type_, optional): _description_. Defaults to None.
+            max_error_target_func_value (_type_, optional): _description_. Defaults to None.
+            beta_init (_type_, optional): _description_. Defaults to None.
+            precomp_kernel (_type_, optional): _description_. Defaults to None.
+            optim_verbose (bool, optional): _description_. Defaults to True.
+            convergence_verbose (bool, optional): _description_. Defaults to False.
+            fit_time (bool, optional): _description_. Defaults to True.
+        """
         start = time.time()
         # save input, output and optimization arguments
         self.xs = x
@@ -58,7 +72,7 @@ class SVR:
 
         # initialize target goal and error if not present (means it is not needed for this run)
         if target_func_value is None:
-            target_func_value = math.inf
+            target_func_value = -math.inf
             max_error_target_func_value = 1e-12
         
         # it is possible to initialize betas beforehand if one desires (beta is lagrangian variable ensemble, explained in report section 2) 
@@ -83,11 +97,11 @@ class SVR:
         if fit_time:
             print(f"Fit time: {time.time() - start}, #SV: {len(self.betasv)}")
 
-    def compute_sv(self, plotting=False):
+    def compute_sv(self):
+        """_summary_
+        """
         mask = np.logical_or(self.beta > 1e-6, self.beta < -1e-6)
         if True not in mask: # take min and max if no relevant support vector is present
-            if plotting:
-                return False
             mask = np.logical_or(self.beta == np.max(self.beta), self.beta == np.min(self.beta))
 
         support = np.vstack(np.vstack(np.arange(len(self.beta)))[mask]) # get array only of support vectors indexes
@@ -102,8 +116,7 @@ class SVR:
             for j in range(self.beta.size):
                 self.intercept -= self.beta[j] * self.K[j, support[i]]
         self.intercept /= self.betasv.size # average bias
-        self.intercept -= self.eps # -eps -eps -eps
-        return True
+        self.intercept -= self.eps # -eps
     
     def predict(self, x):
         x = np.array([x]) # x is test input
@@ -112,12 +125,7 @@ class SVR:
             prediction = np.dot(self.W, x.T) + self.intercept
             return prediction
 
-        # TODO discuss with ep
-        # if isinstance(self.gamma, str):
-        #     gamma = 1/(self.sv.shape[1]*self.sv.var()) if self.gamma == "scale" else 1/(self.sv.shape[1])
-        # else:
-        #     gamma = self.gamma
-        gamma = self.gamma_value # why not?!
+        gamma = self.gamma_value
 
         # predict accordingly to the kernel
         if self.kernel == 'rbf':
@@ -135,8 +143,3 @@ class SVR:
         for i in range(len(y)):
             loss += (abs(y[i]-y_pred[i]) - self.eps)**2 if abs(y[i]-y_pred[i]) > self.eps else 0
         return loss
-
-
-# get table of best results per kernel
-# get plots of conv rate and log residual
-# talk about the dataset, how experiments were carried on, what results we expect, results we actually get and analysis, timings. Comparison with baseline

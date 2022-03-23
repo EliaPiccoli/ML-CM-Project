@@ -7,14 +7,14 @@ def unrollArgs(optim_args):
     """
         vareps      : radius of epsilon-tube
         maxiter     : maximum number of iterations
-        deltares    : reset value for delta                                 [ used if we find a better point than the current estimate ]
-        rho         : discount factor for delta                             [ used if we don't find a better point ]
+        deltares    : reset value for delta
+        rho         : discount factor for delta
         eps         : minimum relative value for the displacement of delta
         alpha       : deflection coefficient                                [ alpha in (0,1)]
         psi         : discount factor for the stepsize                      [ psi <= alpha]
     """
     vareps = optim_args['vareps'] if 'vareps' in optim_args else 0.1
-    maxiter = optim_args['maxiter'] if 'maxiter' in optim_args else 1e6  # exagerated to avoid early finish
+    maxiter = optim_args['maxiter'] if 'maxiter' in optim_args else 1e5
     deltares = optim_args['deltares'] if 'deltares' in optim_args else 1e-4
     rho = optim_args['rho'] if 'rho' in optim_args else 0.95
     eps = optim_args['eps'] if 'eps' in optim_args else 0.1

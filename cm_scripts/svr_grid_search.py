@@ -3,9 +3,8 @@ import copy
 import math
 import matplotlib.pyplot as plt
 import time
-
-from SVR import SVR
 import kernel as k
+from SVR import SVR
 
 class Gridsearch():
     def __init__(self):

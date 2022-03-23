@@ -1,0 +1,177 @@
+GridSearching first y dim..
+Poly gridsearch..
+(GS - SVR) - Creating models
+(GS - SVR) - Fitting 10 models
+(GS - SVR) - model 1/10
+        (GS - SVR) - Time taken: 80.67936539649963 - Remaining: 726.1142885684967
+(GS - SVR) - model 2/10
+        (GS - SVR) - Time taken: 160.15387678146362 - Remaining: 640.6155071258545
+(GS - SVR) - model 3/10
+        (GS - SVR) - Time taken: 238.16683912277222 - Remaining: 555.7226246198018
+(GS - SVR) - model 4/10
+        (GS - SVR) - Time taken: 316.0622007846832 - Remaining: 474.09330117702484
+(GS - SVR) - model 5/10
+        (GS - SVR) - Time taken: 395.5927736759186 - Remaining: 395.5927736759186
+(GS - SVR) - model 6/10
+        (GS - SVR) - Time taken: 470.5620789527893 - Remaining: 313.70805263519287
+(GS - SVR) - model 7/10
+        (GS - SVR) - Time taken: 548.0245168209076 - Remaining: 234.86765006610327
+(GS - SVR) - model 8/10
+        (GS - SVR) - Time taken: 625.1025161743164 - Remaining: 156.2756290435791
+(GS - SVR) - model 9/10
+        (GS - SVR) - Time taken: 701.5280547142029 - Remaining: 77.94756163491144
+(GS - SVR) - model 10/10
+        (GS - SVR) - Time taken: 779.6915636062622 - Remaining: 0.0
+(GS - SVR) - Evaluating models
+(GS - SVR) - SVR: 0 - TR MEE 13.100923784911851 - VL MEE 13.412815881936277 - MODEL:
+Kernel: poly
+Gamma: 0.1      Degree: 3       Coef: 0
+Intercept: [48.47035801]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 1 - TR MEE 13.185834053707174 - VL MEE 13.499302976450398 - MODEL:
+Kernel: poly
+Gamma: 0.1      Degree: 3       Coef: 0
+Intercept: [48.50348302]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 2 - TR MEE 4.352912330738434 - VL MEE 4.480960148532976 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [47.04879072]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 3 - TR MEE 10.186940496841574 - VL MEE 10.474501765637457 - MODEL:
+Kernel: poly
+Gamma: 1        Degree: 3       Coef: 0
+Intercept: [48.12157065]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 4 - TR MEE 4.066920383603119 - VL MEE 4.101283595926183 - MODEL:
+Kernel: poly
+Gamma: 2        Degree: 3       Coef: 0
+Intercept: [47.18146428]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 5 - TR MEE 4.705111181943745 - VL MEE 4.79306645003204 - MODEL:
+Kernel: poly
+Gamma: 2        Degree: 3       Coef: 0
+Intercept: [47.13851941]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 6 - TR MEE 3.8341551421565807 - VL MEE 3.7974370982479084 - MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.32060924]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 7 - TR MEE 4.111762291308751 - VL MEE 4.181515739933678 - MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.25177986]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 8 - TR MEE 3.6901213710578893 - VL MEE 3.860053434682714 - MODEL:
+Kernel: poly
+Gamma: 10       Degree: 3       Coef: 0
+Intercept: [47.41830642]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 9 - TR MEE 5.949648086287622 - VL MEE 5.94387268479339 - MODEL:
+Kernel: poly
+Gamma: 10       Degree: 3       Coef: 0
+Intercept: [47.29749988]\Optim_args: {'eps': 0.0005, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - Best configuration: 6
+BEST COARSE GRID SEARCH MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.32060924]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+['poly', 'poly', 'poly'] [{'gamma': 5, 'degree': 3, 'coef': 0}, {'gamma': 4.9688541453375485, 'degree': 3, 'coef': -0.5147852631389684}, {'gamma': 5.018535975373521, 'degree': 3, 'coef': 0.7526071673914223}] [{'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}, {'eps': 0.06270621393092894, 'vareps': 0.003575652189661183, 'maxiter': 3000.0}, {'eps': 0.03944418141447502, 'vareps': 0.09989503182618882, 'maxiter': 3000.0}]
+(GS - SVR) - Creating models
+(GS - SVR) - Fitting 9 models
+(GS - SVR) - model 1/9
+        (GS - SVR) - Time taken: 79.32374095916748 - Remaining: 634.5899276733398
+(GS - SVR) - model 2/9
+        (GS - SVR) - Time taken: 156.0659534931183 - Remaining: 546.230837225914
+(GS - SVR) - model 3/9
+        (GS - SVR) - Time taken: 233.15338945388794 - Remaining: 466.3067789077759
+(GS - SVR) - model 4/9
+        (GS - SVR) - Time taken: 308.2573802471161 - Remaining: 385.3217253088951
+(GS - SVR) - model 5/9
+        (GS - SVR) - Time taken: 381.6920750141144 - Remaining: 305.3536600112915
+(GS - SVR) - model 6/9
+        (GS - SVR) - Time taken: 452.93524050712585 - Remaining: 226.46762025356293
+(GS - SVR) - model 7/9
+        (GS - SVR) - Time taken: 526.1398618221283 - Remaining: 150.32567480632238
+(GS - SVR) - model 8/9
+        (GS - SVR) - Time taken: 602.7435111999512 - Remaining: 75.3429388999939
+(GS - SVR) - model 9/9
+        (GS - SVR) - Time taken: 676.1530010700226 - Remaining: 0.0
+(GS - SVR) - Evaluating models
+(GS - SVR) - SVR: 0 - TR MEE 3.8341551421565807 - VL MEE 3.7974370982479084 - MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.32060924]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 1 - TR MEE 3.6553949332764235 - VL MEE 3.867955267649173 - MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.41115531]\Optim_args: {'eps': 0.06270621393092894, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 2 - TR MEE 3.69505122337242 - VL MEE 3.8049484564997815 - MODEL:
+Kernel: poly
+Gamma: 5        Degree: 3       Coef: 0
+Intercept: [47.38204653]\Optim_args: {'eps': 0.03944418141447502, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 3 - TR MEE 19.414290147009623 - VL MEE 21.178123570066326 - MODEL:
+Kernel: poly
+Gamma: 4.9688541453375485       Degree: 3       Coef: -0.5147852631389684
+Intercept: [65.09559428]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 4 - TR MEE 216786.87718136507 - VL MEE 226104.12344530039 - MODEL:
+Kernel: poly
+Gamma: 4.9688541453375485       Degree: 3       Coef: -0.5147852631389684
+Intercept: [491511.48335712]\Optim_args: {'eps': 0.06270621393092894, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 5 - TR MEE 188943.1399898828 - VL MEE 199956.14454727055 - MODEL:
+Kernel: poly
+Gamma: 4.9688541453375485       Degree: 3       Coef: -0.5147852631389684
+Intercept: [381174.20397149]\Optim_args: {'eps': 0.03944418141447502, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 6 - TR MEE 3.439393776234975 - VL MEE 3.2751736205214796 - MODEL:
+Kernel: poly
+Gamma: 5.018535975373521        Degree: 3       Coef: 0.7526071673914223
+Intercept: [46.55380173]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 7 - TR MEE 2.940848841934778 - VL MEE 3.108370363133227 - MODEL:
+Kernel: poly
+Gamma: 5.018535975373521        Degree: 3       Coef: 0.7526071673914223
+Intercept: [46.40003004]\Optim_args: {'eps': 0.06270621393092894, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 8 - TR MEE 3.1084937717269208 - VL MEE 3.155455110426214 - MODEL:
+Kernel: poly
+Gamma: 5.018535975373521        Degree: 3       Coef: 0.7526071673914223
+Intercept: [46.37865542]\Optim_args: {'eps': 0.03944418141447502, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - Best configuration: 7
+BEST FINE GRID SEARCH MODEL:
+Kernel: poly
+Gamma: 5.018535975373521        Degree: 3       Coef: 0.7526071673914223
+Intercept: [46.40003004]\Optim_args: {'eps': 0.06270621393092894, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+T LOSS: 14346.528325720816
+V LOSS: 4137.459589060413
+Time taken: 1615.6089534759521
+LOSS: 6876.2714991189305  - MEE 3.5691898754789704

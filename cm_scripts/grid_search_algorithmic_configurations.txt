@@ -4,9 +4,6 @@ Per ogni alpha si è cercato di variare psi da valori piccoli (1/4 di alpha) ad 
 rho da valore basso di 0.6 a 0.99 e res variabile, da 1e-6 a 1e-3
 Per alpha 0.3 la variabilità è ridotta dato che ci aspettiamo già sia un modello scarso.
 
-
-
-
 {'alpha': 0.3, 'psi': 0.075, 'eps': 0.01, 'rho': 0.6, 'deltares': 0.001},
 {'alpha': 0.3, 'psi': 0.15, 'eps': 0.1, 'rho': 0.8, 'deltares': 0.0001},
 {'alpha': 0.3, 'psi': 0.15, 'eps': 0.01, 'rho': 0.9, 'deltares': 0.00001},

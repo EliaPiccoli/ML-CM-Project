@@ -1,0 +1,24 @@
+(GS - SVR) - SVR: 0 - TR MEE 13.023553867545534 - VL MEE 13.133424317809661 - MODEL:
+Kernel: sigmoid
+Gamma: 10       Coef: 0
+Intercept: [48.13002121]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
+
+(GS - SVR) - SVR: 1 - TR MEE 57.590408243490245 - VL MEE 59.383376441573844 - MODEL:
+Kernel: sigmoid
+Gamma: 10       Coef: 0
+Intercept: [66.66833284]\Optim_args: {'eps': 0.09609439147504381, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - SVR: 2 - TR MEE 13.068535401787035 - VL MEE 13.177847020228578 - MODEL:
+Kernel: sigmoid
+Gamma: 10       Coef: 0
+Intercept: [48.12718639]\Optim_args: {'eps': 0.007458409294472797, 'vareps': 0.1, 'maxiter': 3000.0}
+Box: 1
+
+(GS - SVR) - Best configuration: 0
+BEST FINE GRID SEARCH MODEL:
+Kernel: sigmoid
+Gamma: 10       Coef: 0
+Intercept: [48.13002121]\Optim_args: {'eps': 0.01, 'maxiter': 3000.0, 'vareps': 0.1}
+Box: 1
