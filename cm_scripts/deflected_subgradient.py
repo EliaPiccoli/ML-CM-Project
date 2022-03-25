@@ -4,7 +4,8 @@ import copy
 import math
 
 def unrollArgs(optim_args):
-    """
+    """Extract all optimization arguments or set them to default value
+
         vareps      : radius of epsilon-tube
         maxiter     : maximum number of iterations
         deltares    : reset value for delta
@@ -23,6 +24,17 @@ def unrollArgs(optim_args):
     return vareps, maxiter, deltares, rho, eps, alpha, psi
 
 def projectDirection(x, d, box, eps=1e-10):
+    """Compute projection of the gradient given a box constraint
+
+    Args:
+        x (np.array): list of current values of variables
+        d (np.array): gradient
+        box (float): box constraint (C)
+        eps (float, optional): projection threshold. Defaults to 1e-10.
+
+    Returns:
+        np.array: projected gradient
+    """
     # to avoid reaching a set of coordinates out of the constrained box
     for i in range(len(d)):
         if (abs(-box-x[i]) < eps and d[i] < 0) or (box - x[i] < eps and d[i] > 0):
@@ -30,11 +42,23 @@ def projectDirection(x, d, box, eps=1e-10):
     return d
 
 def solveDeflected(x, y, K, box, optim_args, target_func_value, max_error_target_func_value, return_history=True, verbose=False):
-    """
-        x   : initial values of betas      [ vector of zero -> linear and box constraints satisfied ]
-        y   : output vector
-        K   : kernel matrix
-        box : value for box contraint      [ x in (-box, box) ]
+    """Compute deflected subgradient algorithm
+
+    Args:
+        x (np.array): initial betas
+        y (np.array): output vector
+        K (np.array): kernel matrix
+        box (float): box constraint (C)
+        optim_args (dict): dictionary with optimization parameters
+        target_func_value (float): optimal value used as goal
+        max_error_target_func_value (float): relative error wrt target_func_value to get 'acceptable' solution
+        return_history (bool, optional): return dict with history of optimization procedure. Defaults to True.
+        verbose (bool, optional): verbose output. Defaults to False.
+
+    Returns:
+        np.array: optimal betas
+        str: exit status of optimization algorithm
+        dict: (optinal) history of optimization process
     """
     vareps, maxiter, deltares, rho, eps, alpha, psi = unrollArgs(optim_args) # get all parameters needed for the algorithm
     xref = copy.deepcopy(x) # set reference point
