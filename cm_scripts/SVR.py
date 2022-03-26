@@ -13,6 +13,14 @@ class SVR:
         'predict' to test the model
     """
     def __init__(self, kernel, kernel_args={}, box=1.0, eps=0.1):
+        """ initialize svr model only with model parameters
+
+        Args:
+            kernel (string): can either be 'linear' 'poly' 'sigmoid' or 'rbf'
+            kernel_args (dict, optional): contains parameters specific to kernel, therefore 'gamma' 'degree' and 'coefficient'. Defaults to {}.
+            box (float, optional): model 'C' parameter. Defaults to 1.0.
+            eps (float, optional): model epsilon tube width parameter. Defaults to 0.1.
+        """        
         self.kernel = kernel # string identifying model kernel
         self.box = box       # value for the C parameter, constraining the dual representation
         self.eps = eps       # value for epsilon-tube width
@@ -24,6 +32,11 @@ class SVR:
         self.optim_args = None # will save parameters needed for deflected subgradient optimization process
     
     def __str__(self):
+        """function to print out model 
+
+        Returns:
+            string: string representing model
+        """        
         model_as_string = '\n'
         model_as_string += "Kernel: "+self.kernel
         if self.optim_args is not None: # model fit has happened
@@ -44,19 +57,20 @@ class SVR:
         return model_as_string
 
     def fit(self, x, y, optim_args, target_func_value=None, max_error_target_func_value=None, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False, fit_time=True):
-        """_summary_
+        """function to fit model, given data and parameters relating to the algorithm
 
         Args:
-            x (_type_): _description_
-            y (_type_): _description_
-            optim_args (_type_): _description_
-            target_func_value (_type_, optional): _description_. Defaults to None.
-            max_error_target_func_value (_type_, optional): _description_. Defaults to None.
-            beta_init (_type_, optional): _description_. Defaults to None.
-            precomp_kernel (_type_, optional): _description_. Defaults to None.
-            optim_verbose (bool, optional): _description_. Defaults to True.
-            convergence_verbose (bool, optional): _description_. Defaults to False.
-            fit_time (bool, optional): _description_. Defaults to True.
+            x (tensor): input data
+            y (tensor): output data
+            optim_args (dict): dictionary containing all algorithmic parameters relating to deflected subgradient
+            target_func_value (float, optional): necessary if 'accepted' convergence condition is wanted. Defaults to None.
+            max_error_target_func_value (float, optional): range of error around target_func_value to define 'accepted' convergence condition. Defaults to None.
+            beta_init (list, optional): to define initial values of lagrangian multiplier differences. Has to sum to 0. Defaults to None.
+            precomp_kernel (list, optional): containing precomputed kernel in position 0, gamma value for the kernel in position 1. Defaults to None.
+            optim_verbose (bool, optional): if True then step by step details during optimization will be printed out. Defaults to True.
+            convergence_verbose (bool, optional): if True then at the end of fitting plots on convergence rate and logarithmic residual error
+                will be shown (taking final fref as fstar/fbest). Defaults to False.
+            fit_time (bool, optional): if True then at end of fitting prints out number of SV as well as computation time. Defaults to True.
         """
         start = time.time()
         # save input, output and optimization arguments
@@ -98,8 +112,8 @@ class SVR:
             print(f"Fit time: {time.time() - start}, #SV: {len(self.betasv)}")
 
     def compute_sv(self):
-        """_summary_
-        """
+        """function to be called after solving the deflected subgradient algorithm, computes the SV given the final lagrangian values
+        """        
         mask = np.logical_or(self.beta > 1e-6, self.beta < -1e-6)
         if True not in mask: # take min and max if no relevant support vector is present
             mask = np.logical_or(self.beta == np.max(self.beta), self.beta == np.min(self.beta))
@@ -119,6 +133,14 @@ class SVR:
         self.intercept -= self.eps # -eps
     
     def predict(self, x):
+        """function to output model prediction on given data 'x'
+
+        Args:
+            x (tensor): input data
+
+        Returns:
+            tensor: output data
+        """        
         x = np.array([x]) # x is test input
         if self.kernel == 'linear':
             # linear prediction is treated differently
@@ -138,7 +160,15 @@ class SVR:
         return prediction
 
     def eps_ins_loss(self, y, y_pred):
-        # calculate loss value given ground truth and predicted output
+        """function to calculate loss value given ground truth and predicted output
+
+        Args:
+            y (tensor): ground truth data
+            y_pred (tensor): predicted data
+
+        Returns:
+            float: value representing error between data and prediction, assuming a margin of accepted error
+        """        
         loss = 0
         for i in range(len(y)):
             loss += (abs(y[i]-y_pred[i]) - self.eps)**2 if abs(y[i]-y_pred[i]) > self.eps else 0

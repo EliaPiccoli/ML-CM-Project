@@ -10,7 +10,7 @@ from SVR import SVR
 
 class Gridsearch():
     """
-    Handler of the gridsearch setup and run
+    Handler of the gridsearch setup and run. Constructed to behave as grid search on algorithmic specific parameters.
     """
     def __init__(self):
         """
@@ -34,7 +34,7 @@ class Gridsearch():
 
     def set_parameters(self, **param):
         """
-        Setup the grid search parameters. kernel and kparam have to be the same size.
+        set grid search parameters given a dictionary of parameters param. Setup the grid search parameters. kernel and kparam have to be the same size.
         """
         if "kernel" in param:
             self.kernel = param["kernel"]
@@ -50,7 +50,17 @@ class Gridsearch():
     def run(self, inp, out, target_func_value=None, max_error_target_func_value=None, n_best=1, convergence_verbose=False):
         """
         Function to effectively run the GridSearch, returns top n performing models configuration.
-        The performance is evaluated on reaching the lowest possible minimum.
+        The performance is evaluated on reaching the lowest possible minimum (algorithmic aim).
+        Args:
+            inp (tensor): input data
+            out (tensor): output data
+            target_func_value (float, optional): necessary if 'accepted' convergence condition is wanted. Defaults to None.
+            max_error_target_func_value (float, optional): range of error around target_func_value to define 'accepted' convergence condition. Defaults to None.
+            n_best (int): number of best models configurations to return
+            convergence_verbose (bool, optional): if set to True then at every model fitting end there will be plots on convergence rate and logarithmic residual error. Defaults to False.
+
+        Returns:
+            list(SVR): best performing models configurations
         """
         # check and set possible undeclared parameters about objective target
         if target_func_value is None:
@@ -61,7 +71,6 @@ class Gridsearch():
         print("(GS - SVR) - Creating models")        
         models_conf = []
         kernel_conf = []
-        precomp_kernels = {}
         for i, kernel in enumerate(self.kernel):
             for box in self.box:
                 for eps in self.eps:
@@ -72,6 +81,7 @@ class Gridsearch():
         print(f"(GS - SVR) - Fitting {len(models_conf)} models")
         start_fit = time.time()
         f_bests = np.zeros(len(models_conf))
+        # copy and delete models after fitting to avoid RAM overflow
         for i, model in enumerate(models_conf):
             print(f"(GS - SVR) - model {i+1}/{len(models_conf)}", sep=" ")
             copied_model = copy.deepcopy(model)
@@ -85,13 +95,14 @@ class Gridsearch():
         # check if the number of requested models is valid
         n_best = n_best if n_best <= len(models_conf) else len(models_conf)
 
-        # get the n_best models with the lowest f_best, print them, return them
+        # get the n_best models with the lowest f_best, print them, return their configuration
         best_indexes = np.argsort(f_bests)[:n_best]
         print("(GS - SVR) - Best configurations:", best_indexes, " with f_best ", np.sort(f_bests)[:n_best])
         return [models_conf[i] for i in best_indexes]
     
 if __name__ == '__main__':
     start = time.time()
+    # retrieve data to work with
     data, data_out = dt._get_cup('train')
     # get output_data as first output dimension
     data_out = data_out[:, 0]
@@ -138,6 +149,7 @@ if __name__ == '__main__':
         optiargs=optiargs
     )
 
+    # run grid search, saving best configurations
     best_models_configurations = gs.run(
         data, data_out, target_func_value=target_func_value, n_best=5
     )
@@ -147,4 +159,3 @@ if __name__ == '__main__':
     with open(save_path, "wb") as f:
         pickle.dump({"models": best_models_configurations}, f, protocol=pickle.HIGHEST_PROTOCOL)
         print(f"GridSearch output configuration succesfully saved to {save_path}")
-    
