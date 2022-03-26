@@ -1,7 +1,5 @@
 import numpy as np
-import copy
 import math
-import matplotlib.pyplot as plt
 import time
 import kernel as k
 from SVR import SVR
