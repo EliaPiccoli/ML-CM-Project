@@ -10,11 +10,11 @@ import math
 def search(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
-        kernel=["linear", "rbf", "rbf", "poly", "poly", "sigmoid", "sigmoid", "sigmoid"],
-        kparam=[{}, {"gamma":1}, {"gamma":10}, {"degree":2, "gamma":'auto'}, {"degree":4, "gamma":'auto'}, {"gamma":"scale"}, {"gamma":1}, {"gamma":10}],
+        kernel=["linear", "rbf", "rbf", "poly", "sigmoid", "sigmoid"],
+        kparam=[{}, {"gamma":1}, {"gamma":10}, {"degree":3, "gamma":'auto'}, {"gamma":"scale"}, {"gamma":1}],
         box=[0.1,1,10],
-        eps=[0.1,0.5,1],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
+        eps=[0.05,0.1,0.5],
+        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-3, 'maxiter':5e3}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -22,9 +22,11 @@ def search(x, y, val_x, val_y):
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
     svr = best_coarse_model
-    kernel, kparam, optiargs = gs.get_model_perturbations(best_coarse_model, 10, 6)
+    kernel, kparam, optiargs, eps, box  = gs.get_model_perturbations(best_coarse_model, 10, 6)
     print(kernel, kparam, optiargs)
     gs.set_parameters(
+        eps=eps,
+        box=box,
         kernel=kernel,
         kparam=kparam,
         optiargs=optiargs
@@ -50,9 +52,9 @@ def search_linear(x, y, val_x, val_y):
     gs.set_parameters(
         kernel=["linear"],
         kparam=[{}],
-        box=[1,10],
-        eps=[0.5,1],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}, {'eps':1e-4, 'maxiter':3e3}]
+        box=[0.1,1,10],
+        eps=[0.1,0.5],
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}, {'eps':5e-4}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -60,9 +62,11 @@ def search_linear(x, y, val_x, val_y):
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
     svr = best_coarse_model
-    kernel, kparam, optiargs = gs.get_model_perturbations(best_coarse_model, 1, 1)
+    kernel, kparam, optiargs, eps, box  = gs.get_model_perturbations(best_coarse_model, 1, 5, 5)
     print(kernel, kparam, optiargs)
     gs.set_parameters(
+        eps=eps,
+        box=box,
         kernel=kernel,
         kparam=kparam,
         optiargs=optiargs
@@ -100,9 +104,11 @@ def search_linear(x, y, val_x, val_y):
 def search_rbf(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
-        kernel=["rbf", "rbf", "rbf", "rbf", "rbf", "rbf"],
-        kparam=[{'gamma':'scale'}, {"gamma":'auto'},{"gamma":0.1},{"gamma":1},{"gamma":2},{"gamma":5}],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
+        kernel=["rbf", "rbf", "rbf", "rbf"],
+        kparam=[{"gamma":'auto'},{"gamma":0.1},{"gamma":1},{"gamma":2}],
+        box=[0.1,1,10],
+        eps=[0.05,0.1,0.5],
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -110,9 +116,11 @@ def search_rbf(x, y, val_x, val_y):
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
     svr = best_coarse_model
-    kernel, kparam, optiargs = gs.get_model_perturbations(best_coarse_model, 3, 3)
+    kernel, kparam, optiargs, eps, box  = gs.get_model_perturbations(best_coarse_model, 3, 3, 3)
     print(kernel, kparam, optiargs)
     gs.set_parameters(
+        eps=eps,
+        box=box,
         kernel=kernel,
         kparam=kparam,
         optiargs=optiargs
@@ -150,9 +158,11 @@ def search_rbf(x, y, val_x, val_y):
 def search_sigmoid(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
-        kernel=["sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid"],
-        kparam=[{"gamma":'auto'},{"gamma":1},{"gamma":2},{"gamma":5},{"gamma":10}],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
+        kernel=["sigmoid", "sigmoid", "sigmoid"],
+        kparam=[{"gamma":'auto'},{"gamma":1},{"gamma":2}],
+        box=[0.1,1,10],
+        eps=[0.05,0.1,0.5],
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -160,9 +170,11 @@ def search_sigmoid(x, y, val_x, val_y):
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
     svr = best_coarse_model
-    kernel, kparam, optiargs = gs.get_model_perturbations(best_coarse_model, 3, 3)
+    kernel, kparam, optiargs, eps, box  = gs.get_model_perturbations(best_coarse_model, 3, 3, 3)
     print(kernel, kparam, optiargs)
     gs.set_parameters(
+        eps=eps,
+        box=box,
         kernel=kernel,
         kparam=kparam,
         optiargs=optiargs
@@ -200,9 +212,11 @@ def search_sigmoid(x, y, val_x, val_y):
 def search_poly(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
-        kernel=["poly", "poly", "poly", "poly", "poly"],
-        kparam=[{"degree":2, "gamma":1},{"degree":3, "gamma":1},{"degree":4, "gamma":1},{"degree":5, "gamma":1},{"degree":10, "gamma":1}],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
+        kernel=["poly", "poly", "poly", "poly"],
+        kparam=[{"degree":2, "gamma":1},{"degree":3, "gamma":1},{"degree":4, "gamma":1},{"degree":5, "gamma":1}],
+        box=[0.1,1,10],
+        eps=[0.05,0.1,0.5],
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}, {'eps':5e-4}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -210,9 +224,11 @@ def search_poly(x, y, val_x, val_y):
 
     print("BEST COARSE GRID SEARCH MODEL:",best_coarse_model)
     svr = best_coarse_model
-    kernel, kparam, optiargs = gs.get_model_perturbations(best_coarse_model, 3, 3)
+    kernel, kparam, optiargs, eps, box  = gs.get_model_perturbations(best_coarse_model, 3, 3, 3)
     print(kernel, kparam, optiargs)
     gs.set_parameters(
+        eps=eps,
+        box=box,
         kernel=kernel,
         kparam=kparam,
         optiargs=optiargs
@@ -250,9 +266,11 @@ def search_poly(x, y, val_x, val_y):
 def search_polydeg3(x, y, val_x, val_y):
     gs = Gridsearch()
     gs.set_parameters(
-        kernel=["poly", "poly", "poly", "poly", "poly"],
-        kparam=[{"degree":3, "gamma":'auto'},{"degree":3, "gamma":1},{"degree":3, "gamma":2},{"degree":3, "gamma":5},{"degree":3, "gamma":10}],
-        optiargs=[{'eps':1e-2, 'maxiter':3e3}, {'eps':5e-4, 'maxiter':3e3}]
+        kernel=["poly", "poly", "poly", "poly"],
+        kparam=[{"degree":3, "gamma":'auto'},{"degree":3, "gamma":1},{"degree":3, "gamma":2},{"degree":3, "gamma":5}],
+        box=[0.1,1,10],
+        eps=[0.05,0.1,0.5],
+        optiargs=[{'eps':1e-2}, {'eps':5e-3}, {'eps':5e-4}]
     )
     best_coarse_model = gs.run(
         x, y, val_x, val_y
@@ -260,9 +278,11 @@ def search_polydeg3(x, y, val_x, val_y):
 
     print("BEST COARSE GRID SEARCH MODEL:", best_coarse_model)
     svr = best_coarse_model
-    kernel, kparam, optiargs = gs.get_model_perturbations(best_coarse_model, 3, 3)
+    kernel, kparam, optiargs, eps, box = gs.get_model_perturbations(best_coarse_model, 3, 3, 3)
     print(kernel, kparam, optiargs)
     gs.set_parameters(
+        eps=eps,
+        box=box,
         kernel=kernel,
         kparam=kparam,
         optiargs=optiargs
@@ -324,10 +344,16 @@ if first_dim:
         model = search_rbf(train, train_out1, val, val_out1)
     elif sys.argv[1] == 'poly':
         print("Poly gridsearch..")
+        model = search_poly(train, train_out1, val, val_out1)
+    elif sys.argv[1] == 'poly3':
+        print("Poly3 gridsearch..")
         model = search_polydeg3(train, train_out1, val, val_out1)
     elif sys.argv[1] == 'sigmoid':
         print("Sigmoid gridsearch..")
         model = search_sigmoid(train, train_out1, val, val_out1)
+    if sys.argv[1] == 'all':
+        print("All gridsearch..")
+        model = search(train, train_out1, val, val_out1)
 else:
     print("GridSearching second y dim..")
     if sys.argv[1] == 'linear':

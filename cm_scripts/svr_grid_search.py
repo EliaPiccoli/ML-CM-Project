@@ -1,14 +1,15 @@
 import numpy as np
-import copy
 import math
-import matplotlib.pyplot as plt
 import time
-
-from SVR import SVR
 import kernel as k
+from SVR import SVR
 
 class Gridsearch():
+    """Class constructed to behave as grid search on model parameters.
+    """    
     def __init__(self):
+        """Initialize grid search to a minimal search space of one case
+        """        
         self.kernel = ['rbf']
         self.k_params = [{'gamma':'scale'}]
         self.box = [1]
@@ -16,6 +17,9 @@ class Gridsearch():
         self.opti_args = [{}]
 
     def set_parameters(self, **param):
+        """
+        Set grid search parameters given a dictionary of parameters param. Kernel and kparam have to be the same size.
+        """        
         if "kernel" in param:
             self.kernel = param["kernel"]
         if "kparam" in param:
@@ -27,7 +31,19 @@ class Gridsearch():
         if "optiargs" in param:
             self.opti_args = param["optiargs"]
 
-    def run(self, train_x, train_output, val_x, val_output):
+    def run(self, train_x, train_output, val_x, val_output, convergence_verbose=False):
+        """Run grid search, returning best performing model based on MEE
+
+        Args:
+            train_x (np.array): input training data
+            train_output (np.array): output training data
+            val_x (np.array): input validation data (model selection)
+            val_output (np.array): output validation data (model selection)
+            convergence_verbose (bool, optional): if set to True then at every model fitting end there will be plots on convergence rate and logarithmic residual error. Defaults to False.
+
+        Returns:
+            SVR: best performing model
+        """        
         # declare all SVR
         print("(GS - SVR) - Creating models")        
         models_conf = []
@@ -38,9 +54,9 @@ class Gridsearch():
                 for eps in self.eps:
                     for _ in range(len(self.opti_args)):
                         models_conf.append(SVR(kernel, self.k_params[i], box, eps))
-                        kernel_conf.append(i) # to get correct kernel afterwards
+                        kernel_conf.append(i) # keep model index in order to get correct kernel afterwards
 
-            # precompute kernels
+            # precompute kernels (many configurations may share the same kernel)
             temp_model = SVR(kernel,self.k_params[i])
             temp_model.x, temp_model.xs = train_x, train_x
             precomp_kernel, precomp_gamma_value = k.get_kernel(temp_model)
@@ -50,10 +66,12 @@ class Gridsearch():
         start_fit = time.time()
         for i, model in enumerate(models_conf):
             print(f"(GS - SVR) - model {i+1}/{len(models_conf)}", sep=" ")
-            model.fit(train_x, train_output, self.opti_args[i%len(self.opti_args)], verbose_optim=False, precomp_kernel=precomp_kernels[kernel_conf[i]])
+            model.fit(train_x, train_output, self.opti_args[i%len(self.opti_args)], optim_verbose=False, precomp_kernel=precomp_kernels[kernel_conf[i]], convergence_verbose=convergence_verbose)
             print(f"\t(GS - SVR) - Time taken: {time.time() - start_fit} - Remaining: {(time.time() - start_fit) / (i+1) * (len(models_conf)-i-1)}")
         
         print("(GS - SVR) - Evaluating models")
+
+        # get models predictions on training data
         models_predt = []
         for i, model in enumerate(models_conf):
             tmp_pred = []
@@ -62,14 +80,15 @@ class Gridsearch():
                 tmp_pred.append(prediction)
             models_predt.append(tmp_pred)
 
+        # compute training MEE for all models
         models_meet = []
         for i, pred in enumerate(models_predt):
             error = 0
             for j, train_pred in enumerate(pred):
-                # print(train_output[j], train_pred)
                 error += math.sqrt((train_output[j] - train_pred)**2)
             models_meet.append(error/len(train_output))
 
+        # get models predictions on validation data
         models_pred = []
         for i, model in enumerate(models_conf):
             tmp_pred = []
@@ -78,36 +97,54 @@ class Gridsearch():
                 tmp_pred.append(prediction)
             models_pred.append(tmp_pred)
 
+        # compute validation MEE for all models
         models_mee = []
         for i, pred in enumerate(models_pred):
             error = 0
             for j, val_pred in enumerate(pred):
-                # print(val_output[j], val_pred)
                 error += math.sqrt((val_output[j] - val_pred)**2)
             models_mee.append(error/len(val_output))
 
+        # print out results
         for i in range(len(models_mee)):
             print(f"(GS - SVR) - SVR: {i} - TR MEE {models_meet[i]} - VL MEE {models_mee[i]} - MODEL: {models_conf[i]}\n")
 
+        # get best performing model on validation set, return it
         index = np.argmin(models_mee)
         print("(GS - SVR) - Best configuration:", index)
         return models_conf[index]
 
-    def get_model_perturbations(self, model, n_perturbations, n_optimargs):
+    def get_model_perturbations(self, model, n_perturbations, n_optimargs, n_box_perturb=1):
+        """Function to create perturbated configurations. Useful for 'fine grid search'
+
+        Args:
+            model (SVR): original model, for original configurations
+            n_perturbations (int): define number of perturbations to create kernel-wise
+            n_optimargs (int): define number of perturbations to create algorithm-wise
+            n_box_perturb (int, optional): define number of perturbations to create box-wise. Defaults to 1.
+
+        Returns:
+            list: return all perturbations in a list ready for calling the 'run' method
+        """        
         kernel = []
         kparam = []
         optiargs = []
+        eps=[]
+        box=[]
 
         # keep original model
         kernel.append(model.kernel)
         kparam.append({"gamma": model.gamma_value, "degree": model.degree, "coef": model.coef})
         optiargs.append(model.optim_args)
+        eps.append(model.eps)
+        box.append(model.box)
 
-        # create perturbations of original
+        # set (empirically) ranges of perturbation for the parameters
         gamma_perturbation = 0.2
         coef_perturbation = 1.0
         eps_perturbation = 10
-        vareps_perturbation = 0.1
+        box_perturbation = 10
+        # create perturbations of original (kernel)
         for i in range(n_perturbations-1):
             if model.kernel == 'rbf':
                 kernel.append('rbf')
@@ -120,15 +157,17 @@ class Gridsearch():
             else: # linear
                 kernel.append('linear')
                 kparam.append({})
-
+        # create perturbations of original (algorithm)
         for i in range(n_optimargs-1):
             temp_optiargs = {}
             if 'eps' in model.optim_args:
                 temp_optiargs['eps'] = np.random.uniform(model.optim_args['eps'] / eps_perturbation, model.optim_args['eps'] * eps_perturbation)
-            if 'vareps' in model.optim_args:
-                temp_optiargs['vareps'] = np.random.uniform(model.optim_args['vareps'] - vareps_perturbation, model.optim_args['vareps'] + vareps_perturbation)
             if 'maxiter' in model.optim_args:
                 temp_optiargs['maxiter'] = model.optim_args['maxiter']
+            temp_optiargs['vareps'] = model.eps
             optiargs.append(temp_optiargs)
+        # create perturbations of original (box)
+        for i in range(n_box_perturb-1):
+            box.append(model.box + np.random.uniform(-model.box/box_perturbation, model.box/box_perturbation))
 
-        return kernel, kparam, optiargs
+        return kernel, kparam, optiargs, eps, box

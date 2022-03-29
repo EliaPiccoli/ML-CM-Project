@@ -1,21 +1,42 @@
 import numpy as np
+import time
+import math
 import kernel
-from sklearn.preprocessing import StandardScaler
 from deflected_subgradient import solveDeflected
 import matplotlib.pyplot as plt
 
 class SVR:
+    """
+    Class' objective is to fully and intuitively handle the functioning of a Support Vector Regression model through few main function calls:
+        'constructor' to initialize
+        'fit' to train the model
+        'predict' to test the model
+    """
     def __init__(self, kernel, kernel_args={}, box=1.0, eps=0.1):
-        self.kernel = kernel
-        self.box = box
-        self.eps = eps
+        """ Initialize svr model only with model parameters
 
-        self.gamma  = kernel_args['gamma'] if 'gamma' in kernel_args else 'scale'
+        Args:
+            kernel (string): can either be 'linear' 'poly' 'sigmoid' or 'rbf'
+            kernel_args (dict, optional): contains parameters specific to kernel, therefore 'gamma' 'degree' and 'coefficient'. Defaults to {}.
+            box (float, optional): model 'C' parameter. Defaults to 1.0.
+            eps (float, optional): model epsilon tube width parameter. Defaults to 0.1.
+        """        
+        self.kernel = kernel # string identifying model kernel
+        self.box = box       # value for the C parameter, constraining the dual representation
+        self.eps = eps       # value for epsilon-tube width
+
+        # various parameters possible for kernels
+        self.gamma  = kernel_args['gamma'] if 'gamma' in kernel_args else 'scale' 
         self.degree = kernel_args['degree'] if 'degree' in kernel_args else 1
         self.coef   = kernel_args['coef'] if 'coef' in kernel_args else 0
-        self.optim_args = None
+        self.optim_args = None # will save parameters needed for deflected subgradient optimization process
     
     def __str__(self):
+        """Function to print out model 
+
+        Returns:
+            string: string representing model
+        """        
         model_as_string = '\n'
         model_as_string += "Kernel: "+self.kernel
         if self.optim_args is not None: # model fit has happened
@@ -35,81 +56,99 @@ class SVR:
         model_as_string += "\nBox: "+str(self.box)
         return model_as_string
 
-    def fit(self, x, y, optim_args, scaled=False, beta_init=None, verbose_optim=True, precomp_kernel=None):
-        self.x = x
-        self.y = y
-        self.optim_args = optim_args
-        
-        self.scaled = scaled
-        if scaled:
-            sc_X = StandardScaler()
-            sc_Y = StandardScaler()
-            self.xs = sc_X.fit_transform(self.x)
-            self.ys = sc_Y.fit_transform(self.y)
-            self.x_scaler = sc_X
-            self.y_scaler = sc_Y
-        else:
-            self.xs = x
-            self.ys = y
+    def fit(self, x, y, optim_args, target_func_value=None, max_error_target_func_value=None, beta_init=None, precomp_kernel=None, optim_verbose=True, convergence_verbose=False, fit_time=True):
+        """Function to fit model, given data and parameters relating to the algorithm
 
+        Args:
+            x (np.array): input data
+            y (np.array): output data
+            optim_args (dict): dictionary containing all algorithmic parameters relating to deflected subgradient
+            target_func_value (float, optional): necessary if 'accepted' convergence condition is wanted. Defaults to None.
+            max_error_target_func_value (float, optional): range of error around target_func_value to define 'accepted' convergence condition. Defaults to None.
+            beta_init (list, optional): to define initial values of lagrangian multiplier differences. Has to sum to 0. Defaults to None.
+            precomp_kernel (list, optional): containing precomputed kernel in position 0, gamma value for the kernel in position 1. Defaults to None.
+            optim_verbose (bool, optional): if True then step by step details during optimization will be printed out. Defaults to True.
+            convergence_verbose (bool, optional): if True then at the end of fitting plots on convergence rate and logarithmic residual error will be shown (taking final fref as fstar/fbest). Defaults to False.
+            fit_time (bool, optional): if True then at end of fitting prints out number of SV as well as computation time. Defaults to True.
+        """
+        start = time.time()
+        # save input, output and optimization arguments
+        self.xs = x
+        self.ys = y
+        self.optim_args = optim_args
+
+        # it is possible to precompute the kernel beforehand if one desires
         if precomp_kernel is None:
             self.K, self.gamma_value = kernel.get_kernel(self)
         else:
             self.K, self.gamma_value = precomp_kernel[0], precomp_kernel[1]
-        beta_init = np.vstack(np.zeros(self.x.shape[0])) if beta_init is None else beta_init
-        optim_args['vareps'] = self.eps
-        self.beta, self.status, self.betas_history = solveDeflected(beta_init, self.ys, self.K, self.box, optim_args=optim_args, verbose=verbose_optim)
-        self.compute_sv()
-        if self.kernel == "linear":
+
+        # initialize target goal and error if not present (means it is not needed for this run)
+        if target_func_value is None:
+            target_func_value = -math.inf
+            max_error_target_func_value = 1e-12
+        
+        # it is possible to initialize betas beforehand if one desires (beta is lagrangian variable ensemble, explained in report section 2) 
+        beta_init = np.vstack(np.zeros(self.xs.shape[0])) if beta_init is None else beta_init
+        optim_args['vareps'] = self.eps if 'vareps' not in optim_args else optim_args['vareps']
+        self.beta, self.status, self.history = solveDeflected(beta_init, self.ys, self.K, self.box, target_func_value=target_func_value, max_error_target_func_value=max_error_target_func_value, optim_args=optim_args, verbose=optim_verbose) # train the model
+        if convergence_verbose: # plot convergence rate - logaritmic residual error
+            _, axs = plt.subplots(2)
+            plot_conv_rate = []
+            log_residual_error = []
+            for i in range(len(self.history['f']) - 1):
+                plot_conv_rate.append((self.history['f'][i+1] - self.history['fstar']) / (self.history['f'][i] - self.history['fstar']))
+                log_residual_error.append(np.log(np.abs(self.history['f'][i] - self.history['fstar']) / np.abs(self.history['fstar'])))
+            axs[0].plot(range(len(plot_conv_rate)), plot_conv_rate)
+            axs[0].set_ylabel("CONV_RATE")
+            axs[1].plot(range(len(log_residual_error)), log_residual_error)
+            axs[1].set_ylabel("LOG_RESIDUAL_ERROR")
+            plt.show()
+        self.compute_sv() # compute support vectors given the final lagrangian values
+        if self.kernel == "linear": # 'linear' kernel prediction method is different from the other kernels
             self.W = np.dot(self.betasv.T, self.sv)
+        if fit_time:
+            print(f"Fit time: {time.time() - start}, #SV: {len(self.betasv)}")
 
-    def plot_loss(self):
-        temp_beta, temp_sv, temp_betasv, temp_intercept = self.beta, self.sv, self.betasv, self.intercept
-        loss_vect = []
-        for betas in self.betas_history:
-            self.beta = betas
-            flag = self.compute_sv(plotting=True)
-            if not flag:
-                continue
-            y_pred = [float(self.predict(self.x[i].reshape(1,-1))) for i in range(self.x.size)]
-            loss_vect.append(self.eps_ins_loss(y_pred))
-        plt.plot(range(len(loss_vect)),loss_vect)
-        plt.show()
-        self.beta, self.sv, self.betasv, self.intercept = temp_beta, temp_sv, temp_betasv, temp_intercept
-
-    def compute_sv(self, plotting=False):
+    def compute_sv(self):
+        """Function to be called after solving the deflected subgradient algorithm, computes the SV given the final lagrangian values
+        """        
         mask = np.logical_or(self.beta > 1e-6, self.beta < -1e-6)
-        if True not in mask:
-            if plotting:
-                return False
+        if True not in mask: # take min and max if no relevant support vector is present
             mask = np.logical_or(self.beta == np.max(self.beta), self.beta == np.min(self.beta))
 
-        support = np.vstack(np.vstack(np.arange(len(self.beta)))[mask])
+        support = np.vstack(np.vstack(np.arange(len(self.beta)))[mask]) # get array only of support vectors indexes
         x_mask = np.repeat(mask, self.xs.shape[1], axis=1)
-        self.sv = self.xs[x_mask].reshape(-1,self.xs.shape[1])
-        y_sv = np.vstack(self.ys.reshape(-1,1)[mask])
+        self.sv = self.xs[x_mask].reshape(-1,self.xs.shape[1]) # get array of support vectors
+        y_sv = np.vstack(self.ys.reshape(-1,1)[mask]) # mask out the output values relative to support vectors
         self.betasv = np.vstack(self.beta[mask])
         self.intercept = 0
+        # the following operation is possible with any support vector, averaging gives more robustness
         for i in range(self.betasv.size):
             self.intercept += y_sv[i]
             for j in range(self.beta.size):
                 self.intercept -= self.beta[j] * self.K[j, support[i]]
         self.intercept /= self.betasv.size # average bias
-        self.intercept -= self.eps # -eps -eps -eps
-        return True
+        self.intercept -= self.eps # -eps
     
     def predict(self, x):
-        x = np.array([x])
-        if self.scaled:
-            x = self.x_scaler.transform(x.reshape(-1,1))
-        if self.kernel == 'linear':
-            prediction = np.dot(self.W, x.T) + self.intercept
-            return prediction if not self.scaled else self.y_scaler.inverse_transform(prediction)
+        """Function to output model prediction on given data 'x'
 
-        if isinstance(self.gamma, str):
-            gamma = 1/(self.sv.shape[1]*self.sv.var()) if self.gamma == "scale" else 1/(self.sv.shape[1])
-        else:
-            gamma = self.gamma
+        Args:
+            x (np.array): input data
+
+        Returns:
+            np.array: output data
+        """        
+        x = np.array([x]) # x is test input
+        if self.kernel == 'linear':
+            # linear prediction is treated differently
+            prediction = np.dot(self.W, x.T) + self.intercept
+            return prediction
+
+        gamma = self.gamma_value
+
+        # predict accordingly to the kernel
         if self.kernel == 'rbf':
             K, _ = kernel.rbf(self.sv, x, gamma)
         elif self.kernel == 'poly':
@@ -117,9 +156,18 @@ class SVR:
         elif self.kernel == 'sigmoid':
             K, _ = kernel.sigmoid(self.sv, x, gamma, self.coef)
         prediction = np.dot(self.betasv.T, K) + self.intercept
-        return prediction if not self.scaled else self.y_scaler.inverse_transform(prediction)
+        return prediction
 
     def eps_ins_loss(self, y, y_pred):
+        """Function to calculate loss value given ground truth and predicted output
+
+        Args:
+            y (np.array): ground truth data
+            y_pred (np.array): predicted data
+
+        Returns:
+            float: value representing error between data and prediction, assuming a margin of accepted error
+        """        
         loss = 0
         for i in range(len(y)):
             loss += (abs(y[i]-y_pred[i]) - self.eps)**2 if abs(y[i]-y_pred[i]) > self.eps else 0
