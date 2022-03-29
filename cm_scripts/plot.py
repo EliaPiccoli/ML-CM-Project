@@ -2,13 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def plot_single_model(cup_model, fstar, axs, color, label):
-    """ function to generate the convergence rate, log residual rate and residual rate of a given model 
+    """ Function to generate the convergence rate, log residual rate and residual rate of a given model 
         optimization process, given an fstar
 
     Args:
-        cup_model (svr model object): containing history for all function values during fitting
+        cup_model (svr): containing history for all function values during fitting
         fstar (float): value necessary for conv rate, log res error and res error computation
-        axs (plt axis object): needed for plotting
+        axs (plt.axis): needed for plotting
         color (string): to define which color to assign to plotted graphs
         label (string): to define name of plotted curves
 
@@ -45,9 +45,9 @@ def plot_svr_predict(x, y, pred, text="fig_title"):
     """function to plot model predictions (in blue) over ground truths (in red), for all input dimensions
 
     Args:
-        x (tensor): input of task, important also for getting the input dimensionality
-        y (tensor): output of the task, relevant for the ground truth
-        pred (tensor): output predicted by the model
+        x (np.array): input of task, important also for getting the input dimensionality
+        y (np.array): output of the task, relevant for the ground truth
+        pred (np.array): output predicted by the model
         text (str, optional): title of the plot. Defaults to "fig_title".
     """    
     fig,axs = plt.subplots(2,5, figsize=(15,15))

@@ -5,10 +5,10 @@ import kernel as k
 from SVR import SVR
 
 class Gridsearch():
-    """class constructed to behave as grid search on model parameters.
+    """Class constructed to behave as grid search on model parameters.
     """    
     def __init__(self):
-        """initialize grid search to a minimal search space of one case
+        """Initialize grid search to a minimal search space of one case
         """        
         self.kernel = ['rbf']
         self.k_params = [{'gamma':'scale'}]
@@ -18,7 +18,7 @@ class Gridsearch():
 
     def set_parameters(self, **param):
         """
-        set grid search parameters given a dictionary of parameters param. Setup the grid search parameters. kernel and kparam have to be the same size.
+        Set grid search parameters given a dictionary of parameters param. Kernel and kparam have to be the same size.
         """        
         if "kernel" in param:
             self.kernel = param["kernel"]
@@ -32,13 +32,13 @@ class Gridsearch():
             self.opti_args = param["optiargs"]
 
     def run(self, train_x, train_output, val_x, val_output, convergence_verbose=False):
-        """run grid search, returning best performing model based on MEE
+        """Run grid search, returning best performing model based on MEE
 
         Args:
-            train_x (tensor): input training data
-            train_output (tensor): output training data
-            val_x (tensor): input validation data (model selection)
-            val_output (tensor): output validation data (model selection)
+            train_x (np.array): input training data
+            train_output (np.array): output training data
+            val_x (np.array): input validation data (model selection)
+            val_output (np.array): output validation data (model selection)
             convergence_verbose (bool, optional): if set to True then at every model fitting end there will be plots on convergence rate and logarithmic residual error. Defaults to False.
 
         Returns:
@@ -115,7 +115,7 @@ class Gridsearch():
         return models_conf[index]
 
     def get_model_perturbations(self, model, n_perturbations, n_optimargs, n_box_perturb=1):
-        """function to create perturbated configurations. Useful for 'fine grid search'
+        """Function to create perturbated configurations. Useful for 'fine grid search'
 
         Args:
             model (SVR): original model, for original configurations

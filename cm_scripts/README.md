@@ -13,7 +13,7 @@
 In the folders *linear/poly* are reported all the notebooks with the experiments, in particular:
 
  - *get_best_model_minumum_50*: computes the **f_best** value for the best model
- - *test_best_five_**: train single model
+ - *test_best_five_#*: train single model
  - *gs_top5_res_err*: computes all the metrics (**convergence rate, log residual error**) from the previously trained models
 
 The other files in the repository are the main scripts that contain the implementation of all the different procedures.
@@ -25,13 +25,16 @@ The most important ones are:
 #
 
 ## How to run
-It is possible to run the notebooks to create the models that are saved using pickle, and the run the appropriate *gs_top5_res_err* notebook to analyzed the results.
+It is possible to run the notebooks to create the models that are saved using pickle, and then run the appropriate *gs_top5_res_err* notebook to analyze the results.
 
-**Please note**: some scripts may take up to 1.30h to run, all models requires approximately 400MB of space
+**Please note**: some scripts may take up to 1.30h to run (depending on the number of iterations). 
 
-Otherwise, it is possible to create one single instance of the model and run with the following code:
+Otherwise, it is possible to create one single instance of the model and run with the following code, from the main directory:
 
 ```python
+import get_cup_dataset as dt
+from SVR import SVR
+
 # collect data from dataset
 data, data_out = dt._get_cup('train')
 dim = # [0-1]
@@ -56,6 +59,9 @@ print(model.history.keys())
 # (acceptable, stopped, optimal)
 print(model.status)
 ```
+#
+## Regarding the *gs_models* folder
+No models are present inside the *gs_models* folder. This is due to the high space occupation of the model set we computed (~400 MB overall). If needed, we can promptly provide the models in a separate delivery.
 
 <!-- References -->
 

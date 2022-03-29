@@ -7,8 +7,7 @@ import random
 cup_path = os.path.dirname(os.path.abspath(__file__))[:-11] + '\\ml_cup\\ML-CUP20-'
 
 def _get_cup(dataset_type='train'): # can either be 'train' or 'test'
-    """
-        Both 'train' and 'test' set are composed of an initial index column (useless for the application),
+    """ Both 'train' and 'test' set are composed of an initial index column (useless for the application),
         followed by 10 input columns.
         'train' set has 2 additional columns, for output.
     """

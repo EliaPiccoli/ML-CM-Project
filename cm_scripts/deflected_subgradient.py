@@ -50,7 +50,7 @@ def solveDeflected(x, y, K, box, optim_args, target_func_value, max_error_target
         K (np.array): kernel matrix
         box (float): box constraint (C)
         optim_args (dict): dictionary with optimization parameters
-        target_func_value (float): optimal value used as goal
+        target_func_value (float): optimal value used as goal for the 'acceptable' scenario
         max_error_target_func_value (float): relative error wrt target_func_value to get 'acceptable' solution
         return_history (bool, optional): return dict with history of optimization procedure. Defaults to True.
         verbose (bool, optional): verbose output. Defaults to False.

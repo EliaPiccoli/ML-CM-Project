@@ -1,7 +1,7 @@
 import numpy as np
 
 def compute_gamma(x, gamma):
-    """Compute correct value of gamme for the kernel
+    """Compute correct value of gamma for the kernel
 
     Args:
         x (np.array): input
@@ -72,7 +72,7 @@ def poly(v1, v2, gamma='scale', deg=3, coef=0.0):
     return K, gamma
 
 def sigmoid(v1, v2, gamma='scale', coef=0.0):
-    """Computer sigmoid kernel
+    """Compute Sigmoid kernel
 
     Args:
         v1 (np.array): list of first input
@@ -96,7 +96,7 @@ def get_kernel(model):
     """Compute the kernel given a SVR model
 
     Args:
-        model (SVR): svr instace
+        model (SVR): svr instance
 
     Returns:
         np.array: kernel

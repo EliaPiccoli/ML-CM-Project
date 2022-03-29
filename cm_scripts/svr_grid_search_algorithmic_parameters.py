@@ -34,7 +34,7 @@ class Gridsearch():
 
     def set_parameters(self, **param):
         """
-        set grid search parameters given a dictionary of parameters param. Setup the grid search parameters. kernel and kparam have to be the same size.
+        Set grid search parameters given a dictionary of parameters param. Kernel and kparam have to be the same size.
         """
         if "kernel" in param:
             self.kernel = param["kernel"]
@@ -52,8 +52,8 @@ class Gridsearch():
         Function to effectively run the GridSearch, returns top n performing models configuration.
         The performance is evaluated on reaching the lowest possible minimum (algorithmic aim).
         Args:
-            inp (tensor): input data
-            out (tensor): output data
+            inp (np.array): input data
+            out (np.array): output data
             target_func_value (float, optional): necessary if 'accepted' convergence condition is wanted. Defaults to None.
             max_error_target_func_value (float, optional): range of error around target_func_value to define 'accepted' convergence condition. Defaults to None.
             n_best (int): number of best models configurations to return
